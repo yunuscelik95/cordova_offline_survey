@@ -1,0 +1,15 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="scripts/app.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div v-if="isLoggenIn" v-html="message"></div>
+        <div v-if="!isLoggenIn">{{userName}}</div>
+    </div>
+</body>
+</html>

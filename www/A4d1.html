@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script>
+    <script src="scripts/jsSingleResponseOpen.js"></script>
+    <script type="text/javascript">
+
+        var id;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+            InterviewID = window.localStorage["InterviewID"];
+            // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            db.transaction(function (tx) {
+                var queryStrings = getUrlVars();
+                    guid = queryStrings["guid"];
+                    statu = queryStrings["Statu"];
+             
+            });
+        }
+
+
+        window.onload = function () {
+            otherValue = 1; 
+            currentValue = 1;
+            document.forms[0].focus();
+            otherObj = document.getElementById('A4D1_O'); 
+            SetStartUp();
+            //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        };
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+
+            var kontrol = CheckValues();
+            if (kontrol) {
+                myUpdate("INTERVIEWS", "A4D1=" + currentValue + ",A4D1_O='" + $("#A4D1_O").val() + "', A4D3= null", " InterviewID=" + window.localStorage["InterviewID"],);
+                if (currentValue == "2") {
+                    window.location.href = "A4e1.html?id=" + window.localStorage["InterviewID"]
+                }
+                else
+                {
+                    window.location.href = "A4d3.html?id=" + window.localStorage["InterviewID"];
+                }
+
+                
+           //     window.location.href = "R3.html?id=" + id;
+                /* db = openDatabase({ name: 'my.db', location: 'default' });
+                 db.transaction(function (tx) {
+
+                     tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                         if (val.rows.length > 0) {
+
+                         }
+                         else {
+                             alert("Anket Yok");
+                         }
+                     });
+                 });*/
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">A4D1.</span><span id="QuestionTextTD">
+                        <font face="calibri" color="#000000" >Evinizde <b>AKILLI TELEVİZYON / SMART TELEVİZYON</b> olarak adlandırılan internete bağlanabilen bir televizyonunuz var mı?   <b>(TEK CEVAP) </b>  </font>
+
+                        <br>
+                        <font face="arial" color="#000000" size="2">Evinizde <b>TOPLAM</b> kaç adet <b>AKILLI TELEVİZYON </b> olarak adlandırılan internete bağlanabilen bir televizyonunuz var mı? </font>
+                        <br /><img src="/images/survey/A4d1.png" class="img-A4">
+                            <!-- <p align="left"><font face="calibri" color="#000000" > <b><br />
+    (Sadece playstation, Xbox gibi oyun konsolu bağlı ya da sadece DVD bağlı bir televizyon varsa bunun sayılmaması gerekmektedir)<br />
+    (Çeyiz Olarak Alınmış, Daha Sonra Kullanmak Üzere Alınmış Şu Anda Kullanılmayan Televizyonlar Sayılmayacak)
+</b>    </font></p> -->
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable" class="cssQuestionTable">
+                <tbody>
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">1</td>
+                        <td align="right"><input type="radio" class="radioStyle" name="A4D1" id="A4D1_1" value="1"><span></span></td>
+                        <td><label for="A4D1_1">EVET, VAR (Var ise : Kaç Adet):</label>
+                            <input type="number" class="textStyle" rows="6" style="width:400px" name="A4D1_O" id="A4D1_O" value="" datatype="varchar" stepname="A4D1" ></input></td>
+                    </tr>
+                    <tr>
+                        <td class="columnDivider"></td>
+                        <td align="right">2</td>
+                        <td align="right"><input type="radio" class="radioStyle" name="A4D1" id="A4D1_2" value="2"><span></span></td>
+                        <td><label for="A4D1_2">HAYIR, YOK</label></td>
+                    </tr>
+                
+
+                    <tr><td colspan="4">&nbsp;</td></tr>
+                    <tr>
+                        <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                        <td align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </form>
+</body>
+</html>

@@ -1,0 +1,289 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script> 
+    <script src="scripts/jsMultiResponseOpen.js"></script>
+    <script type="text/javascript">
+        //var db;
+        var id;
+        var TV = 0;
+        var name = "";
+        var gorusulenkisi;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+           // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT E3b ,B1_O,B2a_1_1,B2a_2_1,B2a_3_1,B2a_4_1,B2a_5_1,B2a_6_1,B2a_7_1,B2a_8_1,B2a_9_1,B2a_10_1,B2a_11_1,B2a_12_1,B2a_13_1,B2a_14_1,B2a_15_1,B2a_16_1,B2a_17_1,B2a_18_1,B2a_19_1,B2a_20_1,B3_1_1,B3_2_1,B3_3_1,B3_4_1,B3_5_1,B3_6_1,B3_7_1,B3_8_1,B3_9_1,B3_10_1,B3_11_1,B3_12_1,B3_13_1,B3_14_1,B3_15_1,B3_16_1,B3_17_1,B3_18_1,B3_19_1,B3_20_1 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
+                    sayi = parseInt(val.rows.item(0).B1_O);
+                    
+                    gorusulenkisi =  val.rows.item(0)["E3b"];
+                    if (sayi > 0) {
+                        var yasBuyukSay = 0;
+                        var yas15BuyukFirstIndex = 0;
+                        for (var i = 1; i < sayi + 1; i++) {
+                            var fieldName = "B3_" + i + "_1";
+    
+                            if (parseInt(val.rows.item(0)[fieldName]) > 17 && gorusulenkisi != i) {
+
+           
+                                if (yasBuyukSay == 0)
+                                {
+                                    yas15BuyukFirstIndex = i;
+                                }
+                                else
+                                {
+                                    var row = $("#QuestionTable tbody>tr:first").clone(true);
+                                    var isimFieldName = "B2a_" + i + "_1";
+                                    var newRowHtml = row.html().replace("lblisim",val.rows.item(0)[isimFieldName]).replace(/\#/g, i);
+                                    if (i % 2 === 0) {
+                                       // newRowHtml =newRowHtml.replace("AlternateTableRow", "");
+                                       newRowHtml = "<tr>" + newRowHtml + "</tr>";
+                                    }
+                                    else
+                                    {
+                                        newRowHtml = "<tr class=\"AlternateTableRow\">" + newRowHtml + "</tr>";
+                                    }
+
+                                    $("#QuestionTable tbody tr:last").prev('tr').before(newRowHtml);
+                                }
+                                yasBuyukSay++;
+                            }
+
+                          
+                        }
+                        if (yas15BuyukFirstIndex == 0)
+                        {
+                            window.location.href = "GK.html?id=" + id;
+                        }
+
+                        var row = $("#QuestionTable tbody>tr:first").clone(true);
+                        var isimFieldName = "B2a_" + yas15BuyukFirstIndex + "_1";
+                        var firstRow ="<tr class=\"AlternateTableRow\">" +  row.html().replace("lblisim", val.rows.item(0)[isimFieldName]).replace(/\#/g, yas15BuyukFirstIndex) + "</tr>";
+                        $("#QuestionTable tbody>tr:first").replaceWith(firstRow);
+                        $("input[type='text']").each(function () {
+                            otherValue.push($(this).attr("id").replace("C4_O_",""));
+                            otherObj.push(document.getElementById( $(this).attr("id")));
+                        })
+                        SetStartUp();
+                     }
+                    // alert(haneSayi);
+                });
+            });
+        }
+
+
+        window.onload = function () {
+            var queryStrings = getUrlVars();
+       
+            id = window.localStorage["InterviewID"] 
+
+        
+   
+
+          
+
+            var i = 0;
+    
+
+
+            //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        };
+
+    
+
+
+        function CheckValueText() {
+
+         
+            for (i = 0; i < document.forms[0].elements.length; i++) {
+                var obj = document.forms[0].elements[i];
+                if (obj.type == "text") {
+                    var valText = obj.value;
+                    for (var z = 0; z < valText.length; z++) {
+                        var sayT = 0;
+                        for (var x = 0; x < length; x++) {
+                            if (valText[z] == valText[x])
+                            {
+                                sayT++;
+                            }
+                        }
+                        if (sayT > 6)
+                        {
+                            alert("Yazılan telefon numarası çok fazla tekrar eden rakamdan oluşuyor. Lütfen Telefon numarasını kontrol ediniz! ");
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+      
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var kontrol = CheckValues();
+            var aswer = "";
+            if (kontrol)
+            {
+
+                
+                $.each($("input[name='C4']:checked"), function () {
+                    if (aswer != "") aswer += ",";
+                    aswer += $(this).val();
+
+                });
+            }
+            var kontrol2 =false;
+            if (aswer == "21")
+            {
+                kontrol2 = true;
+            }
+            else
+            {
+                kontrol2 = CheckValueText();
+            }
+
+            var updateStr = "";
+            if ((kontrol && kontrol2) || aswer=="3") {
+                $("form").find(':input').each(function () {
+                    if (($(this).prop("tagName") == "SELECT" || $(this).attr("type") == "text" || $(this).attr("type") == "radio" || $(this).attr("type") == "number") && $(this).attr("class") != "input-block-level form-control") {
+                        if (updateStr != "") updateStr += ",";
+                        updateStr += $(this).attr("name") + "='" + $(this).val() + "'";
+                    }
+                })
+
+                if (aswer != "" && updateStr != "") {
+                    updateStr += ",C4='" + aswer +  "'";
+                    myUpdateRedirect("INTERVIEWS", updateStr,  " InterviewID=" + window.localStorage["InterviewID"], "GK.html?id=" + window.localStorage["InterviewID"]);
+
+                }
+                else {
+                    alert("Boş Geçilemez!");
+                }
+
+                //window.location.href = "E1.html?id=" + id;
+                /* db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+                 db.transaction(function (tx) {
+
+                     tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                         if (val.rows.length > 0) {
+
+                         }
+                         else {
+                             alert("Anket Yok");
+                         }
+                     });
+                 });*/
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">C4.</span><span id="QuestionTextTD">
+                                                            <font face="calibri" color="#000000" size="2">
+                                                                Evinizdeki diğer kişilerin cep telefonu var ise bu kişilerin isimlerini ve telefon numaralarını alabilir miyim?    
+                                                                </font>
+</b><font face="arial" color="#000000" size="2">      </font></p>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="QuestionBuilderPanel">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <table id="QuestionTable">
+                            <!-- <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th align="right" style="text-align:right;"><b><span id="name1" style="text-align:right;"></span> Telefonu:</b></th>
+                        
+                            </tr> -->
+                            <tbody>
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">#</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="C4" id="C4_#" value="#" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="C4_#"><b>lblisim</b> telefon numarası:</label><label for="C4_O_#"><input type="text" class="textStyle" name="C4_O_#" id="C4_O_#" value="" datatype="varchar" stepname="C4" expression="^[5]{1}[0-9]{9}$" expressionmessage="Cep telefonunu 10 haneli olarak giriniz. Örn: 5554443322" precision="18" scale="2" objecttype="single" style="width: 150px;" disabled=""></label></td>
+
+                                </tr>
+
+                                <!-- <tr>
+                                    <td class="columnDivider"></td>
+                                    <td align="right">2</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="C4" id="C4_2" value="2" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="C4_2">Cep Telefonu 2</label><label for="C4_o"><input type="text" class="textStyle" name="C4_O_2" id="C4_O_2" value="" datatype="varchar" stepname="C4" expression="^[5]{1}[0-9]{9}$" expressionmessage="Cep telefonunu 10 haneli olarak giriniz. Örn: 5554443322" precision="18" scale="2" objecttype="single" style="width: 150px;" disabled=""></label></td>
+
+                                </tr>
+                                <tr>
+                                    <td class="columnDivider"></td>
+                                    <td align="right">3</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="C4" id="C4_3" value="3"  isnumeric="" size="" maxlength="" norotate="true" deselectother="true" itemdisabled="false"><span></span></td>
+                                    <td><label for="C4_3">Telefon Numarasını Vermedi.</label></td>
+                             
+                                </tr> -->
+<!-- 
+                                <tr><td colspan="4">&nbsp;</td></tr> -->
+                                <tr>
+                                    <td class="columnDivider"></td>
+                                    <td align="right">21</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="C4" id="C4_21" value="21"  isnumeric="" size="" maxlength="" norotate="true" deselectother="true" itemdisabled="false"><span></span></td>
+                                    <td><label for="C4_21">İletişim bilgisi yok</label></td>
+                             
+                                </tr> 
+
+                                <tr>
+                                    <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                                    <td  align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                
+            </table>
+        </div>
+    </form>
+</body>
+</html>

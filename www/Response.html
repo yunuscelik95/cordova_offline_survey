@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+    <title></title>
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script>
+    <script type="text/javascript">
+        //var db;
+        var id;
+        var statu;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+
+           // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        }
+
+
+
+        window.onload = function () {
+            var queryStrings = getUrlVars();
+            id = queryStrings["id"];
+            if (window.localStorage["InterviewID"] == "" && id != "") {
+                window.localStorage["InterviewID"] = id;
+            }
+            statu = parseInt(queryStrings["statu"]);
+            // SetStartUp();
+
+            //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        };
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+
+            var networkState = navigator.connection.type;
+            $("#tblListe tbody").remove();
+
+            if (networkState !== Connection.NONE) {
+
+                var son = onlineFunction();
+                sonuc = JSON.stringify(res.rows.item(0));
+            }
+            else {
+
+                querySuccess();
+            }
+            //     window.location.href = ;
+            /* db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+             db.transaction(function (tx) {
+
+                 tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                     if (val.rows.length > 0) {
+
+                     }
+                     else {
+                         alert("Anket Yok");
+                     }
+                 });
+             });*/
+
+        }
+
+        $(document).ready(function () {
+            if (window.localStorage["InterviewID"] == "") {
+                window.location.href = "blokOzet.html";
+            }
+            $("#spnInterviewID").text(window.localStorage["InterviewID"]);
+            $('#next').click(function () {
+                //  alert("hasan");
+                //  alert("https://vta.diyalog.com.tr/api/veri/" + window.localStorage["InterviewID"]);
+                if (window.localStorage["InterviewID"] == "") {
+                    window.location.href = "blokOzet.html";
+                }
+
+                var sonuc = new $.Deferred();
+
+
+
+                var request = new XMLHttpRequest();
+                var reqdata = {
+                    jsonn: "Robert Ben"
+                }
+                //  alert(JSON.stringify(reqdata));
+
+                //  var method = $('#method').val();
+                //     myUpdate("LISTE", "statu=" + statu, " id=" + id);
+                //    myUpdate("INTERVIEWS", "InterviewStatu=" + statu + ",[stop]= datetime('now')", " InterviewID=" + id);
+                //   alert("dsds");
+                //db.transaction(function (tx) {
+                    //   alert("update [INTERVIEWS] set  InterviewStatu= " + statu + ", [stop] =  datetime('now'),gonderim=0 where InterviewID=" + window.localStorage["InterviewID"]);
+    
+                    myUpdate("INTERVIEWS", "InterviewStatu= " + statu + ", [stop] =  datetime('now'),gonderim=0,ZiyaretSayi=case when ZiyaretSayi is null then 0 else ZiyaretSayi end + 1", " InterviewID=" + window.localStorage["InterviewID"]);
+                    myUpdate("LISTE", "statu=" + statu + ",ZiyaretSayi=case when ZiyaretSayi is null then 0 else ZiyaretSayi end + 1", " id=" + window.localStorage["InterviewID"]);
+
+                //});
+                var networkState = navigator.connection.type;
+                if (networkState != Connection.NONE) {
+                    //   alert("1");
+                    db.transaction(function (tx) {
+
+
+
+                        tx.executeSql('SELECT * FROM INTERVIEWS WHERE (gonderim is null or gonderim=0) and InterviewStatu is not null and InterviewStatu<>0', [], function (tx, res) {
+                            // alert(res.rows.length);
+                            //    console.log('Check SELECT result: ' + JSON.stringify(res.rows.item(0)));
+                            //   var json = "'" + JSON.stringify(res.rows.item(0)) + "'";
+                            //       json = "'" + res.rows.item(0).serialize() + "'";
+                            //var person = '{Name: "' + $("#txtName").val() + '" }';
+
+
+                            //  sonuc2 = JSON.stringify(res.rows.item(0));
+                            // sonuc2 = { blokGuid: "SSDFDSFSD", userGuid: "dsdsadsds" };
+                            //      sonuc2 = { blokGuid: json, userGuid: "dsdsadsds" };
+                            /*      $.ajax({
+                                      type: "POST",
+                                      url: "https://vta.diyalog.com.tr/api/veri",
+                                      data: res.rows.item(0),
+                                      contentType: "application/json; charset=utf-8",
+                                      dataType: "json",
+                                      success: function (response) {
+                                          alert("Hello: " + response.Name + ".\nCurrent Date and Time: " + response.responseText);
+                                      },
+                                      failure: function (response) {
+                                          alert(response.responseText);
+                                      },
+                                      error: function (response) {
+                                          alert(response.responseText);
+                                      }
+                                  });
+                                  */
+                            if (res.rows.length > 0) {
+                                var say = 0; 
+                                for (var i = 0; i < res.rows.length; i++) {
+                                    $.ajax({
+                                        type: "PUT",
+                                        url: "https://vta.diyalog.com.tr/api/veri/" + window.localStorage["InterviewID"],
+                                        //data: JSON.stringify(res.rows.item(i)),
+                                        data: JSON.stringify(res.rows.item(i), function(key, value) {
+                                                    // Özel karakterleri temizle
+                                                    if (typeof value === 'string') {
+                                                        return value.replace(/[^\x20-\x7E]+/g, ''); // ASCII dışındaki karakterleri temizle
+                                                    }
+                                                    return value;
+                                                }),
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (response) {
+                                            responseParse = JSON.parse(response);
+                                            if (responseParse.Sonuc == "OK") {
+                                                myUpdate("INTERVIEWS", "gonderim=1", " InterviewID=" + responseParse.InterviewID);
+
+                                            }
+
+                                            say++;
+                                            if (say == res.rows.length) {
+                                                //   window.localStorage["InterviewID"] = "";
+                                                /// window.location.href = "blokOzet.html";
+                                                myUpdateRedirect("INTERVIEWS", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+                                            }
+
+
+                                        },
+                                        failure: function (response) {
+                                            //     alert(response.responseText);
+                                            //       window.localStorage["InterviewID"] = "";
+                                            //window.location.href = "blokOzet.html";
+                                            myUpdateRedirect("INTERVIEWS", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+                                        },
+                                        error: function (response) {
+                                            // alert(response.responseText);
+                                            //       window.localStorage["InterviewID"] = "";
+                                            //  window.location.href = "blokOzet.html";
+                                            myUpdateRedirect("INTERVIEWS", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+                                        }
+                                    });
+                                }
+                            }
+                            else {
+                                //   window.localStorage["InterviewID"] = "";
+                                //   window.location.href = "blokOzet.html";
+                                myUpdateRedirect("INTERVIEWS", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+                            }
+
+                            //window.location.href = "blokOzet.html";
+                            /*
+                                                    $.ajax({
+                                                        type: "POST",
+                                                        url: serviceUrl
+                                                    //    data: { "json": "sdsdfdf", "userGuid": "21B6A89E-48C0-44C7-B600-F65922C241CB" }
+                                                    }).done(function (data, textStatus, jqXHR) {
+                                                        var items1 = [];
+
+                                                        var j = jQuery.parseJSON(data)
+
+                                                        $.each(j, function (key, val) {
+                                                            var keys = [];
+                                                            var values = [];
+                                                            $.each(val, function (key1, val1) {
+
+                                                            });
+                                                            //  insert("BLOKOZET",keys, values);
+
+
+                                                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                                                            alert(jqXHR.responseText || textStatus);
+                                                        });
+                                                    });
+                                                    console.log('Deferred: ' + sonuc);
+                                                    //           alert('Transaction finished, check record count: ' + JSON.stringify(res.rows.item(0)));
+                                                    return sonuc;
+                                                });*/
+                        });
+
+                        //  myUpdateRedirect("INTERVIEWS", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+                    });
+                }
+                else {
+                    //      window.localStorage["InterviewID"] = "";
+                    myUpdateRedirect("INTERVIEWS", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+                    //  window.location.href = "blokOzet.html";
+                }
+            });
+            function querySuccess() {
+                  myUpdateRedirect("INTERVIEWS", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+            }
+        });
+
+    </script>
+</head>
+<body>
+    <div>Teşekkürler, InterviewID : <span id="spnInterviewID"></span></div>
+    <table>
+        <tr><td colspan="4">&nbsp;</td></tr>
+        <tr><td colspan="4" align="right">        <input type="button" id="next" name="next" value="İleri" /></td></tr>
+    </table>
+</body>
+</html>

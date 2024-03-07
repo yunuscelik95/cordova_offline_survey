@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script> 
+    <script src="scripts/Gps.js"></script>
+
+    <script type="text/javascript">
+        //var db;
+        var id;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+
+            //var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            //   document.getElementById("btnKoordinat").addEventListener("click", getGeo);
+
+            gps("start")
+        }
+
+
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+         //   SetStartUp();
+            //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        };
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+
+         
+                    window.location.href = "T1.html?id=" + window.localStorage["InterviewID"];
+         
+        }
+    </script>
+    <style>
+        #QuestionTable {
+            width: 100%;
+            border-style: solid;
+            border-width: 0px;
+        }
+        #QuestionTable td {
+        border-width:0px;
+        }
+    </style>
+</head>
+<body>
+
+    <form id="form1" class="skinned-form-controls skinned-form-controls-mac">
+        <table id="QuestionText" border="0">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="QuestionTextTD">
+                            <font color="#000000" face="Calibri" size="2">
+                                <p> İyi günler efendim, ismim ............... DİYALOG ARAŞTIRMA Şirketi’nde görev yapıyorum. </p>
+                        
+                                <p align="left">   Türkiye’deki tüm haneler arasından tesadüfi olarak seçilmiş adreslerde, Türk toplumunun televizyon izleme alışkanlıklarını saptamaya yönelik bir anket çalışması gerçekleştiriyoruz. Bu kapsamda sizinle de görüşmek istiyoruz. Bu araştırma <b>TİAK Televizyon İzleme Araştırmaları Şirketi</b> adına gerçekleştiriliyor. Araştırma kapsamında cevaplarınız diğer tüm görüşmelerdeki cevaplarla birlikte genel olarak değerlendirilecek, verdiğiniz cevaplar ve kişisel bilgileriniz <b>kesinlikle gizli tutulacaktır. </b></p>
+                                <p align="left">   Kişisel Verilerin Korunması Kanunu’nun 10. ve 11. maddeleri uyarınca, onayınız doğrultusunda, görüşmemiz sırasında verdiğiniz her türlü bilgi kanuna uygun olarak ve gizlilik politikası çerçevesinde muhafaza edilecek ve yasal düzenlemelerin izin verdiği ölçüde iş birliği yapılan taraflar ile paylaşılacaktır. Araştırmanın devamlılığına istinaden, kalite kontrol süreçleri kapsamında sizinle tekrar irtibata geçilebilecektir.</p>
+                                
+                                <p align="left">  Görüşmemiz yaklaşık 10 dakika sürecektir.  Zaman ayırarak yardımcı olduğunuz için şimdiden çok teşekkür ederim.   </p>
+                                <p align="left"> <b>ANKETÖR DİKKAT: </b>Kişi “NEDEN ÖZELLİKLE BİZİMLE ANKET YAPILIYOR” sorusunu sorarsa, görüşme yapılacak hanelerin “Türkiye’deki tüm haneler içinden tesadüfi olarak seçilen 150,000 haneden biri olduklarını” belirtin.</p>
+                              
+                            </font><p align="left">
+                                <font color="#000000" face="Calibri" size="2"></font><font color="#000000" face="arial" size="2">
+                                </font>
+                            <p align="left">
+                                <font color="#000000" face="arial" size="2">
+                                </font>
+                            </p>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable" class="cssQuestionTable" >
+                <tbody>
+
+                    <tr><td colspan="4">&nbsp;</td></tr>
+                    <tr>
+                        <td colspan="3">
+                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                            <!--                     <input type="button" value="Koordinat" id="btnKoordinat"  name="btnKoordinat"/>-->
+                        </td>
+                        <td align="right">
+
+                            <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </form>
+</body>
+</html>

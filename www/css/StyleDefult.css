@@ -1,0 +1,276 @@
+﻿body 
+{
+	font-family:verdana;
+	font-size:12px;
+	background-color:#FCFBE0;
+	/*background-color:#FFFFFF;*/
+	margin:4px;
+}
+
+span > font{
+	font-size:20px
+	
+}
+td > label{
+	font-size:13px
+}
+
+.rotate {
+  /* FF3.5+ */
+  -moz-transform: rotate(-90.0deg);
+  /* Opera 10.5 */
+  -o-transform: rotate(-90.0deg);
+  /* Saf3.1+, Chrome */
+  -webkit-transform: rotate(-90.0deg);
+  /* IE6,IE7 */
+  filter: progid: DXImageTransform.Microsoft.BasicImage(rotation=0.083);
+  /* IE8 */
+  -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)";
+  /* Standard */
+  transform: rotate(-90.0deg);
+  padding:0px;
+  margin:0px;
+  padding-left:8px;
+  padding-top:5px;
+  
+ }
+
+.cssQuestionTable tr:hover
+{
+    background-color:#E9A328;
+ }
+#QuestionTable td:hover
+{
+    background-color:#E9A328;
+    }
+
+#QuestionTable
+{
+	border-color:#FAFAFA;
+	/*background-image:url('../images/itembacks2.png');*/
+	background-repeat:repeat-x;
+	border-width:0px;
+	border-style:solid;
+	border-color:#076685;
+	border-spacing:0px;
+	border-width:0px;
+	border-collapse:collapse;
+}
+
+
+#RESPONSEACTIONSTABLE
+{
+	font-family:verdana;
+	font-size:11px;
+	border:0px;
+}
+
+#RESPONSEACTIONSTABLE TH
+{
+	font-family:verdana;
+	font-size:11px;
+	text-align:left;
+	font-weight:bold;
+	background-color:#dadada;
+}
+
+#RESPONSEACTIONSTABLE TD
+{
+	padding:3px;
+}
+
+#QuestionText 
+{
+	border-style:solid;
+	border-width:0px;
+	border-color:gray;
+	height:10px;
+	padding-bottom:5px;
+	width:100%;
+}
+
+#QuestionBuilderPanel
+{
+	padding-top:10px;
+}
+
+#pnlBottom 
+{
+	padding-top:10px;	
+}
+
+#QuestionTable th
+{
+	border-color:black;
+	border-width:1px;
+	border-style:solid;
+}
+
+#QuestionTable td
+{
+	border-color:#999999;
+	border-width:1px;
+	border-style:solid;
+}
+#QuestionTable td,th
+{
+	padding:4px;
+	border-spacing:0px;
+	font-family:Arial;
+	font-size:13px;	
+}
+
+#QuestionTable th
+{
+	font-family:Tahoma;
+	font-size:11px;
+	background-color:#dadada;
+	color:BLACK;
+	font-weight:normal;
+}
+
+input
+{
+	padding:left:3px;	
+}
+label 
+{
+	cursor:hand;	
+}
+
+#QuestionText
+{
+	padding:5px;
+	font-size:12px;
+	font-family:Tahoma;
+	vertical-align:middle;
+}
+
+.AlternateTableRow
+{
+	background-color:#DADADA;	
+}
+
+#QuestionTextTD
+{
+	text-align:left;
+	vertical-align:top;
+}
+
+#StepNameTD
+{
+	color:Black;
+	font-weight:bold;
+	font-size:20px;	
+}
+
+.InfoBarMessageLine
+{
+	border-color:BLUE;	
+	border-style:solid;
+	border-width:0px;
+}
+
+#pnlTop
+{
+	background-image:url('../images/infoBarBack.PNG');
+	padding:5px;
+	border-style:solid;
+	border-width:1px;
+	border-color:orange;
+}
+
+.progressBarContainer
+{
+	border-width:1px;
+	border-color:#a2a2a2;
+	border-style:dashed;
+	background-color:#dadada;
+}
+
+.progressBarTable
+{
+	background-color:#b2b2b2;
+	font-family:Verdana;
+	font-size:9px;
+	color:Black;
+	font-weight:Bold;
+	text-align:center;
+}
+#back,#next
+{
+	BORDER-STYLE:solid;
+	border-width:1px;
+	border-color:Black;
+	background-color:orange;
+	color:White;
+	width:50px;	
+}
+
+#EnterResponse
+{
+	BORDER-STYLE:solid;
+	border-width:1px;
+	border-color:Black;
+	background-color:Gray;
+	color:White;
+	width:120px;	
+}
+#navigationLine
+{
+	border-style:solid;
+	border-width:1px;
+	border-color:orange;
+	height:2px;
+}
+
+#pnlCenter
+{
+	/*-moz-border-radius-topright:10px;-moz-border-radius-bottomright:10px; border: 1px solid #006666; padding: 10px; background-color:#dadada;*/
+}
+.EditBox
+{
+	width:80px;	
+}
+.CallLink
+{
+	font-family:Verdana;
+	font-size:12px;
+	color:Blue;
+	cursor:HAND;
+}
+.columnDivider
+{
+	background-color:Gray;
+	/*display:none;*/
+	width:1px;
+}
+
+.img-cell
+{
+	display: flex;
+	
+    align-items: center;
+
+}
+
+.img-cell img
+{
+	margin-right: 10px;
+}
+
+.img-cell div
+{
+	margin: 10px;
+	width: 200px;
+}
+
+.img-cell div img
+{
+	max-width: 100%;
+}
+
+.img-A4
+{
+	margin: 20px;
+}

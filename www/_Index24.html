@@ -1,0 +1,580 @@
+﻿<html>
+<head>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="scripts/app.js"></script>
+    <script type="text/javascript">
+        var listegoster = false;
+
+
+
+        if (window.localStorage["userGuid"] == "" || window.localStorage["userGuid"] == undefined) {
+            window.location.href = "Login.html";
+        }
+
+
+        function insertDB(table, keys, values) {
+
+            var keystr = "";
+            var valuestr = "";
+            for (var i = 0; i < keys.length; i++) {
+                if (keystr !== "") {
+                    keystr += ",";
+                    valuestr += ",";
+                }
+                keystr += keys[i];
+                valuestr += "'" + values[i] + "'";
+            }
+            //    insert(keys, values);
+            //       deleteTable(table, "");
+            myInsert2(table, keys, values, true);
+
+            /*  var degis = "1";
+              var degis2= "1";
+              db.transaction(function (tx) {
+
+                  //tx.executeSql("INSERT INTO people (firstname, lastname) VALUES (?,?)", [degis, degis2]);
+
+                 // tx.executeSql("insert into blokozet (iladi) values(?)", [degis]);
+
+               //   alert("INSERT INTO BLOKOZET(" + keystr + ") values( " + valuestr + ")");
+
+                  //tx.executeSql("INSERT INTO BLOKOZET(" + keystr + ") values( " + valuestr + ")");
+              }), function (error) {
+                  alert(error.code);
+                  };
+              */
+
+        }
+
+
+
+        function blokKapat(guid) {
+
+            window.location.href = "BlokCloseStatu.html?guid=" + guid + "&Statu=2";
+        }
+        function blokAc(guid) {
+            window.location.href = "BlokCloseStatu.html?guid=" + guid + "&Statu=0";
+        }
+        function blokDetay(guid) {
+
+            window.location.href = "Liste.html?guid=" + guid;
+        }
+        
+        function sendOfflineData() {
+            var networkState = navigator.connection.type;
+            if (networkState !== Connection.NONE) {
+
+                sendData(" (gonderim is null or gonderim=0) and InterviewStatu is not null and InterviewStatu<>0");
+                //   onlineFunction("gonderim is null or gonderim=0");
+            }
+            else {
+                alert("Internet bağlantısı bulunamadı!");
+
+            }
+
+            //    sendData(" (gonderim is null or gonderim=0) and InterviewStatu is not null and InterviewStatu<>0");
+        }
+
+        function sendFullData() {
+            var networkState = navigator.connection.type;
+            if (networkState !== Connection.NONE) {
+                sendData(" InterviewStatu is not null and InterviewStatu<>0");
+                //    onlineFunction(" InterviewStatu is not null and InterviewStatu<>0");
+            }
+            else {
+                alert("Internet bağlantısı bulunamadı!");
+
+            }
+
+            //  sendData(" InterviewStatu is not null and InterviewStatu<>0");
+        }
+
+        function sendData(where) {
+            db.transaction(function (tx) {
+
+                tx.executeSql('SELECT * FROM INTERVIEWS WHERE ' + where, [], function (tx, res) {
+                    $("#spanToplam").text(res.rows.length);
+                    if (res.rows.length > 0) {
+                        for (var i = 0; i < res.rows.length; i++) {
+                            $.ajax({
+                                type: "PUT",
+                                url: "https://vta.diyalog.com.tr/api/veri/" + window.localStorage["userGuid"],
+                                data: JSON.stringify(res.rows.item(i)),
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (response) {
+                                    responseParse = JSON.parse(response);
+                                    if (responseParse.Sonuc == "OK") {
+                                        myUpdate("INTERVIEWS", "gonderim=1", " InterviewID=" + responseParse.InterviewID);
+                                        var gonderilen = parseInt($("#spanGonderilen").text()) + 1;
+                                        $("#spanGonderilen").text(gonderilen.toString());
+                                    }
+
+                                },
+                                failure: function (response) {
+                                    alert(response.responseText);
+                                },
+                                error: function (response) {
+                                    alert(response.responseText);
+                                }
+                            });
+                        }
+                    }
+
+                });
+                //  myUpdateRedirect("INTERVIEWS", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+            });
+        }
+
+
+
+        $(document).ready(function () {
+
+
+            //     alert(getRows("BLOKOZET"));
+            document.addEventListener("deviceready", onDeviceReady, false);
+            function onDeviceReady() {
+                var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+
+                blokYukle();
+                
+                db.transaction(function (tx) {
+                    tx.executeSql('SELECT count(*) as sayi FROM INTERVIEWS WHERE (gonderim is null or gonderim=0) and InterviewStatu is not null and InterviewStatu<>0', [], function (tx, res) {
+                        $("#spanToplam").text(res.rows.item(0).sayi);
+                    });
+                });
+
+                setBlokStatuServer();
+
+                /*   var items1 = [];
+                 try {
+                     db.transaction(function (tx) {
+                         tx.executeSql("CREATE TABLE IF NOT EXISTS BLOKOZET([guid] text,[kirkent] text,[blockkoy] text,[iladi] text,[ilkayitno] text,[ilceadi] text,[ilcekayitn] text,[bucakadi] text,[bucakkayit] text,[koyadi] text,[koykayitno] text,[mahalleadi] text,[mahallekod] text,[blokno] INTEGER,[f1] text,[f2] text,[açıklama] text,[tabletId] text,[ilId] INTEGER,[bolgeId] INTEGER,[ilceId] INTEGER,[mahalleId] INTEGER,[anketDurumu] INTEGER,[userId] INTEGER,[ilceadieng] text,[mahalleadieng] text,[koyadieng] text,[iladieng] text,[statu] INTEGER,[aciklama] text,[blokAciklama] text)");
+                         items1.push("<li id='BlokOzet'>BLOKOZET OK</li>");
+                         $("<ul/>", {
+                             "class": "my-new-list",
+                             html: items1.join("")
+                         }).appendTo("body");
+                     });
+                 } catch (e) {
+                     items1.push("<li id='BlokOzet'>BLOKOZET ERROR</li>");
+                     $("<ul/>", {
+                         "class": "my-new-list",
+                         html: items1.join("")
+                     }).appendTo("body");
+                 }
+                 */
+            }
+
+            function setBlokStatuServer() {
+                var networkState = navigator.connection.type;
+                if (networkState != Connection.NONE) {
+                    //   alert("1");
+                    db.transaction(function (tx) {
+                        tx.executeSql('SELECT * FROM BLOKOZET WHERE (Bgonderim=0) ', [], function (tx, res) {
+
+                            if (res.rows.length > 0) {
+                                var say = 0;
+                                for (var i = 0; i < res.rows.length; i++) {
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "https://vta.diyalog.com.tr/api/setBlokStatu/" + window.localStorage["userGuid"] + "/" + res.rows.item(i).statu + "/" + res.rows.item(i).guid,
+                                        data: res.rows.item(i).blokAciklama,
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (response) {
+                                            responseParse = JSON.parse(response);
+                                            if (responseParse.Sonuc == "OK") {
+                                                myUpdate("BLOKOZET", "gonderim=1", " guid='" + window.localStorage["userGuid"] +"'");
+                                            }
+
+                                            say++;
+                                            if (say == res.rows.length) {
+                                                //   window.localStorage["InterviewID"] = "";
+                                             
+                                                //   myUpdateRedirect("BLOKOZET", "gonderim=1", "blokOzet.html");
+                                            }
+
+
+                                        },
+                                        failure: function (response) {
+                                            //     alert(response.responseText);
+                                            //       window.localStorage["InterviewID"] = "";
+                                         
+                                            //myUpdateRedirect("BLOKOZET", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+                                        },
+                                        error: function (response) {
+                                            // alert(response.responseText);
+                                            //       window.localStorage["InterviewID"] = "";
+                                         
+                                            //   myUpdateRedirect("INTERVIEWS", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+                                        }
+                                    });
+                                }
+                            }
+                            else {
+                                //   window.localStorage["InterviewID"] = "";
+                            
+                                // myUpdateRedirect("INTERVIEWS", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+                            }
+                        })
+                    })
+                }
+            }
+
+            $('#btnSendOffline').click(function () {
+
+                /*    var networkState = navigator.connection.type;
+                    if (networkState !== Connection.NONE) {
+
+                        sendData(" (gonderim is null or gonderim=0) and InterviewStatu is not null and InterviewStatu<>0");
+                     //   onlineFunction("gonderim is null or gonderim=0");
+                    }
+                    else {
+                        alert("Internet bağlantısı bulunamadı!");
+
+                    }*/
+            })
+
+            $('#btnSendFull').click(function () {
+                /*
+                var networkState = navigator.connection.type;
+                if (networkState !== Connection.NONE) {
+                    sendData(" InterviewStatu is not null and InterviewStatu<>0");
+                //    onlineFunction(" InterviewStatu is not null and InterviewStatu<>0");
+                }
+                else {
+                    alert("Internet bağlantısı bulunamadı!");
+
+                }*/
+            })
+
+            $('#btnWebService').click(function () {
+                blokYukle();
+
+            })
+
+            function blokYukle() {
+                var networkState = navigator.connection.type;
+                $("#tblListe tbody").remove();
+
+                if (networkState !== Connection.NONE) {
+                    // deleteTable("BLOKOZET", "");
+                    onlineFunction();
+                    //     responsesFunction();
+                }
+                else {
+
+                    querySuccess();
+
+
+                }
+            }
+
+
+
+            function onlineFunction() {
+                onlineDeleteBlok();
+
+
+
+            }
+
+            function blokListeDownload(blokNos) {
+
+                db.transaction(function (tx) {
+
+                    tx.executeSql("delete from [LISTE] where guid in (" + blokNos + ")");
+
+                },
+                    function (error) {
+                    },
+                    function () {
+                        blokListeServis(blokNos);
+                    }
+                )
+            }
+
+            function blokListeServis(bloknos)
+            {
+                var request = new XMLHttpRequest();
+                var serviceUrl = 'https://vta.diyalog.com.tr/api/getMultiBlokListe/' + window.localStorage["userGuid"];
+                $.ajax({
+                    type: "POST",
+                    url: serviceUrl,
+                    data: bloknos,
+                }).done(function (data, textStatus, jqXHR) {
+                    var items1 = [];
+                    var j = jQuery.parseJSON(data)
+                    var say = 0;
+                    $.each(j, function (key, val) {
+                        var keys = [];
+                        var values = [];
+                        var keysStr = "";
+                        var Parameters = "";
+                        $.each(val, function (key1, val1) {
+                            // if (key1 != "Yapilan" && key1 != "Kalan") {
+                            //    if (key1 == "blokstatu") key1 = "statu";
+                            keys.push(key1);
+                            values.push(val1);
+                            if (keysStr != "") { keysStr += ","; Parameters += ","; };
+                            keysStr += key1;
+                            Parameters += "?";
+                            // }
+                        });
+
+                        db.transaction(function (tx) {
+
+                            tx.executeSql("insert into [LISTE] (" + keysStr + ") values(" + Parameters + ")", values);
+                            say++;
+                            if (say == j.length) {
+                                Offline();
+                            }
+                        }), function (error) {
+                            alert(error);
+                        };
+
+                    });
+
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR.responseText || textStatus);
+                });
+            }
+
+            var tanimliBlokYok = true;
+            function onlineBlokIndir() {
+                tanimliBlokYok = true;
+
+                var request = new XMLHttpRequest();
+                var serviceUrl = 'https://vta.diyalog.com.tr/api/getUserToBlok/' + window.localStorage["userGuid"];
+
+                var bloknos = "";
+                //  var method = $('#method').val();
+                //    deleteTable("BLOKOZET","")
+                $.ajax({
+                    type: "GET",
+                    url: serviceUrl,
+                    //    data: { "userGuid": "21B6A89E-48C0-44C7-B600-F65922C241CB" },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                }).done(function (data, textStatus, jqXHR) {
+                    var items1 = [];
+
+                    var j = jQuery.parseJSON(data)
+                    var say = 0;
+                    $.each(j, function (key, val) {
+                        var keys = [];
+                        var values = [];
+                        var keysStr = "";
+                        var Parameters = "";
+                        $.each(val, function (key1, val1) {
+                            if (key1 != "Yapilan" && key1 != "Kalan") {
+                                if (key1 == "blokstatu") key1 = "statu";
+                                if (keysStr != "") { keysStr += ","; Parameters += ","; };
+                                keysStr += key1;
+                                Parameters += "?";
+                                keys.push(key1);
+                                values.push(val1);
+                            }
+                        });
+                        if (Parameters == "") { tanimliBlokYok = false; }
+                        //  insert("BLOKOZET",keys, values);
+                        if (bloknos != "") { bloknos += ","; }
+                        bloknos += "'" + val.guid +"'";
+
+                        db.transaction(function (tx) {
+                            tx.executeSql("SELECT count(*) as sayi1 FROM BLOKOZET where userId=? and blokno=?", [window.localStorage["userID"], val.blokno], function (tx, val1) {
+
+                                if (val1.rows.item(0).sayi1 < 1) {
+                                    tx.executeSql("insert into [BLOKOZET] (" + keysStr + ") values(" + Parameters + ")", values);
+                                }
+                            })
+                            say++;
+                            if (say == j.length) {
+
+                                querySuccess();
+                                blokListeDownload(bloknos);
+                            }
+                        }), function (error) {
+                            alert(error);
+                        };
+
+                        //  insertDB("BLOKOZET",keys, values);
+
+                        /*
+
+                        items1.push("<tr>");
+                        items1.push("<td >" + val.blokno + "</td>");
+                        items1.push("<td >" + val.iladi + "</td>");
+                        items1.push("<td >" + val.ilceadi + "</td>");
+                        items1.push("<td >" + val.koyadi + "</td>");
+                        items1.push("<td >" + val.mahalleadi + "</td>");
+                        items1.push("<td >" + val.BlokAciklama + "</td>");
+                        items1.push("<td > <input type='button' class='btn btn-block btn-primary btn-xs' value='Blok Detayı' onclick=\"blokDetay('" + val.guid + "')\" /></td>");
+                        items1.push("</tr>");*/
+                    });
+
+
+                    $("<tbody/>", {
+                        "class": "my-new-list",
+                        html: items1.join("")
+                    }).appendTo("#tblListe");
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR.responseText || textStatus);
+                });
+            }
+
+            function onlineDeleteBlok() {
+                var request = new XMLHttpRequest();
+                var serviceUrl = 'https://vta.diyalog.com.tr/api/deleteBlok/' + window.localStorage["userGuid"];
+                $.ajax({
+                    type: "GET",
+                    url: serviceUrl,
+                    //    data: { "userGuid": "21B6A89E-48C0-44C7-B600-F65922C241CB" },
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json"
+                }).done(function (data, textStatus, jqXHR) {
+                    var items1 = [];
+
+                    var j = jQuery.parseJSON(data);
+                    var say = 0;
+                    var blokno = '';
+                    $.each(j, function (key, val) {
+                        if (blokno != "") {
+                            blokno += ",";
+                        }
+                        blokno += val.blokno;
+                    })
+                    db.transaction(function (tx) {
+
+                        tx.executeSql("delete from [BLOKOZET] where blokno in (" + blokno + ")");
+
+                    },
+                        function (error) {
+                        },
+                        function () {
+                            onlineBlokIndir();
+                            if (tanimliBlokYok)
+                            { querySuccess(); }
+                        }
+                    )
+                })
+
+            }
+
+            function querySuccess() {
+
+                var items1 = [];
+                //     $("#tblListe").empty();
+                $("#tblListe > tbody").remove();
+                $("#tblListe tbody").remove();
+                var say = 0;
+                db.transaction(function (tx) {
+                    tx.executeSql("SELECT guid,blokno,iladi,ilceadi,koyadi,mahalleadi,statu,blokAciklama FROM BLOKOZET where userID=? or 1=1", [window.localStorage["userID"]], function (tx, val) {
+
+                        if (val.rows.length > 0) {
+                            for (var i = 0; i < val.rows.length; i++) {
+                                items1.push("<tr>");
+                                items1.push("<td >" + val.rows.item(i).blokno + "</td>");
+                                items1.push("<td >" + val.rows.item(i).iladi + "</td>");
+                                items1.push("<td >" + val.rows.item(i).ilceadi + "</td>");
+                                items1.push("<td >" + val.rows.item(i).koyadi + "</td>");
+                                items1.push("<td >" + val.rows.item(i).mahalleadi + "</td>");
+                                items1.push("<td >" + val.rows.item(i).blokAciklama + "</td>");
+                                if (val.rows.item(i).statu == 2) {
+                                    items1.push("<td > <input type='button' class='btn btn-block btn-warning btn-xs' value='Blok Aç' onclick=\"blokAc('" + val.rows.item(i).guid + "')\" /></td>");
+                                }
+                                else if (val.rows.item(i).statu != 9)
+                                {
+                                    items1.push("<td > <input type='button' class='btn btn-block btn-outline-secondary btn-xs' value='Blok Kapat' onclick=\"blokKapat('" + val.rows.item(i).guid + "')\"/></td>");
+                                }
+                                else{
+                                    items1.push("<td >  <span class='btn btn-block btn-secondary btn-xs'>&nbsp;</span></td>");
+                                    say++;
+                                }
+                           
+                                if (say < 3 && val.rows.item(i).statu != 2)
+                                {
+                                    items1.push("<td> <input type='button' class='btn btn-block btn-primary btn-xs' value='Blok Detayı' onclick=\"blokDetay('" + val.rows.item(i).guid + "')\" /></td>");
+                                }
+                                else 
+                                {
+                                    items1.push("<td> <span class='btn btn-block btn-secondary btn-xs'> </span></td>");
+                                }
+                              
+                                
+                                items1.push("</tr>");
+                            }
+
+                        }
+                        $("<tbody/>", {
+                            "class": "my-new-list",
+                            html: items1
+                        }).appendTo("#tblListe");
+                    })
+
+                });
+                return items1.join("");
+
+
+            };
+
+
+        })
+
+    </script>
+    <style>
+        td {
+            padding: 5px
+        }
+    </style>
+</head>
+<body>
+
+    <!-- <button onclick="create()">Create</button>
+      <button onclick="insert('Nic', 'Raboy')">Insert</button>
+      <button onclick="select()">Select</button>-->
+    <table>
+        <tr>
+            <td>
+                <!--<input type="button" id="btnCreateDb" onclick="create()" value="Sistemi Yükle" />-->
+                <input type="button" id="btnWebService" value="Blok Yükle" />
+                <!--  <input type="button" id="btnOffline" value="Offlinee Blok Yükle" onclick="querySuccess()" />-->
+                <input type="button" id="btnSendOffline" value="Datayı Gönder" onclick="sendOfflineData()" />
+                <input type="button" id="btnFullData" value="Tüm Datayı Gönder" onclick="sendFullData()" />
+            </td>
+            <td>
+                <div>Toplam: <span id="spanToplam" style="font-weight:bold;color:red">0</span></div>
+            </td>
+            <td><div>Gönderilen : </div></td>
+            <td> <span id="spanGonderilen" style="font-weight:bold;color:yellowgreen">0</span></td>
+        </tr>
+    </table>
+
+
+    <table id="tblListe" class="table table-striped" colspan="5" rowspan="5">
+        <thead>
+            <tr>
+
+                <th scope="col">Blok No</th>
+                <th scope="col">İl</th>
+                <th scope="col">İlçe</th>
+                <th scope="col">Köy</th>
+                <th scope="col">Mahalle</th>
+                <th scope="col">Durum</th>
+                <th scope="col">&nbsp;</th>
+
+                <th scope="col">İşlem</th>
+
+            </tr>
+        </thead>
+
+    </table>
+</body>
+</html>

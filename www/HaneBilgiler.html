@@ -1,0 +1,1795 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="js/jquery-1.10.2.min.js"></script>
+    <script src="js/jquery-migrate-1.2.1.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="vendors/select2/select2-madmin.css">
+    <link type="text/css" rel="stylesheet" href="vendors/bootstrap-select/bootstrap-select.min.css">
+    <link type="text/css" rel="stylesheet" href="vendors/multi-select/css/multi-select-madmin.css">
+
+    <link type="text/css" rel="stylesheet" href="css/iCheck/skins/all.css">
+    <link type="text/css" rel="stylesheet" href="css/orange-blue.css" class="default-style">
+    <script type="text/javascript" src="cordova.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script>
+    <style>
+        .name {
+            font-size: 16px;
+            color: blue;
+        }
+
+        input {
+            border-style: solid;
+            border-width: 1px;
+            border-color: black;
+            background-color: #cfdbcd;
+        }
+
+        input {
+            border-style: solid;
+            border-width: 1px;
+            border-color: black;
+            background-color: #cfdbcd;
+        }
+
+        input[type=text],
+        input[type=number] {
+            height: 30px;
+            font-weight: bold;
+        }
+
+        .bootstrap-select.form-control {
+            border-style: solid;
+            border-width: 1px;
+            border-color: black;
+        }
+
+        .container {
+            /*  display: block;*/
+            margin-right: 0px;
+            position: relative;
+            padding-left: 0px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: left;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            max-width: 100px;
+
+        }
+
+        /* Hide the browser's default radio button */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Create a custom radio button */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 25px;
+            width: 25px;
+            background-color: #eee;
+            border-radius: 50%;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .container:hover input~.checkmark {
+            background-color: #ccc;
+        }
+
+        .container input~.checkmark {
+            background-color: #cfdbcd;
+        }
+
+        /* When the radio button is checked, add a blue background */
+        .container input:checked~.checkmark {
+            background-color: #2196F3;
+        }
+
+        /* Create the indicator (the dot/circle - hidden when not checked) */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the indicator (dot/circle) when checked */
+        .container input:checked~.checkmark:after {
+            display: block;
+        }
+
+        /* Style the indicator (dot/circle) */
+        .container .checkmark:after {
+            top: 9px;
+            left: 9px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+        }
+    </style>
+
+    <script>
+        var InterviewID = "";
+        $(document).ready(function () {
+
+            InterviewID = window.localStorage["InterviewID"];//window.localStorage["InterviewID"]; //queryStrings["id"];
+            
+
+            var queryStrings = getUrlVars();
+            var sayi = parseInt(queryStrings["hanesayi"]);
+            $(".S10tdMeslek").hide();
+            ///   document.addEventListener("deviceready", onDeviceReady, false);
+            tables();
+            if (sayi == "1") {
+                $("#B2aSpan").text("B2. İsminizi Öğrenebilir miyim?");
+                $("#B3Span").text("Yaşınızı Öğrenebilir miyim?");
+
+                $("#E3b_1").prop("checked", true);
+            }
+
+            else {
+                //   $("#B2Span").text("B2. Lütfen bu evde yaşayan TÜM KİŞİLERİN isimlerini söyler misiniz?");
+            }
+            function onDeviceReady() {
+                InterviewID = window.localStorage["InterviewID"];
+                //db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+                db.transaction(function (tx) {
+                    tx.executeSql("SELECT B1_O FROM INTERVIEWS WHERE InterviewID=" + InterviewID, [], function (tx, val) {
+                        sayi = parseInt(val.rows.item(0).B1_O);
+
+                    });
+                });
+            }
+
+
+
+            function tables() {
+
+                if (sayi > 0) {
+                    for (var i = 2; i < sayi + 1; i++) {
+                        var row = $("#example tbody>tr:first").clone(true);
+                        row = " <tr data-toggle='collapse' data-target='#demo" + i.toString() + "'  class='accordion-toggle' style='border-style:solid;border-color:green;border-width:1px; border-spacing:0px'>" + row.html().replace(/\#/g, i) + "</tr>";
+                        $("#example tbody tr:last").before(row);
+
+                        row = "<tr>" + $("#example tbody tr").eq(1).clone().html().replace(/\#/g, i) + "</tr>";
+                        $("#example tbody tr:last").before(row);
+
+
+                    }
+
+                    var row = $("#example tbody>tr:first").clone(true);
+                    row = " <tr data-toggle='collapse' data-target='#demo1'  class='accordion-toggle' style='border-style:solid;border-color:green;border-width:1px; border-spacing:0px'>" + row.html().replace(/\#/g, "1") + "</tr>";
+                    $("#example tbody>tr:first").replaceWith(row);
+
+                    row = "<tr>" + $("#example tbody tr").eq(1).clone().html().replace(/\#/g, "1") + "</tr>";
+                    $("#example tbody tr").eq(1).replaceWith(row);
+                    ///   onLoad(true, "", "tablolar");
+                }
+                else {
+                    //    setTimeout(tables, 1000);
+
+                }
+                /*  dongu++;
+                  if (dongu == 1)
+                  {
+                      sayi = 0;
+                      setTimeout(tables, 1000);
+                  }*/
+
+                    $(".reis").each(function() {
+                        if ($(this).is(':checked'))
+                        {
+                            $(".reis").trigger("click");
+                        }
+                        
+                    })
+                  
+                  
+               
+            }
+
+            var lastGorusulen = -1;
+            var lastReis = -1;
+
+
+
+            $(".sira").click(function () {
+                var num = parseInt($(this).closest("table").find("input[name^='B3']").val()) || 0;
+
+                if (num < 15) {
+                    alert("15 yaşından küçükler ile görüşülemez!");
+                    $(this).prop("checked", false);
+                }
+                else {
+                    //    $(this).parent().append($("#divGorusKisi"));
+                    //$("input:radio[name=E3b"]).val($(this).attr("value"));
+                    //      $(this).closest("tr").closest("table").closest("table").find(".tdgorusulen").text("");
+                    //    var dTable = $("#example").find(".tdgorusulen").closest("tr").next().find("table"); //.find(".sira").attr("id").split('_');
+                    //     TableFor(dTable);
+                    //  yakinlikKosul(arr[arr.length - 1], nesne.attr("id"));
+                    // TableFor($("#example").find(".tdgorusulen").closest("table"));
+                    $("#example").find(".tdgorusulen").text("");
+                    $(this).closest("tr").closest("table").closest("tr").prev().find("td").eq(4).text("Görüşülen Kişi");
+                    onLoad(false, $(this).attr("id"), "tablolar");
+
+                    // TableFor( $(this).closest("tr").closest("table"));
+
+
+
+                }
+            });
+
+
+            var eskigorusulenKisi = 0;
+            $(".gorusulenkisi").click(function(){
+                var arr =  $(this).attr("id").split('_');
+              
+                yakinlikKosul(arr[arr.length - 1], $(this).attr("id").replace("E3b","B2b"));
+
+                if (eskigorusulenKisi != "0")
+                {
+                    $("#B2b_" + eskigorusulenKisi).val("").change();
+                    $("#B2b_" + eskigorusulenKisi).selectpicker('refresh');
+                    yakinlikKosul(eskigorusulenKisi, "B2b_" + eskigorusulenKisi);
+                }
+                
+                $("#" + $(this).attr("id").replace("E3b","B2b")).selectpicker('refresh');
+                eskigorusulenKisi =   $(this).val();
+
+            });
+
+            $(".reis").click(function () {
+                $(".S10tdMeslek").hide();
+                var num = parseInt($(this).closest("table").find("input[name^='B3']").val()) || 0;
+                if (num < 15) {
+                    alert("15 yaşından küçükler hane reisi olamaz!");
+                    $(this).prop("checked", false);
+                }
+                else {
+                    //      $(this).parent().append($("#divReis"));
+                    $("input:radio[name=B9]").val($(this).attr("value"));
+                    $(".trMeslek").find(".meslek").val("").change();
+                    $(".trMeslek").find(".meslekOpen").val("");
+                    $(".trMeslek").hide();
+                    $(".meslek").hide();
+                    $(this).closest("tr").closest("table").find(".trMeslek").show();
+                    $(this).closest("tr").closest("table").find(".trMeslek").find(".meslek").show();
+                    //   var dTable = $("#example").find(".tdreis").closest("tr").next().find("table"); //.find(".sira").attr("id").split('_');
+                    //    TableFor(dTable);
+
+                    //$(this).closest("tr").closest("table").closest("table").find(".tdreis").text("");
+                    $("#example").find(".tdreis").text("");
+                    $(this).closest("tr").closest("table").closest("tr").prev().find("td").eq(5).text("Hane Reisi");
+                    $(this).closest("tr").closest("table").find(".meslek").trigger("change");
+                    //MeslekEk($(this), "reis");
+                    onLoad(false, $(this).attr("id"), "tablolar");
+                }
+
+            });
+
+
+            $('select').on('change', function (e) {
+                var optionSelected = $("option:selected", this);
+                var row = $(this).closest("table");
+                // var valueSelected = this.attr("Other");
+                if (optionSelected.attr("OtherState") != "false") {
+                    $("#" + optionSelected.attr("Other")).show();
+                }
+                else {
+                    $("#" + optionSelected.attr("Other")).hide();
+                    $("#" + optionSelected.attr("Other")).val("");
+                }
+                if ($(this).hasClass("meslek") == true) {
+                    if ($(this).val() == "1" || $(this).val() == "2") {
+                        row.find(".S10tdMeslek").show();
+                    }
+                    else {
+                        $(".S10tdMeslek").hide();
+                    }
+
+
+                    if (row.find("input[name^='B9']").is(':checked') > 0) {
+                        MeslekEk($(this), "meslek");
+                        //   $(".meslekUzman select option:eq(0)").prop('selected', true);
+                        //   $(".meslekYonetici").hide();
+                        //   $(".meslekUzman").hide();
+                        //   if (parseInt($(this).val()) > 11 && parseInt($(this).val()) < 16) {
+                        //       var yonetici = $("#" + $(this).attr("id").replace("B8", "B6a")).parent().show();
+                        //   }
+                    }
+                }
+                else if ($(this).hasClass("meslekUzmanSelect")) {
+                    if ($(this).val() == 1) {
+                        row.find(".meslek").val("11").change();
+                        row.find(".meslek").selectpicker('refresh');
+                    }
+                }
+                
+                else if ($(this).hasClass("maasliCalisanVarMi")) {
+                    if ($(this).val() == 1) {
+                        row.find(".maasliCalisanPersonel").show();
+                    }
+                    else {
+                        row.find(".maasliCalisanPersonel").hide();
+                    }
+                }
+                else if ($(this).hasClass("kendiIsiMiCalisanMi")) {
+                    // if ($(this).val() == 1) {
+                    //     var meslek = $("#" + $(this).attr("id").replace("B102", "B8")).val();
+                    //     if (meslek > 17) {
+                    //         row.find(".meslekKendiIsi").show();
+                    //         row.find(".meslekKendiIsi").find("input").show();
+                    //     }
+
+                    // }
+                    // else {
+                    //     row.find(".meslekKendiIsi").hide();
+                    //     row.find(".meslekKendiIsi").find("input").hide();
+                    // }
+
+  
+                }
+
+                else if ($(this).hasClass("S10meslek")) {
+                    /*    if (row.find("input[name^='B9']").is(':checked') > 0) {
+                            MeslekEmekli($(this), "meslek");
+                            /*  $(".meslekUzman select option:eq(0)").prop('selected', true);
+                              $(".meslekYonetici").hide();
+                              $(".meslekUzman").hide();
+                              if (parseInt($(this).val()) > 11 && parseInt($(this).val()) < 16) {
+                                  var yonetici = $("#" + $(this).attr("id").replace("B8", "B6a")).parent().show();
+                              }*/
+                    //   }
+                }
+                else if ($(this).hasClass("cinsiyet")) {
+                    var id = $(this).attr("id");
+                    $(this).closest("tr").closest("table").closest("tr").prev().find("td").eq(2).text($("#" + id + " option:selected").text());
+                }
+
+                onLoad(false, $(this).attr("id"), "tektablo");
+                /* $($(this).parent().parent().children()).each(function () {
+                     if ($(this).children(0).length > 0) {
+                         var nesne = $("#" + $(this).children(0)[0].id);
+                         if (nesne.attr("kosul") != undefined && nesne.attr("kosul") != "" && nesne[0].type == "select-one") {
+                             var arr = nesne.attr("id").split('_');
+                             yakinlikKosul(arr[arr.length - 1], nesne.attr("id"));
+                         }
+                     }
+
+
+                 });*/
+
+                /* if ($(this).attr("kosul") != undefined && $(this).attr("kosul") != "")
+                 {
+                     var arr = $(this).attr("id").split('_');
+                     yakinlikKosul(arr[arr.length - 1], $(this).attr("id"));
+                 }*/
+
+            });
+
+            function MeslekEk(elem, ayrac) {
+
+                $($(".meslekUzman select")).each(function () {
+                    if ($(this).val() != "") {
+                        $(this).val("").change();
+                        $(this).selectpicker('refresh');
+                    }
+                });
+
+                $($(".meslekGelir select")).each(function () {
+                    if ($(this).val() != "") {
+                        $(this).val("").change();
+                        $(this).selectpicker('refresh');
+                    }
+                });
+
+                $($(".S10tdMeslek select")).each(function () {
+                    if ($(this).val() != "") {
+                        $(this).val("").change();
+                        $(this).selectpicker('refresh');
+                    }
+                });
+
+                
+                $($(".kendiIsiMiCalisanMi select")).each(function () {
+                    if ($(this).val() != "") {
+                        $(this).val("").change();
+                        $(this).selectpicker('refresh');
+                    }
+                });
+
+                $($(".meslekKendiIsiCalisan select")).each(function () {
+                    if ($(this).val() != "") {
+                        $(this).val("").change();
+                        $(this).selectpicker('refresh');
+                    }
+                });
+
+
+                $($(".maasliCalisanVarMi select")).each(function () {
+                    if ($(this).val() != "") {
+                        $(this).val("").change();
+                        $(this).selectpicker('refresh');
+                    }
+                });
+
+                $($(".maasliYevmiyeli select")).each(function () {
+                    if ($(this).val() != "") {
+                        $(this).val("").change();
+                        $(this).selectpicker('refresh');
+                    }
+                });
+
+
+                $($(".kendiTarlasiMi select")).each(function () {
+                    if ($(this).val() != "") {
+                        $(this).val("").change();
+                        $(this).selectpicker('refresh');
+                    }
+                });
+
+                $($(".meslekPersonelCalisan select")).each(function () {
+                    if ($(this).val() != "") {
+                        $(this).val("").change();
+                        $(this).selectpicker('refresh');
+                    }
+                });
+
+                // $($(".meslekCiftci select")).each(function () {
+                //     if ($(this).val() != "") {
+                //         $(this).val("");
+                //         $(this).selectpicker('refresh');
+                //     }
+                // });
+
+                $($(".meslekMaasliGundelik select")).each(function () {
+                    if ($(this).val() != "") {
+                        $(this).val("").change();
+                        $(this).selectpicker('refresh');
+                    }
+                });
+
+                // $(".meslekPersonelCalisan").find("select").val("");
+                $(".meslekPersonelCalisan").find("input").val("");
+                $(".meslekYonetici").find("input").val("");
+                $(".meslekIsyeri").find("input").val("");
+                $(".S10meslekYonetici").find("input").val("");
+                $(".S10meslekIsyeri").find("input").val("");
+
+                // $(".meslekKendiIsiCalisan").find("select").val("");
+                // $(".meslekMaasliGundelik").find("select").val("");
+                // $(".meslekCiftci").find("select").val("");
+
+                $(".S10meslekIsyeri").find("input").val("");
+                $(".meslekKendiIsi").find("input").val("");
+                $(".meslekUzman").find("input").val("");
+
+                 //$(".meslekUzman select option:eq(0)").prop('selected', true);
+               //  $(".meslekUzman select").selectpicker('refresh');
+                $(".meslekYonetici").hide();
+                $(".meslekUzman").hide();
+                $(".meslekIsyeri").hide();
+                $(".meslekGelir").hide();
+                $(".meslekMeslekAcik").hide();
+                $(".meslekKendiIsiCalisan").hide();
+                $(".meslekMaasliGundelik").hide();
+                $(".meslekKendiIsi").hide();
+               // $(".meslekCiftci").hide();
+                $(".meslekPersonelCalisan").hide();
+
+                $(".S10meslek").hide();
+                $(".S10meslekYonetici").hide();
+             //   $(".S10meslekUzman").hide();
+                $(".S10meslekIsyeri").hide();
+                $(".S10meslekGelir").hide();
+
+
+
+                $(".meslekYonetici").find("input").hide();
+                $(".meslekUzman").find("input").hide();
+                $(".meslekIsyeri").find("input").hide();
+
+                $(".meslekKendiIsi").find("input").hide();
+                $(".meslekGelir").find("select").hide();
+                $(".meslekKendiIsiCalisan").find("select").hide();
+                $(".meslekMaasliGundelik").find("select").hide();
+                $(".meslekPersonelCalisan").find("select").hide();
+                $(".meslekPersonelCalisan").find("input").hide();
+              //  $(".meslekCiftci").find("select").hide();
+
+                // $(".meslekGelir").find("select").selectpicker('refresh');
+                // $(".meslekKendiIsiCalisan").find("select").selectpicker('refresh');
+                // $(".meslekMaasliGundelik").find("select").selectpicker('refresh');
+                // $(".meslekPersonelCalisan").find("select").selectpicker('refresh');
+
+
+                var meslek = elem.closest("table").find(".tdMeslek").children().filter("select").filter(".meslek");
+                $("#" + meslek.attr("id").replace("B8", "B101") + "_O").parent().show();
+                $("#" + meslek.attr("id").replace("B8", "B101") + "_O").show();
+                if (ayrac == "reis") {
+                    $("#" + meslek.attr("id").replace("B8", "B101") + "_O").val("");
+                }
+
+
+                if (parseInt(meslek.val()) > 7) {
+                    $("#" + meslek.attr("id").replace("B8", "B102")).parent().show();
+                    $("#" + meslek.attr("id").replace("B8", "B102")).show();
+                }
+
+                if ((parseInt(meslek.val()) > 11 && parseInt(meslek.val()) < 16) || meslek.val() == 10) {
+                    $("#" + meslek.attr("id").replace("B8", "B103")).parent().show();
+                    $("#" + meslek.attr("id").replace("B8", "B103")).show();
+                }
+
+                if (parseInt(meslek.val()) == 8 || parseInt(meslek.val()) == 9 || parseInt(meslek.val()) == 10) {
+                    $("#" + meslek.attr("id").replace("B8", "B104")).parent().show();
+                    $("#" + meslek.attr("id").replace("B8", "B104")).show();
+                }
+
+
+                if (parseInt(meslek.val()) > 17 && parseInt(meslek.val()) < 26) {
+                    $("#" + meslek.attr("id").replace("B8", "B105") + "_O").parent().show();
+                    $("#" + meslek.attr("id").replace("B8", "B105") + "_O").show();
+                }
+              
+
+                if (parseInt(meslek.val()) == 17) {
+                    $("#" + meslek.attr("id").replace("B8", "B107")).parent().show();
+                    $("#" + meslek.attr("id").replace("B8", "B107")).show();
+                }
+
+                if (parseInt(meslek.val()) > 2 && parseInt(meslek.val()) < 8) {
+                    $("#" + meslek.attr("id").replace("B8", "B106")).parent().show();
+                    $("#" + meslek.attr("id").replace("B8", "B106")).show();
+                }
+
+                // if (parseInt(meslek.val()) == 17 || parseInt(meslek.val()) == 25) {
+                //     $("#" + meslek.attr("id").replace("B8", "B107") + "_O").parent().show();
+                //     $("#" + meslek.attr("id").replace("B8", "B107") + "_O").show();
+                // }
+
+                else if (meslek.val() == "1" || meslek.val() == "2") {
+                    $("#" + meslek.attr("id").replace("B8", "B8e")).removeClass("bs-select-hidden").show();
+                }
+                else {
+                    $("#" + meslek.attr("id").replace("B8", "B8e")).hide();
+                   
+                }
+                
+                if (parseInt(meslek.val()) < 18) {
+                    $("#" + meslek.attr("id").replace("B8", "B105") + "_O").parent().hide();
+                    $("#" + meslek.attr("id").replace("B8", "B105") + "_O").hide();
+ 
+                }
+           
+                /*   else if (meslek.val() == "17") {s
+                       $("#" + meslek.attr("id").replace("B8", "B6b")).parent().show();
+                       $("#" + meslek.attr("id").replace("B8", "B6b")).show();
+                   }
+                   else if (parseInt(meslek.val()) > 20 && parseInt(meslek.val()) < 25) {
+                       $("#" + meslek.attr("id").replace("B8", "B6c") + "_O").parent().show();
+                       $("#" + meslek.attr("id").replace("B8", "B6c") + "_O").show();
+                   }
+                   else if (parseInt(meslek.val()) > 2 && parseInt(meslek.val()) < 7) {
+                       $("#" + meslek.attr("id").replace("B8", "B6d")).parent().show();
+                       $("#" + meslek.attr("id").replace("B8", "B6d")).show();
+                   }*/
+
+
+            }
+
+            function MeslekEmekli(elem, ayrac) {
+
+                /*   $($(".S10meslekUzman select")).each(function () {
+                       if ($(this).val() != "") {
+                           $(this).val("");
+                           $(this).selectpicker('refresh');
+                       }
+                   });
+
+                   $($(".S10meslekGelir select")).each(function () {
+                       if ($(this).val() != "") {
+                           $(this).val("");
+                           $(this).selectpicker('refresh');
+                       }
+                   });
+
+                   $(".S10meslekIsyeri").find("input").val("");
+                   $(".S10meslekYonetici").find("input").val("");
+
+
+                   $(".S10meslekYonetici").hide();
+                   $(".S10meslekUzman").hide();
+                   $(".S10meslekIsyeri").hide();
+                   $(".S10meslekGelir").hide();
+
+
+
+                   $(".S10meslekYonetici").find("input").hide();
+                   $(".S10meslekUzman").find("select").hide();
+                   $(".S10meslekIsyeri").find("input").hide();
+                   $(".S10meslekGelir").find("select").hide();
+
+                   var meslek = elem.closest("table").find(".S10tdMeslek").children().filter("select").filter(".S10meslek");
+
+
+                   if (parseInt(meslek.val()) > 11 && parseInt(meslek.val()) < 16) {
+                       $("#" + meslek.attr("id").replace("B7_", "B7ca_") + "_O").parent().show();
+                       $("#" + meslek.attr("id").replace("B7_", "B7ca_") + "_O").show();
+                   }
+
+                   else if (meslek.val() == "17") {
+                       //                  $("#" + meslek.attr("id").replace("B7_", "B7cb_")).parent().show();
+                       //                    $("#" + meslek.attr("id").replace("B7_", "B7cb_")).show();
+                   }
+                   else if (parseInt(meslek.val()) > 20 && parseInt(meslek.val()) < 25) {
+                       $("#" + meslek.attr("id").replace("B7_", "B7cc_") + "_O").parent().show();
+                       $("#" + meslek.attr("id").replace("B7_", "B7cc_") + "_O").show();
+                   }
+                   else if (parseInt(meslek.val()) > 2 && parseInt(meslek.val()) < 7) {
+                       //                    $("#" + meslek.attr("id").replace("B7", "B7cd_")).parent().show();
+                       //                   $("#" + meslek.attr("id").replace("B7", "B7cd_")).show();
+                   }
+                   */
+
+            }
+
+            $(".adsoyad").keyup(function (e) {
+
+                $(this).closest("tr").closest("table").closest("tr").prev().find("td").eq(1).text($(this).val());
+                $(this).closest("tr").closest("table").find(".name").text($(this).val());
+                //     $(this).closest("table").closest("tr").closest("td").eq(1).innerHTML($(this).val());
+            })
+
+            $(".number").keydown(function (e) {
+
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                    // Allow: Ctrl+A, Command+A
+                    (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                    // Allow: home, end, left, right, down, up
+                    (e.keyCode >= 35 && e.keyCode <= 40)) {
+                    // let it happen, don't do anything
+                    return;
+                }
+                // Ensure that it is a number and stop the keypress
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+
+
+            });
+            $(".number ").keyup(function (e) {
+
+
+            });
+
+
+            //    $("input[name^='B3']").live("blur", function () {
+            $(".yas").on('blur', function () {
+                //   function fnkYas()
+
+                //   alert("sdsd");
+                if ($(this).val() == "" || parseInt($(this).val()) < 18) {
+                    $(this).closest("tr").nextAll(".buyukYas").hide()
+
+                    $("select[Soru=Meslek]").find("option:selected").removeAttr("selected");
+                    /*  find("td:eq(7)").nextAll('td').h if ($(this).parent().parent().find("#E3b").length > -1)
+                    {
+                        alert("Görüşülen kişi 18 yaşından küçük olamaz!");
+                    }*/
+                }
+                else {
+                    //  $(this).closest("tr").next().show()
+                    $(this).closest("tr").nextAll(".buyukYas").show()
+                }
+                //   $("input:radio[name=E3b]")
+                var row = $(this).closest("table");
+                if (parseInt($(this).val()) < 15) {
+                    if (row.find("input:radio[name^=E3b]").is(':checked') > 0) {
+                        alert("Görüşülen kişi 15 yaşından küçük olamaz! İşaretlemeler kaldırılıyor");
+                        row.find("input:radio[name^=E3b]").prop("checked", false);
+                    }
+
+                    if (row.find("input:radio[name^=B9]").is(':checked') > 0) {
+                        alert("Hane Reisi kişi 15 yaşından küçük olamaz! İşaretlemeler kaldırılıyor");
+                        row.find("input:radio[name^=B9]").prop("checked", false);
+                    }
+                }
+
+                $(this).closest("tr").closest("table").closest("tr").prev().find("td").eq(3).text($(this).val());
+                if (row.find("[name^=B4] option:selected").val() > 0) {
+                    var x = row.find("[name^=B4] option:selected");
+
+                    //    x.change();
+
+
+
+                }
+                onLoad(false, $(this).attr("id"), "tektablo");
+                //    onLoad(false, $(this).attr("id"), "tektablo");
+                //onLoad(false);
+                /* $(row.find("tr")).each(function () {
+                     $(this).children().each(function () {
+                         if ($(this).children(0).length > 0) {
+                             var nesne = $("#" + $(this).children(0)[0].id);
+                             if (nesne.attr("kosul") != undefined && nesne.attr("kosul") != "" && nesne[0].type == "select-one") {
+                                 var arr = nesne.attr("id").split('_');
+                                 yakinlikKosul(arr[arr.length - 1], nesne.attr("id"));
+                             }
+                         }
+
+                     });
+
+                 });*/
+            });
+
+            function yakinlikKosul(sira, elemid) {
+
+                var kosul = $("#" + elemid).attr("kosul");
+                if (kosul != "") {
+
+                    // if ($("#E3b").val() == "" && kosul.indexOf("E3b") > -1) {kosul= kosul.replace("E3b", "item").replace("E3b", "item").replace("E3b", "item"); };
+                    // if ($("#B9").val() == "" && kosul.indexOf("B9") > -1) {kosul= kosul.replace("B9", "item").replace("B9", "item").replace("B9", "item"); };
+                    //    if ($("input:radio[name=E3b]").val() == "" && kosul.indexOf("E3b") > -1) { kosul = kosul.replace("E3b", "item").replace("E3b", "item").replace("E3b", "item"); };
+                    ///  if ($("#B9").val() == "" && kosul.indexOf("B9") > -1) {kosul= kosul.replace("B9", "item").replace("B9", "item").replace("B9", "item"); };
+
+                    var E3b = $("#tr" + sira).closest("table").find("input:radio[name^=E3b]:checked").val();
+                    if (E3b == "" || E3b == undefined) E3b = "0";
+                    //   var B9 = $("#tr" + sira).closest("table").find("input:radio[name^=B9]:checked").val();
+                    //    if (B9 == "" || B9 == undefined) B9 = "0";
+                    var B4 = $("#tr" + sira).closest("table").find("[name^=B4] option:selected").val();
+                    var B5 = $("#tr" + sira).closest("table").find("[name^=B5] option:selected").val();
+                    var B7 = $("#tr" + sira).closest("table").find("[name^=B7] option:selected").val();
+                    if (B4 == "" || B4 == undefined) B4 = "0";
+                    if (B5 == "" || B5 == undefined) B5 = "0";
+                    if (B7 == "" || B7 == undefined) B7 = "0";
+                    kosul = kosul = kosul.replace(/\E3b/g, E3b);
+                    //  kosul = kosul = kosul.replace(/\B9/g, B9);
+                    kosul = kosul = kosul.replace(/\_B4/g, B4);
+                    kosul = kosul = kosul.replace(/\_B5/g, B5);
+                    kosul = kosul = kosul.replace(/\_B7/g, B7);
+                    //     kosul = kosul.replace("B9", $("input:radio[name=B9]").val()).replace("B9", $("input:radio[name=B9]").val()).replace("B9", $("input:radio[name=B9]").val());
+                    kosul = kosul.replace(/\Index/g, sira); //kosul.replace("Index", sira).replace("Index", sira).replace("Index", sira).replace("Index", sira).replace("Index", sira);
+
+                    $("#tr" + sira).closest("table").find("td").each(function (Index, eleman) {
+                        if ($(this).children(0).length > 0) {
+                            if ($(this).children(0).length > 1) {
+                                id = $(this).children(0)[1].id.split('_')[0];
+                            }
+                            else {
+                                id = $(this).children(0)[0].id.split('_')[0];
+                            }
+
+                            if (id != "") {
+                                if (id == "B3") {
+                                    var yas = $("#" + id + "_" + sira + "_1").val();
+                                    if (yas == "") yas = "0";
+
+                                    //      kosul = kosul.replace(id, yas).replace(id, yas).replace(id, yas).replace(id, yas).replace(id, yas).replace(id, yas).replace(id, yas).replace(id, yas).replace(id, yas).replace(id, yas).replace(id, yas);
+                                    kosul = kosul.replace(/\_B3/g, yas);
+                                    //   kosul.replace(new RegExp(id, 'g'), yas);
+                                }
+                                kosul = kosul.replace(id, $("#" + id + "_" + sira).val()).replace(id, $("#" + id + "_" + sira).val()).replace(id, $("#" + id + "_" + sira).val()).replace(id, $("#" + id + "_" + sira).val()).replace(id, $("#" + id + "_" + sira).val()).replace(id, $("#" + id + "_" + sira).val()).replace(id, $("#" + id + "_" + sira).val()).replace(id, $("#" + id + "_" + sira).val()).replace(id, $("#" + id + "_" + sira).val()).replace(id, $("#" + id + "_" + sira).val()).replace(id, $("#" + id + "_" + sira).val());
+                                kosul = kosul.replace(new RegExp(id, 'g'), $("#" + id + "_" + sira).val());
+
+                            }
+                        }
+
+                    })
+
+                    //   var cins = $("#B4_" + sira);
+
+                    $("#" + elemid + " > option").each(function () {
+                        if ($(this).val() != "") {
+                            var syntax = eval(kosul.toString().replace(/\item/g, $(this).val()));
+                            //   if ($(this).attr("kosul") != "") {
+                            //  if ($(this).attr("kosul").toString().replace("B4", cins.val())) {
+                            if (syntax) {
+                                $(this).prop('disabled', true);
+                                if ($(this).is(':selected')) {
+                                    $("#" + elemid + "  option:eq(0)").prop('selected', true);
+                                }
+                            }
+                            else {
+                                $(this).prop('disabled', false);
+                            }
+                        }
+                        //    }
+                    });
+
+                    $("#" + elemid).selectpicker('refresh');
+                }
+            }
+
+            function OtherDisplay(elem) {
+                // alert(this.value);
+                alert(elem.text());
+            }
+
+            function Gonder() {
+
+            }
+
+            function onLoad(isLoad, id, tableType) {
+                /*  if ($('input[name=E3b]:checked') != undefined && $('input[name=E3b]:checked').val() != undefined && $('input[name=E3b]:checked').val() != "") {
+                      var arr = $('input[name=E3b]:checked').attr("id").split('_');
+                      lastGorusulen = arr[arr.length - 1];
+                  }
+                  if ($('input[name=B9]:checked') != undefined && $('input[name=B9]:checked').val() != undefined && $('input[name=B9]:checked').val() != "") {
+                      var arr = $('input[name=B9]:checked').attr("id").split('_');
+                      lastReis = arr[arr.length - 1];
+                  }*/
+                if (tableType == "tablolar") {
+                    $(".objectTable").each(function () {
+                        TableFor($(this), id, isLoad);
+                    });
+                }
+                else {
+                    TableFor($("#" + id).closest("table"), id, isLoad);
+                }
+            }
+
+            function TableFor(table, id, isLoad) {
+                table.find("tr").each(function (i, satir) {
+                    $(satir.children).each(function () {
+                        if ($(this).children(0).length > 0) {
+                            if ($(this).children(0).length > 1) {
+                                var nesne = $("#" + $(this).children(0)[1].id);
+                            }
+                            else {
+                                var nesne = $("#" + $(this).children(0)[0].id);
+                            }
+                            //  var nesne = $("#" + $(this).children(0)[0].id);
+                            if (nesne.attr("kosul") != undefined && nesne.attr("kosul") != "" && nesne[0].type == "select-one" && (nesne.attr("kosul").indexOf(id.split("_")[0]) > -1 || id == "")) {
+                                var arr = nesne.attr("id").split('_');
+                                yakinlikKosul(arr[arr.length - 1], nesne.attr("id"));
+                            }
+                        }
+                        if ($(this).prop("tagName") == "SELECT" && isLoad) {
+                            $(this).change();
+                        }
+                 
+                        /*  if (parseInt($(this).find("input[name^='B3']").val()) < 15) {
+                              $(this).find("input[name^='B3']").find("td:eq(7)").nextAll('td').hide();
+                          }*/
+                    });
+
+                });
+                if (isLoad) {
+                    table.find("input[name^='B3']").blur();
+
+                    table.find("input[class^='adsoyad']").keyup();
+                    table.find("input[class^='number']").keyup();
+                }
+
+            }
+
+            $("#btnKaydet").click(function (e) {
+                var updateStrArr = [];
+                var elem = "true";
+                var sondeger = 0;
+                var updateStr = "";
+                var yasKontrol = false;
+                $("form").find(':input').each(function () {
+
+
+                    if (($(this).prop("tagName") == "SELECT" || $(this).attr("type") == "text" || $(this).attr("type") == "radio" || $(this).attr("type") == "number") &&  $(this).attr("name") != undefined && $(this).attr("class") != "input-block-level form-control" ) {
+
+                        if ($(this).attr("type") == "radio") {
+                            var id = $(this).attr("name");
+                            var ids = $(this).attr("id");
+                            if ($('input[name=' + id + ']:checked') == undefined || $('input[name=' + id + ']:checked').val() == undefined || $('input[name=' + id + ']:checked').val() == "") {
+                                var list = ids.split('_');
+                                var Index = list[list.length - 1];
+                                if (list[list.length - 1] == "O" || list.length == 3) {
+                                    Index = list[list.length - 2];
+                                }
+                                else if ($(this).attr("type") == "radio") {
+
+                                }
+
+                                alert($(this).attr("Soru") + " Kutucuğu Boş. Tüm kutucukların doldurulması gerekli!");
+                                $(this).focus();
+                                elem = "false";
+                                return false;
+
+                            }
+                        }
+
+                        if ($(this).val() == "" && ($(this).is(':visible') == true || $(this).hasClass("zorunlu"))) {
+
+                            var list = $(this).attr("id").split('_');
+                            var Index = list[list.length - 1];
+                            if (list[list.length - 1] == "O" || list.length == 3) {
+                                Index = list[list.length - 2];
+                            }
+                            alert(Index + ".Kişinin " + $(this).attr("Soru") + " Kutucuğu Boş. Tüm kutucukların doldurulması gerekli!");
+
+                            //             alert("Tüm kutucukların doldurulması gerekli!");
+                            $(this).focus();
+                            elem = "false";
+                            return false;
+                        }
+                        else if (($(this).is(':visible') == true || $(this).hasClass("zorunlu")) && $(this).val() == "" /*&& ($(this).attr("id").indexOf("B2b") > -1 || $(this).attr("id").indexOf("E7") > -1 || $(this).attr("id").indexOf("E8") > -1) && $(this).attr("id").indexOf("_O") < 0*/) {
+                            if ($(this).attr("type") != "text" && $(this).attr("type") != "number" && $(this).attr("name").indexOf("B107") < 0 && $(this).attr("name").indexOf("B7") < 0) {
+                                var list = $(this).attr("id").split('_');
+                                var Index = list[list.length - 1];
+                                if (list[list.length - 1] == "O" || list.length == 3) {
+                                    Index = list[list.length - 2];
+                                }
+                                var yas = parseInt($(this).closest("table").find("input[name^='B3']").val());
+                                var buyuyas = $(this).closest("tr").attr("class");
+                                if ((yas > 17) || (yas < 18 && buyuyas != "buyukYas")) {
+                                    if ($(this).type == "select-one" && $(this).hasClass("selectPicker")) {
+                                        $(this).selectpicker('refresh');
+                                    }
+                                    alert(Index + ".Kişinin " + $(this).attr("Soru") + " Kutucuğu Boş. Tüm kutucukların doldurulması gerekli!");
+                                    //  alert("Tüm kutucukların doldurulması gerekli!");
+
+                                    $(this).focus();
+                                    elem = "false";
+                                    return false;
+                                }
+                            }
+                        }
+
+                        if ($(this).attr("type") == "number" && $(this).attr("id").indexOf("B3") > -1) {
+                            if (sondeger == 0) sondeger = parseInt($(this).val());
+                            /* if (sondeger < parseInt($(this).val())) {
+                                 alert("Yaşları büyükten küçüğe sıralayınız");
+                                 elem = "false";
+                                 return false;
+                             }*/
+
+                            if (parseInt($(this).val()) > 14) {
+                                yasKontrol = true;
+                            }
+
+
+                            sondeger = parseInt($(this).val());
+                        }
+                        else if ($(this).attr("type") == "number" && $(this).val() != "" && $(this).attr("id").indexOf("E11") > -1) {
+                            telefon = $(this).val();
+                            var list = $(this).attr("id").split('_');
+                            var Index = list[list.length - 1];
+                            if (list[list.length - 1] == "O" || list.length == 3) {
+                                Index = list[list.length - 2];
+                            }
+                            if (telefon.length != "10") {
+                                alert(Index + ". Kişinin telefon numarası 10 haneli olmalı!");
+                                elem = "false";
+                                return false;
+                            }
+                        }
+                        
+                        if (updateStrArr.indexOf($(this).attr("name")) < 0 )
+                        {
+                            if ($(this).hasClass("selectpicker") == false || $(this).type != "select-one")
+                            {
+                                var visibleControl = false;
+                                if ($(this).is(":visible"))
+                                {
+                                    visibleControl = true
+                                }
+                                else
+                                {
+                                    if ($(this).val().trim() !== "") {
+                                        visibleControl = true;
+                                    }
+                                    else
+                                    {
+                                        var emptlyControl = true;
+                                        $("[name=" + $(this).attr("name") + "]").each(function() {
+                                            if ($(this).val().trim() !== "") {
+                                                emptlyControl = false;
+                                                visibleControl = false;
+                                            }
+                                        });
+                                       
+                                    }
+                                    if (emptlyControl == true)
+                                    {
+                                        if (updateStr != "") { updateStr += ",";}
+                                        updateStr += $(this).attr("name") + "='" + $(this).val() + "'";
+                                        updateStrArr.push($(this).attr("name"));
+                                        visibleControl = false;
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                if ($(this).val().trim() !== "") {
+                                    visibleControl = true;
+                                }
+                                else
+                                {
+                                    var emptlyControl = true;
+                                    $("[name=" + $(this).attr("name") + "]").each(function() {
+                                            if ($(this).val().trim() !== "") {
+                                                emptlyControl = false;
+                                                visibleControl = false;
+                                            }
+                                        });
+
+                                    if (emptlyControl == true)
+                                    {
+                                        if (updateStr != "") { updateStr += ",";}
+                                        updateStr += $(this).attr("name") + "='" + $(this).val() + "'";
+                                      
+                                        updateStrArr.push($(this).attr("name"));
+                                        visibleControl = false;
+                                    }
+                                        
+                                }
+                            }
+
+                            
+                            if (visibleControl)
+                                {
+                                    if (updateStr != "") { updateStr += ",";}
+                                    if ($(this).attr("type") == "radio")
+                                    {
+                                        updateStr += $(this).attr("name") + "='" + $('[name=' + $(this).attr("name") + ']:checked').val() + "'"
+                                    }
+                                    else
+                                    {
+                                        updateStr += $(this).attr("name") + "='" + $(this).val() + "'";
+                                    }
+                                    
+                                    updateStrArr.push($(this).attr("name"));
+                                }
+                                
+                        }
+                                            
+
+                    }
+
+
+                });
+                if (elem == "false") {
+                    return false;
+                }
+
+                /*
+                $("form").find(':selected').each(function () {
+                    if ($(this).val() == "" && $(this).is(':visible') == true) {
+                        alert("Tüm kutucukların doldurulması gerekli!");
+                        $(this).focus();
+                        elem = "false";
+                        return false;
+                    }
+
+                });*/
+                if (elem == "false") {
+                    return false;
+                }
+                if (!yasKontrol) {
+                    alert("En az 1 tane 15 yaş ve üstü kişi işaretlenmeli!");
+                    return false;
+                }
+
+                if (sondeger > 99) {
+                    alert("Yaş aralığı 0-99 arasında olmalı");
+                    return false;
+                }
+                //      myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + InterviewID, "R1.html?id=" + InterviewID);
+                //    alert(updateStr);
+                myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + InterviewID, "B12.html?id=" + InterviewID);
+                //    return true;
+
+            });
+
+            function url_redirect(url) {
+                var X = setTimeout(function () {
+                    window.location.replace(url);
+                    return true;
+                }, 300);
+
+                if (window.location = url) {
+                    clearTimeout(X);
+                    return true;
+                } else {
+                    if (window.location.href = url) {
+                        clearTimeout(X);
+                        return true;
+                    } else {
+                        clearTimeout(X);
+                        window.location.replace(url);
+                        return true;
+                    }
+                }
+                return false;
+            };
+
+            function getUrlVars() {
+                var vars = [], hash;
+                var indexofHash = window.location.href.indexOf('#');
+                var hashes;
+                if (indexofHash == -1) {
+                    hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+                } else {
+                    hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+                }
+                for (var i = 0; i < hashes.length; i++) {
+                    hash = hashes[i].split('=');
+                    vars.push(hash[0]);
+                    vars[hash[0]] = hash[1];
+                }
+                return vars;
+            }
+
+        })
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+    <style>
+        .contain {
+            width: 90%;
+            height: 800px;
+            overflow-y: scroll;
+            /* has to be scroll, not auto */
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /*  .contain {
+            position: relative;
+            height: 600px;
+            overflow-y: scroll;
+        }
+
+        .containColumn {
+            position: relative;
+            width: 400px;
+            overflow-x: scroll;
+        }*/
+    </style>
+</head>
+
+<body>
+    <form id="form1" runat="server" action="">
+        <script>
+            window.localStorage["InterviewID"];
+
+        </script>
+        <div class="contain">
+
+
+
+
+            <div class="containColumn">
+
+                <div class="col-lg-12">
+                    <table style="width:100%">
+                        <tr>
+                            <td>
+                                <div>
+                                    <table id="example"
+                                        class="table table-hover table-responsive table-condensed table-striped table-bordered table-advanced display"
+                                        style="border-collapse:separate; border-spacing: 0px 10px;">
+                                        <thead>
+                                            <tr></tr>
+
+                                        <tbody>
+
+
+                                            <tr data-toggle="collapse" data-target="#demo#" class="accordion-toggle"
+                                                style="border-style:solid;border-color:green;border-width:1px;border-spacing:0px">
+                                                <td class="col-lg-1">#.Kişi</td>
+                                                <td class="col-lg-2"></td>
+                                                <td class="col-lg-1"></td>
+                                                <td class="col-lg-1"></td>
+                                                <td class="col-lg-1 tdgorusulen"></td>
+                                                <td class="col-lg-1 tdreis"></td>
+
+                                                <td colspan="5"></td>
+
+
+                                            </tr>
+                                            <tr>
+                                                <td colspan="13" class="hiddenRow">
+                                                    <div class="accordian-body collapse" id="demo#"
+                                                        style="border-style:solid;border-color:yellowgreen;border-width:3px">
+                                                        <table
+                                                            class="table table-hover table-responsive table-striped table-bordered table-advanced display objectTable">
+                                                            <tr id="tr#" class="objectTr">
+
+
+                                                                <td class="col-lg-1" colspan="4">
+                                                                    <b> <span id="B2aSpan">Hanedeki <b>#.</b> kişinin
+                                                                            isimini söyler misiniz?</span><br /></b>
+                                                                    <input type="text" id="B2a_#_1" name="B2a_#_1"
+                                                                        Soru="Ad Soyad" class="adsoyad zorunlu" />
+
+                                                                </td>
+
+                                                            </tr>
+                                                            <tr id="tr#">
+                                                                <!--Cinsiyet-->
+                                                                <td class="col-lg-1" colspan="4">
+                                                                    <b>
+                                                                        <span class="name"></span>'nın CİNSİYETİ nedir?
+                                                                        HANEDE YAŞAYAN HERKES İÇİN SORULACAK.<br />
+
+                                                                    </b>
+                                                                    <select id="B4_#" name="B4_#" Soru="Cinsiyet"
+                                                                        class="cinsiyet">
+                                                                        <option value="">Seçiniz...</option>
+                                                                        <option value="1">Kadın</option>
+                                                                        <option value="2">Erkek</option>
+                                                                    </select>
+
+                                                                </td>
+                                                            </tr>
+                                                            <tr id="tr#">
+                                                                <!--YAŞ--->
+                                                                <td class="col-lg-1" colspan="4">
+                                                                    <b> <span class="name"></span> <span id="B3Span">
+                                                                            'nın bitirdiği yaş nedir? HANEDE YAŞAYAN
+                                                                            HERKES İÇİN SORULACAK. (0-12 aylık bebekler
+                                                                            0 olarak işaretlenecek)</span><br /></b>
+                                                                    <input type="number" min="0" Soru="Yas"
+                                                                        style="width:40px" class="yas zorunlu" id="B3_#_1"
+                                                                        name="B3_#_1" min="0" max="99" placeholder="0-99 arası bir değer girin"/>
+
+                                                                </td>
+
+                                                            </tr>
+                                                            <tr id="tr#">
+
+                                                                <td colspan="4">
+                                                                    <!--Eğitim-->
+                                                                    <b>
+                                                                        <span class="name"></span><span id="B5Span">
+                                                                            'nın EĞİTİMİ nedir? (En son mezun olunan)
+                                                                            durumunu öğrenebilir miyim? HANEDE YAŞAYAN
+                                                                            HERKES İÇİN SORULACAK.</span><br />
+
+                                                                    </b>
+
+                                                                    <select id="B5_#" name="B5_#" data-style="btn-white"
+                                                                        Soru="Eğitim"
+                                                                        kosul="(parseInt(_B3)<6 && (item==1 || item==2 || item==3 || item==4 || item==5 || item==6 || item==7 || item==8 || item==9 || item==10 || item==11  )) || (parseInt(_B3)>5 && parseInt(_B3)<10 && (item==1 ||item==2 ||item==3 || item==4 || item==5 || item==6 || item==7 || item==8  || item==8  || item==12  )) || (parseInt(_B3)>9 && parseInt(_B3)<13 && (item==1 || item==2 || item==3 || item==4 || item==5 || item==6 || item==7 || item==8  || item==12))  || (parseInt(_B3)>13 && parseInt(_B3)<18 && (item==1 || item==2 || item==3 || item==4 || item==9 || item==12 ))  || ((parseInt(_B3)==18 || parseInt(_B3)==19) && ( item==8 || item==9 || item==10 || item==11 || item==12 ))  || ((parseInt(_B3)==20 || parseInt(_B3)==21) && ( item==8 ||  item==9 || item==12 ))  || ((parseInt(_B3)>21) && ( item==12 || item==9))"
+                                                                        data-live-search="true"
+                                                                        class="egitim selectpicker form-control zorunlu">
+                                                                        <option value="">Seçiniz...</option>
+                                                                        <option value="1">Yüksek lisans-doktora Mezunu
+                                                                        </option>
+                                                                        <option value="2">Üniversite Mezunu (4 Yıl
+                                                                            Normal)</option>
+                                                                        <option value="3">Üniversite Mezunu / 4 Yıllık
+                                                                            Açık öğretim </option>
+                                                                        <option value="4">Yüksekokul / 2 Yıllık Açık
+                                                                            öğretim Mezunu </option>
+                                                                        <option value="5">Normal Lise Mezunu</option>
+                                                                        <option value="6">Meslek Lisesi Mezunu</option>
+                                                                        <option value="7">Ortaokul / 8 Yıllık İlköğretim
+                                                                            Mezunu </option>
+                                                                        <option value="8">İlkokul Mezunu (Yeni sistemde
+                                                                            4 / eski sistemde 5 yıllık)</option>
+                                                                        <option value="9">İlköğretim Öğrencisi (13 yaş altı olmalı –  1. - 8. Sınıf arası okuyan)
+                                                                        </option>
+                                                                        <option value="10">Eğitimsiz/okuryazar</option>
+                                                                        <option value="11">Eğitimsiz/okuryazar değil
+                                                                        </option>
+                                                                        <option value="12"> Okula başlamamış (Okul
+                                                                            öncesi / 6 yaş altı olmalı)</option>
+
+                                                                    </select>
+                                                                </td>
+
+                                                            </tr>
+                                                            <!--GÖRÜŞÜLEN KİŞİ-->
+                                                            <tr id="tr#" class="buyukYas">
+
+                                                                <td class="col-lg-1" style="text-align:left;"
+                                                                    aling="left" colspan="2">
+                                                                    <label class="radio" style="margin-top:0px">
+                                                                        <span class="name"></span> Görüşülen Kişi Mi?
+                                                                        <div id="divGorusKisi">
+                                                                            <label class="container">
+
+                                                                                <input type="radio" name="E3b"
+                                                                                    id="E3b_#" value="#" class="gorusulenkisi zorunlu"
+                                                                                    Soru="Görüşülen Kişi">
+                                                                                <span class="checkmark"></span>
+                                                                            </label>
+
+
+                                                                        </div>
+
+                                                                    </label>
+                                                                </td>
+                                                                <!--REİS-->
+                                                                <td class="col-lg-1" colspan="2">
+                                                                    <label class="radio" style="margin-top:0px">
+                                                                        Hane Reisi Mi?
+                                                                        <div id="divReis">
+                                                                            <label class="container">
+                                                                                <input type="radio" name="B9" id="B9_#"
+                                                                                    value="#" Soru="Hane Reisi"
+                                                                                    class="reis zorunlu" />
+                                                                                <span class="checkmark"></span>
+                                                                            </label>
+
+
+                                                                        </div>
+                                                                    </label>
+                                                                </td>
+
+                                                            </tr>
+                                                            <tr id="tr#">
+
+                                                                <td class="col-lg-1" colspan="4">
+
+                                                                    <b> .……….…..…'nın size (görüşülen kişiye) yakınlığı
+                                                                        nedir?</b>
+                                                                    <select id="B2b_#" Soru="Yakınlık"
+                                                                        style="display:block" name="B2b_#"
+                                                                        kosul="(E3b==Index && item>1) || (E3b!=Index && item==1) || (parseInt(B3)<15 && (item==2 || item==3))  || (parseInt(B3)<18 && (item==1 || item==4 || item==5 || item==10 || item==11 || item==12)) || (B4==2 && ( item==3 || item==5 || item==9 || item==11))  || (B4==1 && ( item==2 || item==4 || item==8 || item==10))"
+                                                                        data-style="btn-white" data-live-search="true"
+                                                                        class="form-control yakinlik zorunlu">
+
+                                                                        <option value="">Seçiniz...</option>
+                                                                        <option value="1" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Ben</option>
+                                                                        <option value="2" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Eşim – beyim</option>
+                                                                        <option value="3" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Eşim – hanımım</option>
+                                                                        <option value="4" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Babam</option>
+                                                                        <option value="5" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Annem</option>
+                                                                        <option value="6" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Kardeşim / Ablam / Abim
+                                                                        </option>
+                                                                        <option value="7" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Çocuğum / Kızım / Oğlum
+                                                                        </option>
+                                                                        <option value="8" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Amcam / Dayım / Eniştem
+                                                                        </option>
+                                                                        <option value="9" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Teyzem / Halam / Yengem
+                                                                        </option>
+                                                                        <option value="10" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Büyükbabam / Dedem</option>
+                                                                        <option value="11" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Büyükannem / Anneannem /
+                                                                            Babaannem</option>
+                                                                        <option value="12" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Kayınpederim/Kayınvalidem
+                                                                        </option>
+                                                                        <option value="13" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Kuzenim / Yeğenim</option>
+                                                                        <option value="14" OtherState='false'
+                                                                            Other='B2b_O_#_97'>Akraba olmayan biri</option>
+                                                                        <option value="15" OtherState='true'
+                                                                            Other='B2b_O_#_97'>Diğer...</option>
+                                                                    
+
+                                                                    </select>
+
+                                                                    <input type="text" Soru="Yakınlık Diğer"
+                                                                        id="B2b_O_#_97" name="B2b_O_#_97" value=""
+                                                                        style="display:none" />
+
+                                                                </td>
+                                                        
+                                            </tr>
+
+                                          
+                                            <tr class="buyukYas">
+
+                                     
+                                            <td class="col-lg-1" colspan="4">
+                                            <b>      .................'nın medeni durumu nedir? </b>
+                                                <select id="B6_#" Soru="Medeni Durum" name="B6_#" data-style="btn-white" data-live-search="true" class="selectpicker form-control">
+                                                    <option value="">Seçiniz...</option>
+                                                    <option value="1">Bekar</option>
+                                                    <option value="2">Boşanmış</option>
+                                                    <option value="3">Evli</option>
+                                                    <option value="4">Eşi vefat etmiş</option>
+
+                                                </select>
+                                            </td>
+                                  
+                                            </tr>
+                                            
+                                            <!--Çalışma durumu-->
+                                            <tr id="tr#" class="buyukYas">
+
+                                                <td class="col-lg-1" colspan="4">
+                                                    <b> …………….. çalışma durumu nedir? </b>
+                                                    <select id="B7_#" Soru="Çalışma Durumu" name="B7_#"
+                                                        data-header="Select a condiment" data-live-search="true"
+                                                        class="selectpicker">
+                                                        <option value="">Seçiniz...</option>
+                                                        <option value="1">Emekli</option>
+                                                        <option value="2">Çalışmıyor / Gelir Getiren Bir İşi Yok
+                                                        </option>
+                                                        <option value="3">Ücret / Maaş Karşılığı Çalışıyor</option>
+                                                        <option value="4">Kendi İşinde Çalışıyor</option>
+
+                                                        <!-- <option value="1">Tam zamanlı Çalışan (Haftada
+                                                                    40 saatten fazla)</option>
+                                                                <option value="2">Yarı zamanlı Çalışan (Haftada
+                                                                    40 saatten az)</option>
+                                                                <option value="3">Mevsimlik çalışan</option>
+                                                                <option value="4">Şuanda Hastalık, İzin, Doğum
+                                                                    İzni gibi nedenlerle çalışmıyor ama iş ile
+                                                                    ilgisi devam ediyor </option>
+                                                                <option value="5">Çalışmadı</option> -->
+
+                                                    </select>
+                                                    <div class="meslekMeslekAcik" style="display:none">
+                                                        Eve düzenli ve en yüksek geliri getiren kişinin
+                                                        mesleğini açık yazın:
+                                                        <input type="text" Soru="Açık Meslek"
+                                                            style="display:none;width:400px;height:30px" id="B101_#_O"
+                                                            name="B101_O" value="" class="meslekOpen"/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr id="tr#" class="trMeslek" style="display:none" >
+
+                                                <td class="tdMeslek col-lg-1" colspan="4">
+                                                    <b> <span class="name"></span><span id="B8Span">
+                                                            'nın mesleğini öğrenebilir miyim? (MESLEK
+                                                            KARTINA GÖRE İŞARETLEME
+                                                            YAPILACAK)<br /></span> </b>
+
+
+                                                    <select Soru="Meslek"  style="display:none" id="B8_#" name="B8"
+                                                        kosul="(_B4==2 && ( item==5 || item==6)) || (parseInt(_B3)<30 && (item==1 || item==2)) || (parseInt(_B5)>3 && (item==17 || item==25)) || ((_B7 == 1 && item > 2) || (_B7 == 2 && (item < 3 || item > 7)) || (_B7 == 3 && (item < 8 || item > 17) ) || (_B7 == 4 && item < 18)  )"
+                                                        data-live-search="true" class="meslek selectpicker">
+                                                        <option value="">Seçiniz...</option>
+                                                        <option value="1">Emekli-çalışıyor</option>
+                                                        <option value="2">Emekli-çalışmıyor</option>
+                                                        <option value="3">İşsiz - şu an çalışmıyor - ek
+                                                            gelir yok, yardım alıyor</option>
+                                                        <option value="4">İşsiz - şu an çalışmıyor -
+                                                            düzenli ek gelir var</option>
+                                                        <option value="5">Ev kadini - ek gelir yok,
+                                                            yardim aliyor</option>
+                                                        <option value="6">Ev kadini - düzenli ek gelir
+                                                            var</option>
+                                                        <option value="7">Öğrenci(gelir getirici bir işi
+                                                            olmayan)</option>
+                                                        <option value="8">Işçi/hizmetli - parça başı işi
+                                                            olan (düzensiz zaman zaman çalışan)</option>
+                                                        <option value="9">Işçi/hizmetli - düzenli işi
+                                                            olan (özel bir sebep olmadıkça aynı işi
+                                                            yapan)</option>
+                                                        <option value="10">Ustabaşı/kalfa - kendine
+                                                            bağlı işçi çalışan</option>
+                                                        <option value="11">Yönetici olmayan memur /
+                                                            teknik eleman / uzman vs</option>
+                                                        <option value="12">Yönetici (1-5 çalışanı olan)
+                                                        </option>
+                                                        <option value="13">Yönetici (6-10 çalışanı olan)
+                                                        </option>
+                                                        <option value="14">Yönetici (11-20 çalışanı
+                                                            olan)</option>
+                                                        <option value="15">Yönetici (20'den fazla
+                                                            çalışanı olan)</option>
+                                                        <option value="16">Ordu mensubu (uzman er,
+                                                            astsubay, subay)</option>
+                                                        <option value="17">Ücretli Nitelikli uzman
+                                                            (avukat,doktor,mimar,mühendis, akademisyen
+                                                            vs)</option>
+                                                        <option value="18">Çiftçi (kendi
+                                                            başına/ailesiyle çalışan)</option>
+                                                        <option value="19">Seyyar - Kendi isi (free
+                                                            lance dahil), dükkanda hizmet vermiyor
+                                                        </option>
+                                                        <option value="20">Tek başına çalışan, dükkan
+                                                            sahibi, esnaf (taksi şoförü dahil)</option>
+                                                        <option value="21">İşyeri sahibi- 1-5 çalışanlı
+                                                            (Ticaret, Tarım, İmalat, Hizmet)</option>
+                                                        <option value="22">İşyeri sahibi- 6-10 çalışanlı
+                                                            (Ticaret, Tarım, İmalat, Hizmet)</option>
+                                                        <option value="23">İşyeri sahibi -11-20
+                                                            çalışanlı (Ticaret, Tarım, İmalat, Hizmet)
+                                                        </option>
+                                                        <option value="24">İşyeri sahibi - 20'den dazla
+                                                            calisanli (Ticaret, Tarım, İmalat, Hizmet)
+                                                        </option>
+                                                        <option value="25">Serbest nitelikli uzman
+                                                            (avukat, mühendis, mali müşavir, doktor,
+                                                            eczacı vs.)</option>
+
+                                                    </select>
+
+
+                                                    <!-- <div class="meslekKendiIsiCalisan" style="display:none">
+                                                        Kendi İşi mi / Maaşlı Çalışan mı?:
+                                                        <select id="B102_#" Soru="Kendi İşi mi / Maaşlı Çalışan mı?"
+                                                            name="B102" style="display:none"
+                                                            class="kendiIsiMiCalisanMi">
+                                                            <option value="">Seçiniz...</option>
+                                                            <option value="1">Kendi İşi</option>
+                                                            <option value="2">Çalışan</option>
+
+                                                        </select>
+                                                    </div> -->
+
+
+                                                    <div class="meslekPersonelCalisan" style="display:none">
+                                                        Maaşlı Çalışan İse Altında Çalışan Personel Var mı, varsa kaç
+                                                        kişi var?
+                                                        <select id="B103_#"
+                                                            Soru=" Maaşlı Çalışan İse Altında Çalışan Personel Var mı, varsa kaç kişi var? "
+                                                            name="B103" style="display:none" class="maasliCalisanVarMi">
+                                                            <option value="">Seçiniz...</option>
+
+                                                            <option value="1">Çalışan Personel Var. Kaç kişi var?
+                                                            </option>
+                                                            <option value="2">Altında Çalışan Personel Yok</option>
+
+                                                        </select>
+                                                        <input type="number" Soru="Altında çalışan kaç kişi var?"
+                                                            class="number maasliCalisanPersonel" style="display:none"
+                                                            id="B103_#_O" name="B103_O" value="" />
+                                                    </div>
+
+                                                    <div class="meslekMaasliGundelik" style="display:none">
+                                                        Aylık Maaşlı mı, Gündelikli mi Çalışıyor?:
+                                                        <select id="B104_#"
+                                                            Soru="Aylık Maaşlı mı, Gündelikli mi Çalışıyor?" name="B104"
+                                                            style="display:none" class="maasliYevmiyeli">
+                                                            <option value="">Seçiniz...</option>
+
+                                                            <option value="1">Maaşlı</option>
+                                                            <option value="2">Yevmiyeli (Gündelikli)</option>
+
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="meslekKendiIsi" style="display:none">
+                                                        Yanında Çalışan Personel Sayısı Kaçtır?
+                                                        <input type="number"
+                                                            Soru="Yanında Çalışan Personel Sayısı Kaçtır? "
+                                                            class="number" style="display:none" id="B105_#_O"
+                                                            name="B105_O" value="" />
+                                                    </div>
+
+
+                                                    <!-- <div class="meslekCiftci" style="display:none">
+                                                        Kendi Tarlası mı?/ Arazisi mi? :
+                                                        <select id="B106_#" Soru=" Kendi Tarlası / Arazisi mi"
+                                                            name="B106" style="display:none" class="kendiTarlasiMi">
+                                                            <option value="">Seçiniz...</option>
+
+                                                            <option value="1">Evet</option>
+                                                            <option value="2">Hayır</option>
+
+                                                        </select>
+                                                    </div> -->
+<!-- 
+                                                    <div class="meslekUzman" style="display:none">
+                                                        Meslekteki deneyim yılı
+                                                        <input type="number" Soru="Meslek deneyim" class="number"
+                                                            style="display:none" id="B107_#_O" name="B107_O" value="" />
+                                                    </div> -->
+
+
+                                                    <!--
+ -->
+
+
+                                    <div class="meslekUzman" style="display:none">
+                                        <b>Mesleğinizde kaç yıllık deneyime sahipsiniz:</b><br />
+                                        <select id="B107_#" Soru="Meslek Uzman" name="B107" style="display:none" kosul="" class="selectpicker meslekUzmanSelect">
+                                            <option value="">Seçiniz...</option>
+
+                                            <option value="1">4 yıldan az</option>
+                                            <option value="2">4 yıldan fazla</option>
+
+                                        </select>
+                                    </div>
+
+
+                                    <div class="meslekGelir" style="display:none">
+                                        <b>Geçiminizi sağlayan gelir kaynağınızı öğrenebilir miyim?</b><br />
+                                        <select id="B106_#" name="B106" Soru="Gelir" style="display:none" kosul="" class="selectpicker">
+                                            <option value="">Seçiniz...</option>
+                                            <option value="1">Başkasından yardım, destek (EK GELİR YOK, YARDIM ALIYOR)</option>
+                                            <option value="2">Dul-yetim maaşı/nafaka (DÜZENLİ EK GELİR VAR)</option>
+                                            <option value="3">Kira, devremülk vs geliri (DÜZENLİ EK GELİR VAR)</option>
+                                            <option value="4">Faiz, fon geliri (DÜZENLİ EK GELİR VAR)</option>
+                                            <option value="5">Ara-sıra çalışarak (İŞÇİ/ HİZMETLİ – PARÇA BAŞI KOD 6)</option>
+
+                                        </select>
+                                    </div>
+                                                    <!--     <input type="text" id="B6_<%//=i+1 %>_O" name="B6_<%//=i+1 %>_O" value="<%//=dt.Rows[0]["B6_" + (i+1) + "_O"].ToString() %>" style="<%//=display%>"/> -->
+                                                </td>
+                                            </tr>
+                                            <tr id="tr#">
+                                                <td class="S10tdMeslek col-lg-4" colspan="4">
+                                                    <b> <span class="name"></span><span id="B8eSpan">’nin
+                                                            nasıl bir işten emekli olduğunu söyler
+                                                            misiniz?</span>
+                                                        <br /> ANKETÖR DİKKAT: Emekli olanların halen
+                                                        çalışıyor olsa da emekli olmadan önceki en son
+                                                        yaptıkları iş sorulacak)
+                                                    </b>
+                                                    <select Soru="Meslek" id="B8e_#" name="B8e" 
+                                                        data-live-search="true" class="S10meslek"
+                                                        kosul="(parseInt(_B5)>3 && (item==17 || item==25))">
+                                                        <option value="">Seçiniz...</option>
+                                                        <option value="8">Işçi/hizmetli - parça başı işi
+                                                            olan (düzensiz zaman zaman çalışan)</option>
+                                                        <option value="9">Işçi/hizmetli - düzenli işi
+                                                            olan (özel bir sebep olmadıkça aynı işi
+                                                            yapan)</option>
+                                                        <option value="10">Ustabaşı/kalfa - kendine
+                                                            bağlı işçi çalışan</option>
+                                                        <option value="11">Yönetici olmayan memur /
+                                                            teknik eleman / uzman vs</option>
+                                                        <option value="12">Yönetici (1-5 çalışanı olan)
+                                                        </option>
+                                                        <option value="13">Yönetici (6-10 çalışanı olan)
+                                                        </option>
+                                                        <option value="14">Yönetici (11-20 çalışanı
+                                                            olan)</option>
+                                                        <option value="15">Yönetici (20'den fazla
+                                                            çalışanı olan)</option>
+                                                        <option value="16">Ordu mensubu (uzman er,
+                                                            astsubay, subay)</option>
+                                                        <option value="17">Ücretli Nitelikli uzman
+                                                            (avukat,doktor,mimar,mühendis, akademisyen
+                                                            vs)</option>
+                                                        <option value="18">Çiftçi (kendi
+                                                            başına/ailesiyle çalışan)</option>
+                                                        <option value="19">Seyyar - Kendi isi (free
+                                                            lance dahil), dükkanda hizmet vermiyor
+                                                        </option>
+                                                        <option value="20">Tek başına çalışan, dükkan
+                                                            sahibi, esnaf (taksi şoförü dahil)</option>
+                                                        <option value="21">İsyeri sahibi- 1-5 calisanli
+                                                            (Tic, Tarım, İmalat, Hizmet)</option>
+                                                        <option value="22">İsyeri sahibi- 6-10 calisanli
+                                                            (Tic, Tarım, İmalat, Hizmet)</option>
+                                                        <option value="23">İsyeri sahibi -11-20
+                                                            calisanli (Tic, Tarım, İmalat, Hizmet)
+                                                        </option>
+                                                        <option value="24">İşyeri sahibi - 20'den dazla
+                                                            calisanli (Tic, Tarım, İmalat, Hizmet)
+                                                        </option>
+                                                        <option value="25">Serbest nitelikli uzman
+                                                            (avukat, mühendis, mali müşavir, doktor,
+                                                            eczacı vs.)</option>
+
+
+                                                    </select>
+
+
+                                                    <!--    <div class="S10meslekYonetici" style="display:none">
+Çalışan Kisi
+<input type="number" Soru="Meslek Yönetici" class="number" style="display:none" id="B7ca_#_O" name="B7ca_#_O" value="" />
+</div>-->
+                                                    <!--
+
+<div class="S10meslekUzman" style="display:none">
+Uzman Yılı:
+<select id="B7cb_#" Soru="Meslek Uzman" name="B7cb_#" style="display:none" kosul="" class="selectpicker">
+    <option value="">Seçiniz...</option>
+    <option value="1">4 yıldan az</option>
+    <option value="2">4 yıldan fazla</option>
+</select>
+</div>
+
+<div class="S10meslekIsyeri" style="display:none">
+Çalışan Kisi
+<input type="number" Soru="Meslek İşyeri" class="number" style="display:none" id="B7cc_#_O" name="B7cc_#_O" value="" />
+</div>
+
+<div class="S10meslekGelir" style="display:none">
+Gelir:
+<select id="B7cd_#" Soru="Meslek" name="B7cd_#" style="display:none" kosul="" class="selectpicker">
+    <option value="">Seçiniz...</option>
+    <option value="1">Başkasından yardım (EK GELİR YOK, YARDIM ALIYOR)</option>
+    <option value="2">Dul-yetim maaşı/nafaka (DÜZENLİ EK GELİR VAR)</option>
+    <option value="3">Kira, devremülk vs geliri (DÜZENLİ EK GELİR VAR)</option>
+    <option value="4">Faiz, fon geliri (DÜZENLİ EK GELİR VAR)</option>
+    <option value="5">Ara-sıra çalışarak (İŞÇİ/ HİZMETLİ – PARÇA BAŞI KOD 8)</option>
+</select>
+</div>-->
+                                                    <!--     <input type="text" id="B7c_<%//=i+1 %>_O" name="B7c_<%//=i+1 %>_O" value="<%//=dt.Rows[0]["B7c_" + (i+1) + "_O"].ToString() %>" style="<%//=display%>"/> -->
+
+                                                </td>
+
+                                            </tr>
+
+
+
+                                            <!--   <tr class="buyukYas">
+                            <İletişim-->
+                                            <!--   <td class="col-lg-1">
+
+                                    <b>    İletişim:</b>
+
+                                    <select id="E11_#>" Soru="İletişim" name="E11_#" data-style="btn-white" data-live-search="true" class="selectpicker">
+                                        <option value="1" OtherState='true' Other='E11_#_O'>Var…………………..</option>
+                                        <option value="2" OtherState='false' Other='E11_#_O'>Yok</option>
+                                        <option value="3" OtherState='false' Other='E11_#_O'>Vermedi</option>
+
+                                    </select>
+
+                                    <input type="text" Soru="İletişim " class="number" id="E11_#_O" name="E11_#_O" value="" style="display:block" />
+
+
+
+                                </td>
+                            </tr>-->
+
+                                    </table>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td style="text-align:left;">
+                                <input type="button" value="Durum Kodla"
+                                    onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                            </td>
+                            <td colspan="3" style="text-align:right;">
+                                <input type="button" id="btnKaydet" value="Kaydet" />
+
+                            </td>
+                            <!-- <td colspan="2"></td> -->
+
+                        </tr>
+
+                        </tbody>
+                        </td>
+                        </tr>
+                    </table>
+
+                </div>
+                </td>
+                </tr>
+                </table>
+            </div>
+        </div>
+        </div>
+    </form>
+
+
+    <script src='js/jquery.min.js'></script>
+    <script src='js/bootstrap.js'></script>
+    <script src="js/TableAccordion.js"></script>
+    <script src="vendors/select2/select2.min.js"></script>
+    <script src="vendors/bootstrap-select/bootstrap-select.min.js"></script>
+    <script src="vendors/multi-select/js/jquery.multi-select.js"></script>
+    <script src="js/ui-dropdown-select.js"></script>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,414 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script>
+    <script src="scripts/jsMultiMatris.js"></script>
+    <script type="text/javascript">
+        var db;
+        var id;
+        var tvSay = 0;
+        var bozukTVSay = 0;
+        var toplamTV = 0;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+          id = getUrlVars()["id"];
+           // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT COALESCE(A1a2, 0) AS A1a2, COALESCE(A1b_O, 0) AS A1b_O FROM INTERVIEWS WHERE InterviewID =" + id, [], function (tx, val) {
+                    if (val.rows.item(0).A1a2 != "null" && val.rows.item(0).A1a2 != "")
+                    {
+                      tvSay = parseInt(val.rows.item(0).A1a2);
+                    }
+
+                    if (val.rows.item(0).A1b_O != "null" && val.rows.item(0).A1b_O != "")
+                    {
+                      bozukTVSay = parseInt(val.rows.item(0).A1b_O);
+                    }
+
+                    toplamTV = tvSay + bozukTVSay;
+                    if (toplamTV < 2)
+                    {
+                      $(".tvIki").remove();
+                      $(".tvUc").remove();
+                      $(".tvDort").remove(); 
+                      $(".tvBes").remove();
+                    }
+                    else if (toplamTV < 3)
+                    {
+                      $(".tvUc").remove();
+                      $(".tvDort").remove();
+                      $(".tvBes").remove();
+                    }
+                    else if (toplamTV < 4)
+                    {
+                      $(".tvDort").remove();
+                      $(".tvBes").remove();
+                    }
+                    else if (toplamTV < 5)
+                    {
+
+                      $(".tvBes").remove();
+                    }
+
+                    // alert(haneSayi);
+                });
+            });
+        }
+
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT R3 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
+                    var R3Arr = val.rows.item(0).R3.split(',');
+                    for (var i = 1; i < 9; i++) {
+                        if (R3Arr.indexOf(i.toString()) < 0) {
+                            // $(this).parents("tr").remove();
+                            $('#row' + i.toString()).remove();
+                        }
+                    }
+
+                });
+            });
+            SetStartUp();
+
+            //   db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
+        };
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+
+            var kontrol = CheckValues();
+            if (kontrol) {
+                var str = "";
+                for (var i = 0; i < Answers.length; i++) {
+                    if (str != "") str += ",";
+                    str += Answers[i];
+                }
+               // alert(str);
+                myUpdateRedirect("INTERVIEWS", str, " InterviewID=" + window.localStorage["InterviewID"], "B1.html?id=" + window.localStorage["InterviewID"]);
+
+                /* db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
+                 db.transaction(function (tx) {
+
+                     tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                         if (val.rows.length > 0) {
+
+                         }
+                         else {
+                             alert("Anket Yok");
+                         }
+                     });
+                 });*/
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+
+    <form id="form1">
+        <table border="0" id="QuestionText"><tbody><tr><td><span id="StepNameTD">A2a2.</span><span id="QuestionTextTD"><font face="times new roman" color="red" size="2">
+            Şu anda bozuk ama 1 ay içinde tamir ettirmeyi planladığınız televizyonunuz için de cevap vermenizi rica ediyorum. 
+        </font>
+        <p>
+        <font face="arial" color="#000000" size="2">
+            Öncelikle lütfen evinizde EN ÇOK SEYRETTİĞİNİZ   TELEVİZYONDAN başlayın, en çok seyrettiğiniz televizyon, televizyon yayınları ne şekilde alıyor, televizyonda birden çok sistem var ise lütfen hepsini söyleyin. <b>(1. TV : ÇOK CEVAP OLABİLİR)</b>
+            Şimdi lütfen 2. Televizyon / 3. Televizyon …… için söyleyiniz?
+            <b>(ANKETÖR DİKKAT: RESİMLİ KART gösteriniz. HER TELEVİZYON ÇOK CEVAP OLABİLİR / NORMAL ANTEN seçeneği ESKİ TİP ÇATI ANTENLERİ</b> ve Televizyon üzerinde olan antenlerdir, UYDU   ANTENİ ile karışmamasına dikkat ediniz. 
+             
+        </font>
+    </p>
+    </span></td></tr></tbody></table>
+
+    <div id="QuestionBuilderPanel">
+      <table id="QuestionTable">
+        <tbody>
+          <tr>
+            <th align="right"></th>
+            <th>&nbsp;</th>
+
+            <th style="text-align:center;">1.TV(En çok izlenen TV)</th>
+            
+            <th style="text-align:center;" class="tvIki">2.TV</th>
+            <th style="text-align:center;" class="tvUc">3.TV</th>
+            <th style="text-align:center;" class="tvDort">4.TV</th>
+            <th style="text-align:center;" class="tvBes">5.TV</th>
+          </tr>
+          <tr class="AlternateTableRow">
+            <th align="right">1</th>
+            <td>UYDU ANTENİ / ÇANAK ANTEN (Ücret Ödenmeyen / Üyelik Gerektirmeyen)</td>
+            <td style="text-align:center;">1 <input type="checkbox" class="checkboxStyle" name="A2a2_1" id="A2a2_1_1" value="1" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="1">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvIki">1 <input type="checkbox" class="checkboxStyle" name="A2a2_2" id="A2a2_2_1" value="1" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="2">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvUc">1 <input type="checkbox" class="checkboxStyle" name="A2a2_3" id="A2a2_3_1" value="1" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="3">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvDort">1 <input type="checkbox" class="checkboxStyle" name="A2a2_4" id="A2a2_4_1" value="1" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="4">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvBes">1 <input type="checkbox" class="checkboxStyle" name="A2a2_5" id="A2a2_5_1" value="1" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="5">
+              <span></span>
+            </td>
+          </tr>
+          <tr>
+            <th align="right">2</th>
+            <td>DIGITÜRK / BEIN</td>
+            <td style="text-align:center;">2 <input type="checkbox" class="checkboxStyle" name="A2a2_1" id="A2a2_1_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="1">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvIki">2 <input type="checkbox" class="checkboxStyle" name="A2a2_2" id="A2a2_2_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="2">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvUc">2 <input type="checkbox" class="checkboxStyle" name="A2a2_3" id="A2a2_3_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="3">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvDort">2 <input type="checkbox" class="checkboxStyle" name="A2a2_4" id="A2a2_4_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="4">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvBes">2 <input type="checkbox" class="checkboxStyle" name="A2a2_5" id="A2a2_5_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="5">
+              <span></span>
+            </td>
+          </tr>
+          <tr class="AlternateTableRow">
+            <th align="right">3</th>
+            <td>D-SMART</td>
+            <td style="text-align:center;">3 <input type="checkbox" class="checkboxStyle" name="A2a2_1" id="A2a2_1_3" value="3" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="1">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvIki">3 <input type="checkbox" class="checkboxStyle" name="A2a2_2" id="A2a2_2_3" value="3" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="2">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvUc">3 <input type="checkbox" class="checkboxStyle" name="A2a2_3" id="A2a2_3_3" value="3" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="3">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvDort">3 <input type="checkbox" class="checkboxStyle" name="A2a2_4" id="A2a2_4_3" value="3" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="4">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvBes">3 <input type="checkbox" class="checkboxStyle" name="A2a2_5" id="A2a2_5_3" value="3" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="5">
+              <span></span>
+            </td>
+          </tr>
+          <tr>
+            <th align="right">4</th>
+            <td>KABLO TV (TURKSAT KABLO / TELEDÜNYA)</td>
+            <td style="text-align:center;">4 <input type="checkbox" class="checkboxStyle" name="A2a2_1" id="A2a2_1_4" value="4" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="1">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvIki">4 <input type="checkbox" class="checkboxStyle" name="A2a2_2" id="A2a2_2_4" value="4" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="2">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvUc">4 <input type="checkbox" class="checkboxStyle" name="A2a2_3" id="A2a2_3_4" value="4" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="3">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvDort">4 <input type="checkbox" class="checkboxStyle" name="A2a2_4" id="A2a2_4_4" value="4" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="4">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvBes">4 <input type="checkbox" class="checkboxStyle" name="A2a2_5" id="A2a2_5_4" value="4" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="5">
+              <span></span>
+            </td>
+          </tr>
+          <tr class="AlternateTableRow">
+            <th align="right">5</th>
+            <td>TİVİBU - UYDU ÜZERİNDEN (Türk Telekom)</td>
+            <td style="text-align:center;">5 <input type="checkbox" class="checkboxStyle" name="A2a2_1" id="A2a2_1_5" value="5" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="1">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvIki">5 <input type="checkbox" class="checkboxStyle" name="A2a2_2" id="A2a2_2_5" value="5" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="2">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvUc">5 <input type="checkbox" class="checkboxStyle" name="A2a2_3" id="A2a2_3_5" value="5" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="3">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvDort">5 <input type="checkbox" class="checkboxStyle" name="A2a2_4" id="A2a2_4_5" value="5" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="4">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvBes">5 <input type="checkbox" class="checkboxStyle" name="A2a2_5" id="A2a2_5_5" value="5" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="5">
+              <span></span>
+            </td>
+          </tr>
+          <tr>
+            <th align="right">6</th>
+            <td>TİVİBU - INTERNET ÜZERİNDEN (Türk Telekom)</td>
+            <td style="text-align:center;">6 <input type="checkbox" class="checkboxStyle" name="A2a2_1" id="A2a2_1_6" value="6" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="1">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvIki">6 <input type="checkbox" class="checkboxStyle" name="A2a2_2" id="A2a2_2_6" value="6" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="2">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvUc">6 <input type="checkbox" class="checkboxStyle" name="A2a2_3" id="A2a2_3_6" value="6" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="3">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvDort">6 <input type="checkbox" class="checkboxStyle" name="A2a2_4" id="A2a2_4_6" value="6" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="4">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvBes">6 <input type="checkbox" class="checkboxStyle" name="A2a2_5" id="A2a2_5_6" value="6" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="5">
+              <span></span>
+            </td>
+          </tr>
+          <tr class="AlternateTableRow">
+            <th align="right">7</th>
+            <td>TURKCELL TELEVİZYON + (PLUS)</td>
+            <td style="text-align:center;">7 <input type="checkbox" class="checkboxStyle" name="A2a2_1" id="A2a2_1_7" value="7" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="1">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvIki">7 <input type="checkbox" class="checkboxStyle" name="A2a2_2" id="A2a2_2_7" value="7" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="2">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvUc">7 <input type="checkbox" class="checkboxStyle" name="A2a2_3" id="A2a2_3_7" value="7" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="3">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvDort">7 <input type="checkbox" class="checkboxStyle" name="A2a2_4" id="A2a2_4_7" value="7" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="4">
+              <span></span>
+            </td>
+            <td style="text-align:center;"  class="tvBes">7 <input type="checkbox" class="checkboxStyle" name="A2a2_5" id="A2a2_5_7" value="7" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="5">
+              <span></span>
+            </td>
+          </tr>
+          <tr>
+            <th align="right">8</th>
+            <td>SMART TV / AKILLI TELEVİZYONDAKİ UYGULAMALAR ÜZERİNDEN İnternete bağlanarak Kanalların İnternet Üzerinden İzlenmesi</td>
+            <td style="text-align:center;">8 <input type="checkbox" class="checkboxStyle" name="A2a2_1" id="A2a2_1_8" value="8" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="1">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvIki">8 <input type="checkbox" class="checkboxStyle" name="A2a2_2" id="A2a2_2_8" value="8" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="2">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvUc">8 <input type="checkbox" class="checkboxStyle" name="A2a2_3" id="A2a2_3_8" value="8" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="3">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvDort">8 <input type="checkbox" class="checkboxStyle" name="A2a2_4" id="A2a2_4_8" value="8" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="4">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvBes">8 <input type="checkbox" class="checkboxStyle" name="A2a2_5" id="A2a2_5_8" value="8" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="5">
+              <span></span>
+            </td>
+          </tr>
+          <tr class="AlternateTableRow">
+            <th align="right">9</th>
+            <td>APPLE TV, CHROMECAST, OYUN KONSOLU VB. ÜZERİNDEN</td>
+            <td style="text-align:center;">9 <input type="checkbox" class="checkboxStyle" name="A2a2_1" id="A2a2_1_9" value="9" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="1">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvIki">9 <input type="checkbox" class="checkboxStyle" name="A2a2_2" id="A2a2_2_9" value="9" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="2">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvUc">9 <input type="checkbox" class="checkboxStyle" name="A2a2_3" id="A2a2_3_9" value="9" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="3">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvDort">9 <input type="checkbox" class="checkboxStyle" name="A2a2_4" id="A2a2_4_9" value="9" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="4">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvBes">9 <input type="checkbox" class="checkboxStyle" name="A2a2_5" id="A2a2_5_9" value="9" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="5">
+              <span></span>
+            </td>
+          </tr>
+          <tr>
+            <th align="right">10</th>
+            <td>NORMAL ÇATI ANTENİ YA DA TELEVİZYON ÜZERİNDEKİ ANTEN (Kafes, Kılçık Anten)</td>
+            <td style="text-align:center;">10 <input type="checkbox" class="checkboxStyle" name="A2a2_1" id="A2a2_1_10" value="10" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="1">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvIki">10 <input type="checkbox" class="checkboxStyle" name="A2a2_2" id="A2a2_2_10" value="10" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="2">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvUc">10 <input type="checkbox" class="checkboxStyle" name="A2a2_3" id="A2a2_3_10" value="10" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="3">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvDort">10 <input type="checkbox" class="checkboxStyle" name="A2a2_4" id="A2a2_4_10" value="10" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="4">
+              <span></span>
+            </td>
+            <td style="text-align:center;" class="tvBes">10 <input type="checkbox" class="checkboxStyle" name="A2a2_5" id="A2a2_5_10" value="10" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" groupid="5">
+              <span></span>
+            </td>
+          </tr>
+          <tr class="AlternateTableRow">
+            <th align="right">98</th>
+            <td>Diğer (Belirtiniz)</td>
+            <td style="text-align:center;">98 <input type="checkbox" class="checkboxStyle" name="A2a2_1" id="A2a2_1_98" value="98" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" openendobj="A2a2_O_1_98" groupid="1">
+              <span></span>
+              <label for="a2a2_o_1_98">
+                <input type="text" class="textStyle" name="A2a2_O_1_98" id="A2a2_O_1_98" value="" groupid="1" datatype="varchar" stepname="A2a2" disabled="">
+              </label>
+            </td>
+            <td style="text-align:center;" class="tvIki">98 <input type="checkbox" class="checkboxStyle" name="A2a2_2" id="A2a2_2_98" value="98" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" openendobj="A2a2_O_2_98" groupid="2">
+              <span></span>
+              <label for="a2a2_o_2_98">
+                <input type="text" class="textStyle" name="A2a2_O_2_98" id="A2a2_O_2_98" value="" groupid="2" datatype="varchar" stepname="A2a2" disabled="">
+              </label>
+            </td>
+            <td style="text-align:center;"  class="tvUc">98 <input type="checkbox" class="checkboxStyle" name="A2a2_3" id="A2a2_3_98" value="98" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" openendobj="A2a2_O_3_98" groupid="3">
+              <span></span>
+              <label for="a2a2_o_3_98">
+                <input type="text" class="textStyle" name="A2a2_O_3_98" id="A2a2_O_3_98" value="" groupid="3" datatype="varchar" stepname="A2a2" disabled="">
+              </label>
+            </td>
+            <td style="text-align:center;" class="tvDort">98 <input type="checkbox" class="checkboxStyle" name="A2a2_4" id="A2a2_4_98" value="98" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" openendobj="A2a2_O_4_98" groupid="4">
+              <span></span>
+              <label for="a2a2_o_4_98">
+                <input type="text" class="textStyle" name="A2a2_O_4_98" id="A2a2_O_4_98" value="" groupid="4" datatype="varchar" stepname="A2a2" disabled="">
+              </label>
+            </td>
+            <td style="text-align:center;" class="tvBes">98 <input type="checkbox" class="checkboxStyle" name="A2a2_5" id="A2a2_5_98" value="98" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" openendobj="A2a2_O_5_98" groupid="5">
+              <span></span>
+              <label for="a2a2_o_5_98">
+                <input type="text" class="textStyle" name="A2a2_O_5_98" id="A2a2_O_5_98" value="" groupid="5" datatype="varchar" stepname="A2a2" disabled="">
+              </label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+        
+
+            <table width="80%">
+                <tbody>
+                    <tr><td colspan="4">&nbsp;</td></tr>
+                    <tr>
+                        <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                        <td align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </form>
+</body>
+</html>

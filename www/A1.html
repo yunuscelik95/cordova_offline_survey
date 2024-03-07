@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script>
+    <script src="scripts/jsSingleResponse.js"></script>
+    <script type="text/javascript">
+
+        var id;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+           // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            db.transaction(function (tx) {
+
+            });
+        }
+
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+            SetStartUp();
+            //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        };
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+
+            var kontrol = CheckValues();
+            if (kontrol) {
+                if (currentValue == "2") {
+                    myUpdateRedirect("INTERVIEWS", "A1=" + currentValue + ", A1a1 =null, A1a2 = null", " InterviewID=" + window.localStorage["InterviewID"], "A1b.html?id=" + window.localStorage["InterviewID"]);
+                }
+                else
+                {
+                    myUpdateRedirect("INTERVIEWS", "A1=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "A1a1.html?id=" + window.localStorage["InterviewID"]);    
+                }
+
+                
+           //     window.location.href = "R3.html?id=" + id;
+                /* db = openDatabase({ name: 'my.db', location: 'default' });
+                 db.transaction(function (tx) {
+
+                     tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                         if (val.rows.length > 0) {
+
+                         }
+                         else {
+                             alert("Anket Yok");
+                         }
+                     });
+                 });*/
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">A1.</span><span id="QuestionTextTD">
+                        <font face="calibri" color="#000000" >Evinizde çalışır durumda olan ve TELEVİZYON PROGRAMLARINI İZLEMEK için kullandığınız bir televizyonunuz var mı?  <b>(TEK CEVAP) </b>  </font>
+                                                            <!-- <font face="arial" color="#000000" size="2">         </font> -->
+                            <!-- <p align="left"><font face="calibri" color="#000000" > <b><br />
+    (Sadece playstation, Xbox gibi oyun konsolu bağlı ya da sadece DVD bağlı bir televizyon varsa bunun sayılmaması gerekmektedir)<br />
+    (Çeyiz Olarak Alınmış, Daha Sonra Kullanmak Üzere Alınmış Şu Anda Kullanılmayan Televizyonlar Sayılmayacak)
+</b>    </font></p> -->
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable" class="cssQuestionTable">
+                <tbody>
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">1</td>
+                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_1" value="1"><span></span></td>
+                        <td><label for="A1_1">EVET, VAR</label></td>
+                    </tr>
+                    <tr>
+                        <td class="columnDivider"></td>
+                        <td align="right">2</td>
+                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_2" value="2"><span></span></td>
+                        <td><label for="A1_2">HAYIR, YOK</label></td>
+                    </tr>
+                
+
+                    <tr><td colspan="4">&nbsp;</td></tr>
+                    <tr>
+                        <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                        <td align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </form>
+</body>
+</html>

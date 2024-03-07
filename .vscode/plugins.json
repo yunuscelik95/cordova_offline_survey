@@ -1,0 +1,1 @@
+{"plugins":["cordova-sqlite-storage","cordova-plugin-android-permissions","cordova-plugin-geolocation","cordova-plugin-network-information","cordova-plugin-request-location-accuracy","cordova.plugins.diagnostic"]}

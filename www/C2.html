@@ -1,0 +1,364 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script>
+    <script src="scripts/jsMultiResponseOpen.js"></script>
+    <style>
+        /* The container */
+        .container {
+            display: block;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            text-align:left;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            max-width:100px;
+        }
+
+            /* Hide the browser's default radio button */
+            .container input {
+                position: absolute;
+                opacity: 0;
+                cursor: pointer;
+            }
+
+        /* Create a custom radio button */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 25px;
+            width: 25px;
+            background-color: #eee;
+            border-radius: 50%;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .container:hover input ~ .checkmark {
+            background-color: #ccc;
+        }
+
+        /* When the radio button is checked, add a blue background */
+        .container input:checked ~ .checkmark {
+            background-color: #2196F3;
+        }
+
+        /* Create the indicator (the dot/circle - hidden when not checked) */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the indicator (dot/circle) when checked */
+        .container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Style the indicator (dot/circle) */
+        .container .checkmark:after {
+            top: 9px;
+            left: 9px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+        }
+    </style>
+    <script type="text/javascript">
+       // var db;
+        var id;
+        var TV = 0;
+        var kisi = 0;
+        var isim = "";
+        var gorusulenkisi = 0;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+
+            //var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            InterviewID = window.localStorage["InterviewID"];
+            db.transaction(function (tx) {
+   
+                tx.executeSql("SELECT A1,B1_O,E3b, B2a_1_1,B2a_2_1,B2a_3_1,B2a_4_1,B2a_5_1,B2a_6_1,B2a_7_1,B2a_8_1,B2a_9_1,B2a_10_1,B2a_11_1,B2a_12_1,B2a_13_1,B2a_14_1,B2a_15_1,B2a_16_1,B2a_17_1,B2a_18_1,B2a_19_1,B2a_20_1 FROM INTERVIEWS WHERE InterviewID=" + InterviewID, [], function (tx, val) {
+                        TV = parseInt(val.rows.item(0).A1);
+                        kisi = parseInt(val.rows.item(0).B1_O);
+                        gorusulenkisi = val.rows.item(0).E3b
+                        isim = val.rows.item(0)["B2a_" + gorusulenkisi + "_1"];
+                        $("#gorusulenkisiisim").text("Görüşülen Kişi : " + isim);
+                    });
+            
+
+            });
+        }
+
+
+        window.onload = function () {
+            var queryStrings = getUrlVars();
+         //   TV = parseInt(queryStrings["TV"]);
+            id = window.localStorage["InterviewID"] 
+            otherValue.push("1");
+            otherValue.push("2");
+            otherValue.push("3");
+            otherObj.push(document.getElementById("C2_O_1"));
+            otherObj.push(document.getElementById("C2_O_2"));
+            otherObj.push(document.getElementById("C2_O_3"));
+
+            SetStartUp();
+
+            var i = 0;
+    
+            for (i = 0; i < document.forms[0].elements.length; i++) {
+                var obj = document.forms[0].elements[i];
+                if (obj.type == "radio") {
+                    obj.onclick = setValue;
+                }
+            
+            }
+
+            //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        };
+
+        var currentValueR = null;
+
+
+        function CheckValueRadio() {
+
+            if (currentValueR == null) {
+                alert("En kolay hangi şekilde iletişime geçilebiliriz sorusu boş geçilemez!");
+                submitted = false;
+                return false;
+            }
+
+            for (i = 0; i < document.forms[0].elements.length; i++) {
+                var obj = document.forms[0].elements[i];
+                if (obj.type == "text") {
+                    var valText = obj.value;
+                    for (var z = 0; z < valText.length; z++) {
+                        var sayT = 0;
+                        for (var x = 0; x < valText.length; x++) {
+                            if (valText[z] == valText[x])
+                            {
+                                sayT++;
+                            }
+                        }
+                        if (sayT > 6)
+                        {
+                            alert("Yazılan telefon numarası çok fazla tekrar eden rakamdan oluşuyor. Lütfen Telefon numarasını kontrol ediniz! ");
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        function setValue(obj) {
+            if ($("#C2_O_" + this.value).val() == "") {
+                alert("Telefon Kutucuğu boş bırakıldı, lütfen önce telefon kutucuğunu doldurunuz.");
+               $(this).prop("checked", false);
+            }
+            else
+            {
+                currentValueR = this.value;
+            }
+            
+
+        }
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var kontrol = CheckValues();
+            var kontrol2 = false;
+            var aswer = "";
+            if (kontrol)
+            {
+             
+                $.each($("input[name='C2']:checked"), function () {
+                    if (aswer != "") aswer += ",";
+                    aswer += $(this).val();
+
+                });
+            }
+            if (aswer == "4" || aswer == "5") {
+                currentValueR = "0"
+            }
+            else {
+                kontrol2 = CheckValueRadio();
+            }
+            if (kontrol && (kontrol2 || aswer == "4" || aswer == "5")) {
+                if (aswer != "") {
+                    if (kisi < 2)
+                    {
+                        myUpdateRedirect("INTERVIEWS","C1=" + gorusulenkisi + ",C3=" + currentValueR + ",C2='" + aswer + "',C2_O_1='" + document.getElementById("C2_O_1").value + "',C2_O_2='" + document.getElementById("C2_O_2").value + "',C2_O_3='" + document.getElementById("C2_O_3").value + "'", " InterviewID=" + window.localStorage["InterviewID"], "GK.html?id=" + window.localStorage["InterviewID"] );
+                    }
+                    else {
+                        myUpdateRedirect("INTERVIEWS","C1=" + gorusulenkisi + ",C3=" + currentValueR + ",C2='" + aswer + "',C2_O_1='" + document.getElementById("C2_O_1").value + "',C2_O_2='" + document.getElementById("C2_O_2").value + "',C2_O_3='" + document.getElementById("C2_O_3").value + "'", " InterviewID=" + window.localStorage["InterviewID"], "C4.html?id=" + window.localStorage["InterviewID"] );
+                    }
+                    
+
+                }
+                else {
+                    alert("Boş Geçilemez!");
+                }
+
+                //window.location.href = "E1.html?id=" + id;
+                /* db = window.sqlitePlugin.openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
+                 db.transaction(function (tx) {
+
+                     tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                         if (val.rows.length > 0) {
+
+                         }
+                         else {
+                             alert("Anket Yok");
+                         }
+                     });
+                 });*/
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">C2.</span><span id="QuestionTextTD">
+
+                                                             <font face="calibri" color="#000000" size="2">
+                                                                Ev telefon numaranızı / Cep Telefonunuzu ve varsa İş Telefonunuzu öğrenebilir miyim? (Verilen Tüm Numaraları Kaydediniz)
+                                                                <br /><br />   (Görüşülen kişi Hanehalkı Reisi ya da eşi değil ise bu kişilerin iş ve cep telefon numarasını alınız)  
+<br /> <br />
+
+            <b><label id="gorusulenkisiisim"></label> </b>                                                    
+                                                             </font><p align="left"><font face="calibri" color="#000000" size="2"></font><b><font face="arial" color="#000000" size="2">
+    <span id="StepNameTD">C3.</span><span id="QuestionTextTD">
+        <font face="calibri" color="#000000" size="2">
+            Yaptığımız anket ile ilgili kontrol amacıyla ilerleyen zamanlarda size en kolay hangi numara ile ulaşabiliriz?    
+        </font></span>
+</b><font face="arial" color="#000000" size="2">      </font></p>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="QuestionBuilderPanel">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <table id="QuestionTable">
+                            <tr>
+                                <th colspan="4"></th>
+                        
+                                <th>EN KOLAY ERİŞİM SAĞLANACAK NUMARA   </th>
+                            </tr>
+                            <tbody>
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">1</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="C2" id="C2_1" value="1" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="C2_1">Cep Telefonu</label><label for="C2_O_1"><input type="text" class="textStyle" name="C2_O_1" id="C2_O_1" value="" datatype="varchar" stepname="C2" expression="^[5]{1}[0-9]{9}$" expressionmessage="Cep telefonunu 10 haneli olarak giriniz. Örn: 5554443322" precision="18" scale="2" objecttype="single" style="width: 150px;" disabled=""></label></td>
+                                    <td align="right">
+                                        <label class="container">
+
+                                            <input type="radio" name="C2" id="C2_1" value="1">
+                                            <span class="checkmark"></span>Cep Telefonu
+                                        </label>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="columnDivider"></td>
+                                    <td align="right">2</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="C2" id="C2_2" value="2" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="C2_2">Ev Telefonu</label><label for="C2_O_2"><input type="text" class="textStyle" name="C2_O_2" id="C2_O_2" value="" datatype="varchar" stepname="C2" precision="18" scale="2" objecttype="single" expression="^[0-9]{3}[0-9]{7}$" expressionmessage="Ev telefonunu 10 haneli olarak giriniz. Örn: 2124443322" disabled=""></label></td>
+                                    <td align="right">
+                                        <label class="container">
+
+                                            <input type="radio" name="C2" id="C2_2" value="2">
+                                            <span class="checkmark"></span>
+                                            Ev Telefonu
+                                        </label>
+
+                                    </td>
+                                </tr>
+
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">3</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="C2" id="C2_3" value="3" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="C2_3">İş Telefonu</label><label for="C2_O_3"><input type="text" class="textStyle" name="C2_O_3" id="C2_O_3" value="" datatype="varchar" stepname="C2" precision="18" scale="2" objecttype="single" expression="^[0-9]{3}[0-9]{7}$" expressionmessage="İş telefonunu 10 haneli olarak giriniz. Örn: 2124443322" disabled=""></label></td>
+                                    <td align="right">
+                                        <label class="container">
+
+                                            <input type="radio" name="C2" id="C2_3" value="3">
+                                            <span class="checkmark"></span>
+                                            İş Telefonu
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="columnDivider"></td>
+                                    <td align="right">4</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="C2" id="C2_4" value="4" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="true" itemdisabled="false"><span></span></td>
+                                    <td><label for="C2_4">Telefon Numarasını Vermedi.</label></td>
+                                    <td align="right"></td>
+                                </tr>
+                                <tr>
+                                    <td class="columnDivider"></td>
+                                    <td align="right">5</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="C2" id="C2_5" value="5" openend="false" isnumeric="" size="" maxlength="" norotate="true" deselectother="true" itemdisabled="false"><span></span></td>
+                                    <td><label for="C2_5">Telefonu Yok.</label></td>
+                                    <td align="right"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                <tr><td colspan="4">&nbsp;</td></tr>
+                <tr>
+                    <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                    <td  align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</body>
+</html>

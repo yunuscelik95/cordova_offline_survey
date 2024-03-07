@@ -1,0 +1,202 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <script src="scripts/database.js"></script>
+
+
+    <script src="scripts/jsSingleMatris.js"></script>
+    <script type="text/javascript">
+        var db;
+        var id;
+        var a4;
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+           // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT A4E3,B1_O,B2a_1_1,B2a_2_1,B2a_3_1,B2a_4_1,B2a_5_1,B2a_6_1,B2a_7_1,B2a_8_1,B2a_9_1,B2a_10_1,B2a_11_1,B2a_12_1,B2a_13_1,B2a_14_1,B2a_15_1,B2a_16_1,B2a_17_1,B2a_18_1,B2a_19_1,B2a_20_1,B3_1_1,B3_2_1,B3_3_1,B3_4_1,B3_5_1,B3_6_1,B3_7_1,B3_8_1,B3_9_1,B3_10_1,B3_11_1,B3_12_1,B3_13_1,B3_14_1,B3_15_1,B3_16_1,B3_17_1,B3_18_1,B3_19_1,B3_20_1 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
+                    sayi = parseInt(val.rows.item(0).B1_O);
+             
+        
+                    if (sayi > 0) {
+                        var yasBuyukSay = 0;
+                        var yas15BuyukFirstIndex = 0;
+                        var A4cArr = val.rows.item(0)["A4E3"].split(",");
+
+                        for (var i = 1; i < sayi + 1; i++) {
+                            var fieldName = "B3_" + i + "_1";
+    
+                            if (parseInt(val.rows.item(0)[fieldName]) > 2 && $.inArray(i.toString(), A4cArr) !== -1) {
+                                if (yasBuyukSay == 0)
+                                {
+                                    yas15BuyukFirstIndex = i;
+                                }
+                                else
+                                {
+                                    var row = $("#QuestionTable tbody>tr").eq(1).clone(true);
+                                    var isimFieldName = "B2a_" + i + "_1";
+                                    var newRowHtml = row.html().replace("lblisim",val.rows.item(0)[isimFieldName]).replace(/\#/g, i);
+                                    if (i % 2 === 0) {
+                                       // newRowHtml =newRowHtml.replace("AlternateTableRow", "");
+                                       newRowHtml = "<tr>" + newRowHtml + "</tr>";
+                                    }
+                                    else
+                                    {
+                                        newRowHtml = "<tr class=\"AlternateTableRow\">" + newRowHtml + "</tr>";
+                                    }
+
+                                    $("#QuestionTable tbody tr:last").before(newRowHtml);
+                                }
+                                yasBuyukSay++;
+                            }
+
+                          
+                        }
+                        
+                        var row = $("#QuestionTable tbody>tr").eq(1).clone(true);
+                        var isimFieldName = "B2a_" + yas15BuyukFirstIndex + "_1";
+                        var firstRow ="<tr class=\"AlternateTableRow\">" +  row.html().replace("lblisim", val.rows.item(0)[isimFieldName]).replace(/\#/g, yas15BuyukFirstIndex) + "</tr>";
+                        $("#QuestionTable tbody>tr").eq(1).replaceWith(firstRow);
+                        SetStartUp();
+                     }
+                    // alert(haneSayi);
+                },
+                 function (error) {
+                    console.log("hata: " + error.message);
+                });
+            });
+        }
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+        
+            //   db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
+        };
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+
+            var kontrol = CheckValues();
+            if (kontrol) {
+                var str = "";
+                var hayirKontrol = false;
+                for (var i = 0; i < currentValue.length; i++) {
+                    if (str != "") str += ",";
+                    str += currentValue[i];
+                    if (currentValue[i].split("=")[1] == 1)
+                    {
+                        hayirKontrol = true;
+                    }
+                }
+
+                if (hayirKontrol == false)
+                {
+                    alert('En az 1 kişi için "EVET İZLİYOR" işaretlenmeli!');
+                    return;
+                }
+
+                myUpdate("INTERVIEWS", str, " InterviewID=" + window.localStorage["InterviewID"]);
+
+            
+   
+                window.location.href = "P1.html?id=" + window.localStorage["InterviewID"] ;
+            
+
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">A4E5.</span><span id="QuestionTextTD">
+                            <font face="times new roman" color="#000000" size="2">Evinizde kimlerin AKILLI TELEFONDAN’dan Televizyon İzlediğini söyler misiniz?
+                            </font>
+                            
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div id="QuestionBuilderPanel">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+
+                        <table id="QuestionTable">
+                            <tbody>
+                                <tr>
+                                    <th align="right"></th>
+                                    <th>&nbsp;</th>
+                                    <th align="center" valign="middle">EVET İZLİYOR </th>
+                                    <th align="center" valign="middle">HAYIR İZLEMİYOR </th>
+                                    <th align="center" valign="middle">BİLMİYORUM / FİKRİM YOK  </th>
+                                </tr>
+                                <tr class="AlternateTableRow">
+                                    <th align="right">#</th>
+                                    <td>lblisim </td>
+                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="A4E5_#" id="A4E5_#_1" value="1"  openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="#" onclick="SingleMatrisClick(this);"><span></span></td>
+                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="A4E5_#" id="A4E5_#_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="#" onclick="SingleMatrisClick(this);"><span></span></td>
+                                    <td style="text-align:center;">3<input type="radio" class="radioStyle" name="A4E5_#" id="A4E5_#_3" value="3" openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="#" onclick="SingleMatrisClick(this);"><span></span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                                    <td align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
+                                </tr>
+    
+                            </tbody>
+                        </table>
+ 
+            <tr>
+                <td>
+                    <table width="90%">
+                        <tbody>
+                          
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            </table>
+        </div>
+
+    </form>
+</body>
+</html>

@@ -1,0 +1,202 @@
+﻿{
+  "project": 
+    {
+      "projectname": "Test Proje",
+      "questions": [
+        {
+          "num": "Q1",
+          "type": "Single",
+          "text": "Cinsiyet",
+          "answer": "",
+          "filter": "",
+          "rotation": true,
+          "chooises": [
+            {
+              "value": "1",
+              "text": "Kadın",
+              "open": false,
+              "openAnswer": ""
+            },
+            {
+              "value": "2",
+              "text": "Erkek",
+              "open": true,
+              "openAnswer": ""
+            }
+
+          ]
+        },
+        {
+          "num": "Q2",
+          "type": "Text",
+          "text": "Yaş",
+          "answer": "hsan",
+          "filter": "",
+          "rotation": false,
+          "chooises": [
+            {
+              "value": "1",
+              "text": "Yazınız"
+            }
+          ]
+        },
+        {
+          "num": "Q3",
+          "type": "Multi",
+          "text": "Okuduğunuz Gazete",
+          "answer": [ "2" ],
+          "filter": "",
+          "rotation": true,
+          "chooises": [
+            {
+              "value": "1",
+              "text": "Hürriyet",
+              "open": false,
+              "openAnswer": "",
+              "single": false
+            },
+            {
+              "value": "2",
+              "text": "Sabah",
+              "open": false,
+              "openAnswer": "",
+              "single": false
+            },
+            {
+              "value": "3",
+              "text": "Diğer",
+              "open": true,
+              "openAnswer": "",
+              "single": true
+            }
+          ]
+        },
+        {
+          "num": "Q4",
+          "type": "SingleMatris",
+          "text": "İfadeleri Puanla",
+          "filter": "",
+          "rotation": true,
+          "listrotation": true,
+          "listfilter": "valueitem==1",
+          "list": [
+            {
+              "id": "1",
+              "text": "Başarılı uygulama",
+              "answer": "4",
+              "open": false,
+              "openAnswer": ""
+            },
+            {
+              "id": "2",
+              "text": "Yazar iyidir",
+              "answer": "5",
+              "open": false,
+              "openAnswer": ""
+
+            }
+
+          ],
+          "chooises": [
+            {
+              "value": "1",
+              "text": "Çok Başarısız",
+              "open": false,
+              "openAnswer": ""
+            },
+            {
+              "value": "2",
+              "text": "Başarısız",
+              "open": false,
+              "openAnswer": ""
+            },
+            {
+              "value": "3",
+              "text": "Ne Başarılı, Ne Başarısız",
+              "open": false,
+              "openAnswer": ""
+            },
+            {
+              "value": "4",
+              "text": "Başarılız",
+              "open": false,
+              "openAnswer": ""
+            },
+            {
+              "value": "5",
+              "text": "Çok Başarısız",
+              "open": true,
+              "openAnswer": ""
+            }
+          ]
+        },
+
+        {
+          "num": "Q5",
+          "type": "MultiMatris",
+          "text": "Dinlediğin Radyo",
+          "filter": "",
+          "rotation": true,
+          "listrotation": true,
+          "listfilter": "",
+          "list": [
+            {
+              "id": "1",
+              "text": "Hafta içi",
+              "answer": [],
+              "open": false,
+              "openAnswer": ""
+            },
+            {
+              "id": "2",
+              "text": "Hafta Sonu",
+              "answer": [],
+              "open": false,
+              "openAnswer": ""
+
+            }
+
+          ],
+          "chooises": [
+            {
+              "value": "1",
+              "text": "Fenomen",
+              "open": false,
+              "openAnswer": "",
+              "single": false
+            },
+            {
+              "value": "2",
+              "text": "Best",
+              "open": false,
+              "openAnswer": "",
+              "single": false
+            },
+            {
+              "value": "3",
+              "text": "Show",
+              "open": false,
+              "openAnswer": "",
+              "single": false
+            },
+            {
+              "value": "4",
+              "text": "Kral",
+              "open": false,
+              "openAnswer": "",
+              "single": false
+            },
+            {
+              "value": "5",
+              "text": "Ntv",
+              "open": false,
+              "openAnswer": "",
+              "single": true
+            }
+          ]
+        }
+      ]
+   }
+      
+}
+

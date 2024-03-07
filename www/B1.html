@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script>
+    <script src="scripts/jsSingleResponseOpen.js"></script>
+    <script type="text/javascript">
+        //var db;
+        var guid;
+        var statu="0";
+
+        var TV = 0;
+        var kisi = 0;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+
+            //var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            InterviewID = window.localStorage["InterviewID"];
+            db.transaction(function (tx) {
+                    // tx.executeSql("SELECT A2a1,COALESCE(A2a2a1, 0) AS A2a2a1, COALESCE(A2a2a2, 0) AS A2a2a2, COALESCE(A2a2a3, 0) AS A2a2a3, COALESCE(A2a2a4, 0) AS A2a2a4, COALESCE(A2a2a5, 0) AS A2a2a5 FROM INTERVIEWS WHERE InterviewID =" + InterviewID, [], function (tx, val) {
+                    //     if (val.rows.item(0).A2a1 == 1)
+                    //     {
+                    //         A2a2a1 = val.rows.item(0).A2a1;
+                    //         A2a2a2 = val.rows.item(0).A2a2;
+                    //         A2a2a3 = val.rows.item(0).A2a3;
+                    //         A2a2a4 = val.rows.item(0).A2a4;
+                    //         A2a2a5 = val.rows.item(0).A2a5;
+                    //          if (A2a2a1.indexOf("2") < 0 && A2a2a1.indexOf("3") < 0 && A2a2a1.indexOf("4") < 0  && A2a2a1.indexOf("5") < 0  && A2a2a1.indexOf("6") < 0  && A2a2a1.indexOf("7") < 0)
+                    //          {
+                    //             if (A2a2a2.indexOf("2") < 0 && A2a2a2.indexOf("3") < 0 && A2a2a2.indexOf("4") < 0  && A2a2a2.indexOf("5") < 0  && A2a2a2.indexOf("6") < 0  && A2a2a2.indexOf("7") < 0)
+                    //             {
+                    //                 if (A2a2a3.indexOf("2") < 0 && A2a2a3.indexOf("3") < 0 && A2a2a3.indexOf("4") < 0  && A2a2a3.indexOf("5") < 0  && A2a2a3.indexOf("6") < 0  && A2a2a3.indexOf("7") < 0)
+                    //                 {
+                    //                     if (A2a2a4.indexOf("2") < 0 && A2a2a4.indexOf("3") < 0 && A2a2a4.indexOf("4") < 0  && A2a2a4.indexOf("5") < 0  && A2a2a4.indexOf("6") < 0  && A2a2a4.indexOf("7") < 0)
+                    //                     {
+                    //                         if (A2a2a5.indexOf("2") < 0 && A2a2a5.indexOf("3") < 0 && A2a2a5.indexOf("4") < 0  && A2a2a5.indexOf("5") < 0  && A2a2a5.indexOf("6") < 0  && A2a2a5.indexOf("7") < 0)
+                    //                         {
+                                                
+                    //                         }
+                    //                     } 
+                    //                 } 
+                    //             } 
+                    //          }
+                    //     }
+                    // });
+                    var queryStrings = getUrlVars();
+                    guid = queryStrings["guid"];
+                    statu = queryStrings["Statu"];
+                    document.forms[0].focus(); 
+                    otherObj = document.getElementById('B1_O');
+                    otherValue = 1;
+                    currentValue = 1;
+                    SetStartUp();
+
+
+            });
+        }
+
+
+
+        window.onload = function () {
+ 
+            //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        };
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+
+            var kontrol = CheckValues();
+            if ($("#B1_O").val() != "" && kontrol) {
+                myUpdateRedirect("INTERVIEWS", "B1=" + currentValue + ",B1_O='" + $("#B1_O").val() + "'", " InterviewID=" + window.localStorage["InterviewID"], "HaneBilgiler.html?id=" + window.localStorage["InterviewID"] + "&hanesayi=" + $("#B1_O").val());
+                // if (currentValue > 2) {
+                //     myUpdateRedirect("INTERVIEWS", "B1=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "Tel.html?id=" + window.localStorage["InterviewID"]);
+                // }
+                // else {
+                //     myUpdateRedirect("INTERVIEWS", "B1=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "HaneBilgiler.html?id=" + window.localStorage["InterviewID"] + "&hanesayi=" + currentValue);
+                // }
+
+                //window.location.href = "E2.html?id=" + id + "&hanesayisi=" + $("#B1_O").val() ;
+                /* db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+                 db.transaction(function (tx) {
+
+                     tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                         if (val.rows.length > 0) {
+
+                         }
+                         else {
+                             alert("Anket Yok");
+                         }
+                     });
+                 });*/
+            }
+            else {
+                alert("Kutucuk Boş Geçilemez!");
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <div id="pnlCenter">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <table border="0" id="QuestionText">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span id="StepNameTD">B1.</span><span id="QuestionTextTD">
+                                                                            <font face="calibri" color="#000000" size="2">
+                                                                                Evdeki bebekler, çocuklar aileden olmayan, ancak burada düzenli yatılı yaşayan yardımcılar, akrabalar ve siz dahil evinizde yaşayan TOPLAM KİŞİ SAYISI KAÇTIR?  Lütfen hanede düzenli yaşayan herkesi düşünerek cevaplayınız. Askerlik, eğitim, çalışma gibi sebeplerle evden uzun süre aylılan kişileri dahil etmeyiniz.  </font><font face="calibri" color="#0070C0" size="2"><b> HANEDEKİ HERKES DİKKATE ALINARAK CEVAP  ALINACAK   </b></font><b><font face="arial" color="#000000" size="2"></font></b><font face="arial" color="#000000" size="2">
+                                                <p align="left">
+                                                </p>
+                                            </font><p align="left"><font face="arial" color="#000000" size="2">   </font></p>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table><div id="QuestionBuilderPanel">
+                            <table id="QuestionTable" class="cssQuestionTable">
+                                <tbody>
+
+                                    <tr class="AlternateTableRow">
+                                        <td class="columnDivider"></td>
+                                        <td align="right">1</td>
+                                        <td align="right"><input type="radio" class="radioStyle" name="B1" id="B1_1" value="1" checked="checked"><span></span></td>
+                                        <td><label for="A1b_1">Toplam Kişi Sayısı</label>
+                                            <input type="text" class="textStyle" name="B1_O" id="B1_O" value="" datatype="varchar" stepname="B1" precision="18" scale="2" objecttype="single" expression="^([1-9]|[1][0-7])$" expressionmessage="Sayısal değer giriniz. (1-17)"></td>
+                                    </tr>
+                                    <!-- <tr class="AlternateTableRow">
+                                        <td class="columnDivider"></td>
+                                        <td align="right">1</td>
+                                        <td align="right"><input type="radio" class="radioStyle" name="B1" id="B1_1" value="1"><span></span></td>
+                                        <td><label for="B1_1">1 Kişi </label></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="columnDivider"></td>
+                                        <td align="right">2</td>
+                                        <td align="right"><input type="radio" class="radioStyle" name="B1" id="B1_2" value="2"><span></span></td>
+                                        <td><label for="B1_2">2 Kişi </label></td>
+                                    </tr>
+                                    <tr class="AlternateTableRow">
+                                        <td class="columnDivider"></td>
+                                        <td align="right">3</td>
+                                        <td align="right"><input type="radio" class="radioStyle" name="B1" id="B1_3" value="3"><span></span></td>
+                                        <td><label for="B1_3">3 Kişi </label></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="columnDivider"></td>
+                                        <td align="right">4</td>
+                                        <td align="right"><input type="radio" class="radioStyle" name="B1" id="B1_4" value="4"><span></span></td>
+                                        <td><label for="B1_4">4 Kişi </label></td>
+                                    </tr>
+
+                                    <tr class="AlternateTableRow">
+                                        <td class="columnDivider"></td>
+                                        <td align="right">5</td>
+                                        <td align="right"><input type="radio" class="radioStyle" name="B1" id="B1_5" value="5"><span></span></td>
+                                        <td><label for="B1_5">5+ Kişi </label></td>
+                                    </tr> -->
+                                    <tr><td colspan="4">&nbsp;</td></tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                                            <!--                     <input type="button" value="Koordinat" id="btnKoordinat"  name="btnKoordinat"/>-->
+                                        </td>
+                                        <td align="right">
+
+                                            <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
+
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+             
+            </table>
+        </div>
+    </form>
+</body>
+</html>

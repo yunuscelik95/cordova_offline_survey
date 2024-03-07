@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="scripts/vuejs.js"></script>
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script src="scripts/listener.js"></script>
+    <script src="scripts/database.js"></script>
+    <script src="scripts/axiosjs.js"></script>
+    <script src="scripts/liste.js"></script>
+    
+    <style>
+        td {
+            padding: 3px
+        }
+    </style>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        if (window.localStorage["userGuid"] == "" || window.localStorage["userGuid"] == undefined) {
+            window.location.href = "Login.html";
+        }
+
+        $(document).ready(function () {
+            updateConnectionProperties();
+          
+        })
+    </script>
+</head>
+<body>
+    <div id="blokliste"  v-cloak>
+        <div>    <input type="button" id="btnWebService" value="Listeyi Yeniden Yükle"  @click="listeYukle('button')"/></div>
+        <table id="tblListe" class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">ListeID</th>
+                    <!--   <th scope="col">İl</th>-->
+                    <th scope="col">İlçe</th>
+                    <th scope="col">Köy</th>
+                    <th scope="col">Mahalle</th>
+                    <th scope="col">Cadde Sok</th>
+                    <th scope="col">Bina Site</th>
+                    <th scope="col">Bina Blok</th>
+                    <th scope="col">Dış Kapı No</th>
+                    <th scope="col">İç Kapı No</th>
+                    <th scope="col">Ziyaret Tarihi</th>
+                    <th scope="col">Ziyaret Sayısı</th>
+                    <th scope="col">Son Kodlama <!--<input type='submit' value='Eğitim' class='btn btn-block btn-primary btn-xs' onclick="javascript:InterviewSelect('Egitim')" />--></th>
+
+                </tr>
+                <tr v-for="item in liste" v-if="liste.length">
+                    <td>{{item.id}}</td>
+                    <td>{{item.ilceadi}}</td>
+                    <td>{{item.koyadi}}</td>
+                    <td>{{item.mahalleadi}}</td>
+                    <td>{{item.cad_sok_ad}}</td>
+                    <td>{{item.binasitead}}</td>
+                    <td>{{item.binablokad}}</td>
+                    <td>{{item.diskapi_no}}</td>
+                    <td>{{item.ickapi_no}}</td>
+                    <td>{{item.ziyaretTarihi}}</td>
+                    <td>{{item.ZiyaretSayi}}</td>
+                    <td>
+                        <input v-if="(item.ResponseText == '') && item.ZiyaretSayi < ziyaretSayisi" type='button' class='btn btn-block btn-primary btn-xs' :value='item.statu + "- Başla"' @click="InterviewSelect(item.id)" />
+                        <input v-if="((item.statu == '0' || item.statu == '2' || item.statu == '999') || (item.statu > 10 && item.statu < 20)) && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi)" type='button' class='btn btn-block btn-primary btn-xs' :value='item.ResponseText' @click="InterviewSelect(item.id)" />
+                        <span v-if="item.statu == 6" class='btn btn-block btn-success btn-xs'> {{item.ResponseText}} </span>
+                        <!-- <span v-if="(item.statu != 6 && item.statu != '0' && item.statu != '999' && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi) )" class='btn-block btn-success btn-xs'> {{item.ResponseText}} </span> -->
+                         <input v-if="((item.statu != '0' && item.statu != '2' && item.statu != '6' && item.statu != '999') && (item.statu < 11 || item.statu > 19)) && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi)" type='button' class='btn btn-block btn-danger btn-primary btn-xs' :value='item.ResponseText' @click="InterviewSelect(item.id)" />
+                    </td>
+
+                </tr>
+
+            </thead>
+        </table>
+
+    </div>
+</body>
+<style>
+    [v-cloak] { display: none; }
+  </style>
+</html>

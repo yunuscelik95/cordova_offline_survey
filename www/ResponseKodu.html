@@ -1,0 +1,553 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+    <script src="scripts/vuejs.js"></script>
+    <script src="scripts/axiosjs.js"></script>
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script>
+    <style>
+        input{
+            border-style:solid;
+            border-width:1px;
+            padding:5px;
+            margin:5px;
+
+        }
+        textarea {
+            margin: 5px;
+            margin-top:8px;
+            border-color: black;
+        }
+        table {
+        border-style:solid;
+
+
+        }
+
+    </style>
+    <script type="text/javascript">
+      //  var db;
+      var currentValue = null;
+        var callback = 0;
+
+        window.onload = function () {
+            if (window.localStorage["InterviewID"] == "") {
+                window.location.href = "blokOzet.html";
+            }
+            id = getUrlVars()["id"];
+
+            window.responses = new Vue({
+            el: "#responsecontain",
+            data: {
+                liste: [],
+                ziyaretSayisi: 100
+            },
+            methods: {
+
+                listeYukle() {
+                    var self = this;
+                    db.transaction(function (tx) {
+                        tx.executeSql("SELECT ResponseID, ResponseText, IsCallBack, ResponseType from RESPONSES where ResponseType = 0 order by SortIndex", [], function (tx, val) {
+                            var listeArray = [];
+            
+                                for (var i = 0; i < val.rows.length; i++) {
+                                    var row = val.rows.item(i);
+                                    listeArray.push(row);
+                                }
+                                self.liste = listeArray;
+                                SetStartUp();
+                            
+                        })
+                            , function (tx, error) {
+                                console.log('Error : ' + error.message);
+                                return true;
+                            }
+                    });
+                }
+            }
+        })
+
+      
+
+        var id;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            if (window.responses) {
+            // Vue instance'ının listeYukle methodunu çağır
+                window.responses.listeYukle();
+            } else {
+                console.error("Vue instance bulunamadı.");
+            }
+          //  var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        }
+
+
+            //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        };
+
+        
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            
+            var kontrol = CheckValues();
+            var gun = $("#timeGun").val();
+            var ay = $("#timeAy").val();
+            var yil = $("#timeYil").val();
+            var saat = $("#CALLBACKTIME").val();
+            var ziyaretTarihi = "";
+            
+            if (callback=="1" && gun != "" && ay != "" && parseInt(ay) < 9 && yil == "2024" && saat!="")
+            {
+                ziyaretTarihi = gun + "-" + ay + "-" + yil + " " + saat;
+                
+            }
+            else if (callback=="1")
+            {
+                alert("Ziyaret tarihini işaretleyiniz! 2024 yılı 9. Ay öncesine randevu alınabilinir");
+                return false;
+            }
+            if (kontrol) {
+             //   myUpdate("INTERVIEWS", "InterviewStatu=" + currentValue + ",[stop]=getdate()", " InterviewID=" + id);
+            //    myUpdate("LISTE", "statu=" + currentValue, " id=" + id);
+                db.transaction(function (tx) {
+                    var aciklama = $("#COMMENT").val().replace("'", "").replace("'", "").replace("'", "");
+                    myUpdate("LISTE", "statu=" + currentValue + ",ziyaretTarihi='" + ziyaretTarihi + "',ziyaretAciklama='" + aciklama + "'", " InterviewID=" + window.localStorage["InterviewID"]);
+                    myUpdate("INTERVIEWS", "InterviewStatu= " + currentValue + ", [stop] = datetime('now'),gonderim=0,ziyaretTarihi='" + ziyaretTarihi + "',ziyaretAciklama='" + aciklama + "'", " InterviewID=" + window.localStorage["InterviewID"]);
+                    window.location.href = "Response.html?id=" + window.localStorage["InterviewID"] + "&statu=" + currentValue;
+                });
+                /* db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+                 db.transaction(function (tx) {
+
+                     tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                         if (val.rows.length > 0) {
+
+                         }
+                         else {
+                             alert("Anket Yok");
+                         }
+                     });
+                 });*/
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+    
+        function SetStartUp() {
+            var i = 0;
+            var isOtherSetted = false;
+            var radioList = document.getElementById("questionBuilderPanel").querySelectorAll('.radioStyle');
+            for (i = 0; i < radioList.length; i++) {
+                var obj = radioList[i];
+                if (obj.type == "radio") {
+                    obj.onclick = setValue;
+                }
+            }
+
+
+        }
+
+        function CheckValues() {
+
+            if (currentValue == null) {
+                alert("Bir seçim yapmalısınız");
+                submitted = false;
+                return false;
+            }
+            return true;
+        }
+
+        function setValue(obj) {
+            currentValue = obj.value;
+            callback = obj.getAttribute("callback");
+            if (obj.getAttribute("callback") == "0") {
+              //  $("#RESPONSETABLE").hide();
+                $("#CALLBACKTR").hide();
+            }
+            else if (obj.getAttribute("callback") == "1") 
+            {
+               
+
+                //$(this).closest("tr").after("<tr><td colspan='5'>" + $("#RESPONSETABLE").html() + "</td></tr>");
+                
+                $("#CALLBACKTR").show();
+               // $("#RESPONSETABLE").show();
+            }
+        }
+
+        $(document).ready(function () {
+           
+
+            $("input[type='number']").keydown(function (e) {
+                var max_chars = $(this).attr("maxlength");
+                var max_value = $(this).attr("maxValue");
+                
+                if ($(this).val().length >= max_chars ) {
+                    $(this).val($(this).val().substr(0, max_chars));
+                }
+                if (parseInt($(this).val()) > parseInt(max_value))
+                {
+                    $(this).val($(this).val().substr(0, $(this).val().length-1));
+                }
+            });
+            $("input[type='number']").blur(function (e) {
+                if ($(this).attr("id") == "timeAy" || $(this).attr("id") == "timeGun")
+                {
+                    if ($(this).val().length < 2)
+                    {
+                        $(this).val("0" + $(this).val());
+                    }
+                }
+            })
+            $("input[type='number']").keyup(function (e) {
+                var max_chars = $(this).attr("maxlength");
+                var max_value = $(this).attr("maxValue");
+                if ($(this).val().length >= max_chars) {
+                    $(this).val($(this).val().substr(0, max_chars));
+                }
+
+                if (parseInt($(this).val()) > parseInt(max_value)) {
+                    $(this).val($(this).val().substr(0, $(this).val().length - 1));
+                }
+            });
+        })
+
+
+
+     
+    </script>
+</head>
+<body>
+
+    <form id="form1">
+        <div id="responsecontain" v-cloak>
+        <!--     <table border="0" id="QuestionText">
+             <tbody>
+                 <tr>
+                     <td>
+                         <span id="StepNameTD">P1.</span><span id="QuestionTextTD">
+                             <font face="Calibri" color="#000000" size="2">
+                                 <b>Efendim yardımlarınız için çok teşekkürler şimdi son sorumuza geldik;</b><b>
+                                 </b>
+                             </font><b></b><p align="left">
+                                 <b><font face="Calibri" color="#000000" size="2"></font><font face="Calibri" color="#FF0000" size="2"></font></b><font face="Calibri" color="#FF0000" size="2">
+                                 </font>
+                             </p><p align="left">
+                                 <font face="Calibri" color="#000000" size="2">
+                                     Türkiye’de Radyo dinleme alışkanlıklarını ölçümlemek amacıyla bir grup oluşturulacaktır. Oluşturulacak bu grubun üyeleri <b>2 ayda bir kez 5 dakikayı geçmeyecek</b> şekilde ankete katılıp görüş ve fikirlerini belirtecektir. Gruba dahil olan tüm kişilere ayrı ayrı hediye verilecektir.  Sizin hanenizden birden fazla kişi de bu gruba katılabilir.
+                                 </font>
+                             </p><p align="left">
+                                 <font face="Calibri" color="#000000" size="2">
+                                     Fikirleriniz bizim için <b>çok değerli</b> ve medya sektörüne yön verecektir.
+                                 </font>
+                             </p><p align="left">
+                                 <font face="Calibri" color="#000000" size="2">Ayda yalnızca bir kez aranarak görüş ve fikirlerinizi alacağımız bu gruba katılmak ister misiniz?</font><font face="calibri" color="#000000" size="2">
+                                 </font>
+                             </p><p align="left"><font face="arial" color="#000000" size="2">   </font></p>
+                         </span>
+                     </td>
+                 </tr>
+             </tbody>
+         </table>-->
+
+        <div id="questionBuilderPanel">
+            <table border="0" cellpadding="0" cellspacing="0">
+
+                <tr>
+                    <td>
+                        <table id="QuestionTable" class="cssQuestionTable">
+                            <tbody>
+                                <tr class="AlternateTableRow"  v-for="item in liste" >
+                                        <td class="columnDivider"></td>
+                                        <td align="right">{{item.ResponseID}}</td>
+                                        <td align="right">
+                                            <input 
+                                                type="radio"
+                                                class="radioStyle"
+                                                name="InterviewStatu" 
+                                                :id="'InterviewStatu_' + item.ResponseID"
+                                                :value="item.ResponseID"
+                                                :callback="item.IsCallBack"
+                                                onclick="setValue(this);"
+                                                >
+                                            <span></span>
+                                        </td>
+                                        <td><label :for="'InterviewStatu_' + item.ResponseID">{{item.ResponseText}} </label></td>
+                                </tr>
+
+                                <!-- <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">1</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_1" value="1" callback="0"><span></span></td><td><label for="InterviewStatu_1">VERİLEN ADRES İŞYERİ / OFİS </label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">2</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_2" value="2" callback="0"><span></span></td><td><label for="InterviewStatu_2">ADRES KENTSEL DÖNÜŞÜM KAPSAMINDA /YIKILMIŞ YA DA İNŞAAT HALİNDE  </label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">3</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_3" value="3" callback="0"><span></span></td><td><label for="InterviewStatu_3">VERİLEN ADRES ARSA / OKUL / CAMİİ VB </label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">4</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_4" value="4" callback="0"><span></span></td><td><label for="InterviewStatu_4">VERİLEN ADRES DÜZENLİ YAŞANMAYAN YAZLIK / SAYFİYE / İKİNCİ EV</label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">5</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_5" value="5" callback="0"><span></span></td><td><label for="InterviewStatu_5">İLÇEDE BU İSİMLİ BİR MAHALLE BULUNAMADI (Muhtar Sorgulaması Yapılacak) </label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">23</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_23" value="23" callback="0"><span></span></td><td><label for="InterviewStatu_23">MAHALLEDE LİSTEDE YER ALAN CADDE / SOKAK BULUNAMADI  (Muhtar Sorgulaması Yapılacak) </label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">7</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_7" value="7" callback="0"><span></span></td><td><label for="InterviewStatu_7">SOKAKTA BİNA / DIŞ KAPI NUMARASI BULUNAMADI–BU NUMARA YOK (Muhtar Sorgulaması Yapılacak) </label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">8</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_8" value="8" callback="0"><span></span></td><td><label for="InterviewStatu_8">BİNADA BELİRTİLEN DAİRE NUMARASI YA DA KAT YOK </label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">9</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_9" value="9" callback="0"><span></span></td><td><label for="InterviewStatu_9">HANEDEKİ KİŞİLER YABANCI UYRUKLU / MÜLTECİ </label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">10</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_10" value="10" callback="0"><span></span></td><td><label for="InterviewStatu_10">SİTEYE GİRİŞ YAPILAMADI / GÜVENLİKLİ SİTE-ASKER-HAKİM-POLİS LOJMANI </label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">11</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_11" value="11" callback="1"><span></span></td><td><label for="InterviewStatu_11">HANEDE HİÇ KİMSE BULUNAMADI (2. / 3. Ziyaret) </label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">12</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_12" value="12" callback="1"><span></span></td><td><label for="InterviewStatu_12">HANEDE 15 YAŞ ÜZERİ YA DA ANKETE CEVAP VERECEK UYGUN KİŞİ BULUNAMADI(2. / 3. Ziyaret)</label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">13</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_13" value="13" callback="1"><span></span></td><td><label for="InterviewStatu_13">EVDEKİ KİŞİ ANKET YAPMAYI KABUL ETMEDİ (2. / 3. Ziyaret) </label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">14</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_14" value="14" callback="1"><span></span></td><td><label for="InterviewStatu_14">KAPIYI AÇAN KİŞİ İLE İLETİŞİM KURULAMADI    (İŞİTME ENGELLİ, KONUŞMA ENGELLİ, TÜRKÇE BİLMİYOR, VB.) (2. / 3. Ziyaret)</label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">15</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_15" value="15" callback="1"><span></span></td><td><label for="InterviewStatu_15">KAPIYI AÇAN KİŞİ DAHA SONRA GÖRÜŞMEK İÇİN RANDEVU VERDİ (Gün–Saat Yazınız) </label></td></tr>
+
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">16</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_16" value="16" callback="1"><span></span></td><td><label for="InterviewStatu_16">GÖRÜŞME BAŞLADI AMA YARIM KALDI (Tamamlamak İçin Randevu Alın) </label></td></tr>
+                                <tr class="AlternateTableRow"><td class="columnDivider"></td><td align="right">102</td><td align="right"><input type="radio" class="radioStyle" name="InterviewStatu" id="InterviewStatu_102" value="102" callback="1"><span></span></td><td><label for="InterviewStatu_102">HANE GÖRÜŞME YAPMAYI KABUL ETMEDİ </label></td></tr> -->
+
+                            </tbody>
+                        </table>
+                <tr><td colspan="4">&nbsp;</td></tr>
+                <tr>
+                    <td id="CALLBACKTR" style="display:none">
+                        <TABLE ID=RESPONSETABLE style="border-style:solid;border-width:1px;margin-left:40px" cellspacing="5" cellpadding="2">
+                            <TR>
+                                <TD>Call Back Date :</TD>
+                                <TD>
+                                    <input type="number" id="timeGun" name="timeGun" maxlength="2" maxValue="31" style="width:35px" placeholder="Gun" />-<input type="number" id="timeAy" name="timeAy" maxlength="2" maxValue="12" style="width:35px" placeholder="Ay" />-<input type="number" id="timeYil" name="timeYil" style="width:60px" maxlength="4" placeholder="2024" value="2024" />
+                                </TD>
+                                <TD>
+                                    Call Back Time :
+                                </TD>
+                                <TD>
+                                    <SELECT NAME=CALLBACKTIME ID="CALLBACKTIME">
+                                        <OPTION VALUE="">
+                                            Select...
+                                        </OPTION>
+                                        <OPTION VALUE="08:00">
+                                            08:00
+                                        </OPTION>
+                                        <OPTION VALUE="08:15">
+                                            08:15
+                                        </OPTION>
+                                        <OPTION VALUE="08:30">
+                                            08:30
+                                        </OPTION>
+                                        <OPTION VALUE="08:45">
+                                            08:45
+                                        </OPTION>
+                                        <OPTION VALUE="09:00">
+                                            09:00
+                                        </OPTION>
+                                        <OPTION VALUE="09:15">
+                                            09:15
+                                        </OPTION>
+                                        <OPTION VALUE="09:30">
+                                            09:30
+                                        </OPTION>
+                                        <OPTION VALUE="09:45">
+                                            09:45
+                                        </OPTION>
+                                        <OPTION VALUE="10:00">
+                                            10:00
+                                        </OPTION>
+                                        <OPTION VALUE="10:15">
+                                            10:15
+                                        </OPTION>
+                                        <OPTION VALUE="10:30">
+                                            10:30
+                                        </OPTION>
+                                        <OPTION VALUE="10:45">
+                                            10:45
+                                        </OPTION>
+                                        <OPTION VALUE="11:00">
+                                            11:00
+                                        </OPTION>
+                                        <OPTION VALUE="11:15">
+                                            11:15
+                                        </OPTION>
+                                        <OPTION VALUE="11:30">
+                                            11:30
+                                        </OPTION>
+                                        <OPTION VALUE="11:45">
+                                            11:45
+                                        </OPTION>
+                                        <OPTION VALUE="12:00">
+                                            12:00
+                                        </OPTION>
+                                        <OPTION VALUE="12:15">
+                                            12:15
+                                        </OPTION>
+                                        <OPTION VALUE="12:30">
+                                            12:30
+                                        </OPTION>
+                                        <OPTION VALUE="12:45">
+                                            12:45
+                                        </OPTION>
+                                        <OPTION VALUE="13:00">
+                                            13:00
+                                        </OPTION>
+                                        <OPTION VALUE="13:15">
+                                            13:15
+                                        </OPTION>
+                                        <OPTION VALUE="13:30">
+                                            13:30
+                                        </OPTION>
+                                        <OPTION VALUE="13:45">
+                                            13:45
+                                        </OPTION>
+                                        <OPTION VALUE="14:00">
+                                            14:00
+                                        </OPTION>
+                                        <OPTION VALUE="14:15">
+                                            14:15
+                                        </OPTION>
+                                        <OPTION VALUE="14:30">
+                                            14:30
+                                        </OPTION>
+                                        <OPTION VALUE="14:45">
+                                            14:45
+                                        </OPTION>
+                                        <OPTION VALUE="15:00">
+                                            15:00
+                                        </OPTION>
+                                        <OPTION VALUE="15:15">
+                                            15:15
+                                        </OPTION>
+                                        <OPTION VALUE="15:30">
+                                            15:30
+                                        </OPTION>
+                                        <OPTION VALUE="15:45">
+                                            15:45
+                                        </OPTION>
+                                        <OPTION VALUE="16:00">
+                                            16:00
+                                        </OPTION>
+                                        <OPTION VALUE="16:15">
+                                            16:15
+                                        </OPTION>
+                                        <OPTION VALUE="16:30">
+                                            16:30
+                                        </OPTION>
+                                        <OPTION VALUE="16:45">
+                                            16:45
+                                        </OPTION>
+                                        <OPTION VALUE="17:00">
+                                            17:00
+                                        </OPTION>
+                                        <OPTION VALUE="17:15">
+                                            17:15
+                                        </OPTION>
+                                        <OPTION VALUE="17:30">
+                                            17:30
+                                        </OPTION>
+                                        <OPTION VALUE="17:45">
+                                            17:45
+                                        </OPTION>
+                                        <OPTION VALUE="18:00">
+                                            18:00
+                                        </OPTION>
+                                        <OPTION VALUE="18:15">
+                                            18:15
+                                        </OPTION>
+                                        <OPTION VALUE="18:30">
+                                            18:30
+                                        </OPTION>
+                                        <OPTION VALUE="18:45">
+                                            18:45
+                                        </OPTION>
+                                        <OPTION VALUE="19:00">
+                                            19:00
+                                        </OPTION>
+                                        <OPTION VALUE="19:15">
+                                            19:15
+                                        </OPTION>
+                                        <OPTION VALUE="19:30">
+                                            19:30
+                                        </OPTION>
+                                        <OPTION VALUE="19:45">
+                                            19:45
+                                        </OPTION>
+                                        <OPTION VALUE="20:00">
+                                            20:00
+                                        </OPTION>
+                                        <OPTION VALUE="20:15">
+                                            20:15
+                                        </OPTION>
+                                        <OPTION VALUE="20:30">
+                                            20:30
+                                        </OPTION>
+                                        <OPTION VALUE="20:45">
+                                            20:45
+                                        </OPTION>
+                                        <OPTION VALUE="21:00">
+                                            21:00
+                                        </OPTION>
+                                        <OPTION VALUE="21:15">
+                                            21:15
+                                        </OPTION>
+                                        <OPTION VALUE="21:30">
+                                            21:30
+                                        </OPTION>
+                                        <OPTION VALUE="21:45">
+                                            21:45
+                                        </OPTION>
+                                        <OPTION VALUE="22:00">
+                                            22:00
+                                        </OPTION>
+                                        <OPTION VALUE="22:15">
+                                            22:15
+                                        </OPTION>
+                                        <OPTION VALUE="22:30">
+                                            22:30
+                                        </OPTION>
+                                        <OPTION VALUE="22:45">
+                                            22:45
+                                        </OPTION>
+                                    </SELECT>
+                                </TD>
+                            </TR>
+                            <TR>
+                                <TD>
+                                    Comment :
+                                </TD>
+                                <TD COLSPAN=3>
+<TEXTAREA ID="COMMENT" NAME="COMMENT" STYLE="WIDTH:250PX;HEIGHT:100PX;FONT-FAMILY:ARIAL"></TEXTAREA>
+                                </TD>
+                            </TR>
+                        </TABLE>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">    <input type="button" value="Geri" onclick="javascript:history.back();" /></td>
+                    <td colspan="2" align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td></tr>
+            </table>
+        </div>
+    </div>
+    </form>
+</body>
+
+<style>
+    [v-cloak] { display: none; }
+  </style>
+
+</html>

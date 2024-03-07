@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script>
+    <script src="scripts/jsSingleResponseOpen.js"></script>
+    <script type="text/javascript">
+        //var db;
+        var guid;
+        var statu="0";
+
+        var TV = 0;
+        var kisi = 0;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+
+            //var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            InterviewID = window.localStorage["InterviewID"];
+
+            db.transaction(function (tx) {
+
+                    var queryStrings = getUrlVars();
+                    guid = queryStrings["guid"];
+                    statu = queryStrings["Statu"];
+             
+                   
+
+
+            });
+        }
+
+
+
+        window.onload = function () {
+            otherValue = 1; 
+            currentValue = 1;
+            document.forms[0].focus();
+            otherObj = document.getElementById('A1b_O'); 
+            
+            SetStartUp();
+            //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        };
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+  
+        function gecisKontrol() {
+            var kontrol = CheckValues();
+            if (kontrol) {
+                
+                myUpdateRedirect("INTERVIEWS", "A1b=" + currentValue + ",A1b_O='" + $("#A1b_O").val() + "'", " InterviewID=" + window.localStorage["InterviewID"], "A1c.html?id=" + window.localStorage["InterviewID"]);
+                }
+                
+                //window.location.href = "Response.html?id=" + window.localStorage["InterviewID"] + "&statu=6";
+                /* db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+                 db.transaction(function (tx) {
+
+                     tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                         if (val.rows.length > 0) {
+
+                         }
+                         else {
+                             alert("Anket Yok");
+                         }
+                     });
+                 });*/
+          
+
+            //window.location.href = "E1.html?id=" + id;
+            /* db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+             db.transaction(function (tx) {
+
+                 tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                     if (val.rows.length > 0) {
+
+                     }
+                     else {
+                         alert("Anket Yok");
+                     }
+                 });
+             });*/
+        }
+                        
+
+        function goBack() {
+            window.history.back();
+        }
+
+    </script>
+</head>
+<body>
+    <form id="form1">
+     
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">A1b.</span><span id="QuestionTextTD">
+                        <font face="calibri" color="#000000" >Şu anda evinizde bozuk ve çalışmayan  fakat önümüzdeki 1 ay içinde <b>MUTLAKA TAMİR ETTİRMEYİ PLANLADIĞINIZ</b> televizyon var mı, var ise tamir edilecek kaç televizyon olduğunu söyler misiniz?    </font>
+                                                  
+                           <p align="left"><font face="calibri" color="#000000" > <b><br />
+    
+                            (ANKETÖR DİKKAT: BOZUK AMA YAKIN ZAMANDA TAMİR ETTİRİLMEYECEK TELEVİZYONLAR SAYILMAYACAKTIR)
+</b>    </font></p>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div id="QuestionBuilderPanel">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <table id="QuestionTable" class="cssQuestionTable">
+                            <tbody>
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">1</td>
+                                    <td align="right"><input type="radio" class="radioStyle" name="A1b" id="A1b_1" value="1" ><span></span></td>
+                                    <td><label for="A1b_1">EVİMİZDE BOZUK TELEVİZYON VAR</label>
+                                        <input type="number" class="textStyle" rows="6" style="width:400px" name="A1b_O" id="A1b_O" value="" datatype="varchar" stepname="A1b" ></input></td>
+                                </tr>
+                              
+                                <tr>
+                                    <td class="columnDivider"></td>
+                                    <td align="right">2</td>
+                                    <td align="right"><input type="radio" class="radioStyle" name="A1b" id="A1b_2" value="2" ><span></span></td>
+                                    <td><label for="A1b_2">EVİMİZDE BOZUK BİR TELEVİZYON YOK.</label></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                <tr><td colspan="4">&nbsp;</td></tr>
+                <tr>
+                    <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                <td  align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td></tr>
+            </table>
+        </div>
+    </form>
+</body>
+</html>

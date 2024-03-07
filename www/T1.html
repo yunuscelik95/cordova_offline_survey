@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script>
+    <script src="scripts/Gps.js"></script>
+    <script src="scripts/jsSingleResponse.js"></script>
+    <script type="text/javascript">
+        //var db;
+        var id;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+
+            //var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            //   document.getElementById("btnKoordinat").addEventListener("click", getGeo);
+
+            gps("start")
+        }
+
+
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+            SetStartUp();
+            //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        };
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+
+            var kontrol = CheckValues();
+            if (kontrol) {
+
+                if (currentValue == "1") {
+                    myUpdateRedirect("INTERVIEWS", "T1=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "bilgiT1.html?id=" + window.localStorage["InterviewID"]);
+                    //window.location.href = "Response.html?statu=101&id=" + window.localStorage["InterviewID"];
+                }
+                else {
+                    myUpdateRedirect("INTERVIEWS", "T1=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "bilgi.html?id=" + window.localStorage["InterviewID"]);
+                    //window.location.href = "F1.html?id=" + window.localStorage["InterviewID"];
+                }
+
+                //   window.location.href = "F1.html?id=" + id;
+                /* db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+                 db.transaction(function (tx) {
+
+                     tx.executeSql("SELECT T1 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                         if (val.rows.length > 0) {
+
+                         }
+                         else {
+                             alert("Anket Yok");
+                         }
+                     });
+                 });*/
+            }
+        }
+    </script>
+
+</head>
+<body>
+
+    <form id="form1"  class="skinned-form-controls skinned-form-controls-mac">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">T1.</span><span id="QuestionTextTD">
+                            <font face="calibri" color="#000000" size="2">
+                                Doğum Yılınızı lütfen söyler misiniz?
+                              
+                            </font><p align="left"><font face="calibri" color="#000000" size="2"></font><font face="arial" color="#000000" size="2">  </font></p>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable" class="cssQuestionTable">
+                <tbody>
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">1</td>
+                        <td align="right"><input type="radio" class="radioStyle" name="T1" id="T1_1" value="1"><span></span></td>
+                        <td><label for="T1_1">2007 VE SONRAKİ YILLAR </label></td>
+                    </tr>
+                    <tr>
+                        <td class="columnDivider"></td>
+                        <td align="right">2</td>
+                        <td align="right"><input type="radio" class="radioStyle" name="T1" id="T1_2" value="2" ><span></span></td>
+                        <td><label for="T1_2">2006 VE DAHA ÖNCEKİ YILLAR </label></td>
+                    </tr>
+                    <tr><td colspan="4">&nbsp;</td></tr>
+                    <tr>
+                        <td colspan="3">
+                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                            <!--                     <input type="button" value="Koordinat" id="btnKoordinat"  name="btnKoordinat"/>-->
+                        </td>
+                    <td  align="right">
+
+    <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
+
+</td></tr>
+                </tbody>
+            </table>
+        </div>
+     
+    </form>
+</body>
+</html>

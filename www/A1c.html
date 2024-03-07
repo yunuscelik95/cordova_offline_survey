@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <script src="scripts/database.js"></script>
+    <script src="scripts/jsMultiResponseOpen.js"></script>
+    <script type="text/javascript">
+        var db;
+        var id;
+        var TVSay = 0;
+        var bozukTVSay = 0;
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+
+                //var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+                InterviewID = window.localStorage["InterviewID"];
+                db.transaction(function (tx) {
+                
+                    tx.executeSql("SELECT A1,A1b FROM INTERVIEWS WHERE InterviewID=" + InterviewID, [], function (tx, val) {
+                        TVSay = parseInt(val.rows.item(0).A1);
+                        bozukTVSay = parseInt(val.rows.item(0).A1b);
+                            
+                    });
+
+
+                });
+        }
+
+
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+            document.forms[0].focus();
+            otherValue.push("97");
+            otherObj.push(document.getElementById("A1c_O_97"));
+
+            SetStartUp();
+            //   db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
+        };
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() { 
+            var kontrol = CheckValues();
+            if (kontrol) {
+                var aswer = "";
+                $.each($("input[name='A1c']:checked"), function () {
+                    if (aswer != "") aswer += ",";
+                    aswer += $(this).val();
+
+                });
+
+                if (aswer != "") {
+                    myUpdate("INTERVIEWS", "A1c='" + aswer + "',A1c_O_97='" + document.getElementById("A1c_O_97").value + "'", " InterviewID=" + window.localStorage["InterviewID"]);
+                    if (TVSay == 2  && bozukTVSay == 2)
+                    {
+                        window.location.href = "B1.html?id=" + window.localStorage["InterviewID"] ;
+                    }
+                    else
+                    {
+                        window.location.href = "A2a1.html?id=" + window.localStorage["InterviewID"] ;
+                    }
+                }
+                else {
+                    alert("Boş Geçilemez!");
+                }
+
+                //window.location.href = "E1.html?id=" + id;
+                /* db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
+                 db.transaction(function (tx) {
+
+                     tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                         if (val.rows.length > 0) {
+
+                         }
+                         else {
+                             alert("Anket Yok");
+                         }
+                     });
+                 });*/
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText"><tbody><tr><td><span id="StepNameTD">A1c.</span><span id="QuestionTextTD"><font face="Calibri" color="#000000" size="2">
+            Evinizde hangi yolla internete bağlanıyorsunuz, elinizdeki karttaki seçeneklere uygun olarak söyler misiniz?
+             <b>(ANKETÖR DİKKAT: RESİMLİ KART GÖSTERİN-ÇOK CEVAP OLABİLİR. SADECE EVDEKİ BAĞLANTI ŞEKLİNİ SORDUĞUMUZU GEREKİRSE HATIRLATIN)</b></font></span></td></tr></tbody></table>
+        <div id="QuestionBuilderPanel">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <table id="QuestionTable">
+                            <tbody>
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">1</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_1" value="1" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="A1c_1">SABİT İNTERNET  (MODEM İLE ADSL, KABLO NET, FİBER INTERNET, WIFI-KABLOSUZ vb.) </label></td>
+                                </tr>
+
+                                <tr>
+                                    <td class="columnDivider"></td>
+                                    <td align="right">2</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="A1c_2">MOBİL INTERNET </label><br />
+                                        -TURKCELL SÜPERBOX, VODAFONE REDBOX VB.<br />
+                                        -MOBİL – TAŞINABİLİR MODEM (KÜÇÜK KUTU)  
+                                        -CEP TELEFONUNDAN ALINAN INTERNET<br />
+                                       
+                                    </td>
+                                </tr>
+
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">3</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_3" value="3" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="A1c_3">KOMŞUDAN / ORTAK İNTERNETTEN FAYDALANIYOR </label></td>
+                                </tr>
+                              
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">97</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_97" value="97" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="A1c_97">DİĞER / FARKLI BİR ŞEKİLDE (Yöntemi Yazınız)</label><label for="A1c_O_97"><input type="text" class="textStyle" name="A1c_O_97" id="A1c_O_97" value="" datatype="varchar" stepname="A1c" disabled=""></label></td>
+                                </tr>
+
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">4</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_4" value="4" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="true" itemdisabled="false"><span></span></td>
+                                    <td><label for="A1c_4">EVİMİZDE HERHANGİ BİR ŞEKİLDE İNTERNET ERİŞİMİ BULUNMAMAKTADIR</label></td>
+                                </tr>
+                                <tr><td colspan="4">&nbsp;</td></tr>
+                                <tr>
+                                    <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                                    <td colspan="4" align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+              
+            </table>
+        </div>
+    </form>
+</body>
+</html>

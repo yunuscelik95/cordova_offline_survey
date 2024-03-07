@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="scripts/vuejs.js"></script>
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script src="scripts/listener.js"></script>
+    <script src="scripts/database.js"></script>
+    <script src="scripts/blokozet.js"></script>
+    <script src="scripts/axiosjs.js"></script>
+    <style>
+        td {
+            padding: 5px
+        }
+    </style>
+        <script type="text/javascript">
+            if (window.localStorage["userGuid"] == "" || window.localStorage["userGuid"] == undefined) {
+                    window.location.href = "Login.html";
+            }
+
+            $(document).ready(function () {
+                updateConnectionProperties();
+                //window.history.forward(1);
+                window.history.pushState(null, "", window.location.href);
+                window.onpopstate = function () {
+                    window.history.pushState(null, "", window.location.href);
+                };
+            })
+    </script>
+</head>
+<body>
+    <div id="blokozet"  v-cloak>
+        <table>
+            <tr>
+                <td>
+
+                    <input type="button" id="btnWebService" value="Blok Yükle" @click="btnWebService()"/>
+
+                    <input type="button" id="btnSendOffline" value="Datayı Gönder" @click="sendOfflineData('button')" />
+                    <input type="button" id="btnSendOffline" value="Tüm Datayı Gönder" @click="sendData('1=1')" />
+                </td>
+                <td>
+                    <div>Toplam: <span id="spanToplam" style="font-weight:bold;color:red">{{gonderimsayisi}}</span></div>
+                </td>
+                <td><div>Gönderilen : </div></td>
+                <td> <span id="spanGonderilen" style="font-weight:bold;color:yellowgreen">{{gonderilen}}</span></td>
+            </tr>
+        </table>
+
+
+        <table  id="tblListe" class="table table-striped" colspan="5" rowspan="5">
+            <thead>
+                <tr>
+                    <!--
+            blokYukle()
+         -->
+                    <th scope="col">Blok No</th>
+                    <th scope="col">İl</th>
+                    <th scope="col">İlçe</th>
+                    <th scope="col">Köy</th>
+                    <th scope="col">Mahalle</th>
+                    <th scope="col">Durum</th>
+                    <th scope="col">&nbsp;</th>
+
+                    <th scope="col">İşlem</th>
+    
+                </tr>
+                <tr v-for="item in liste" v-if="liste.length">
+                    <td>{{item.blokno}}</td>
+                    <td>{{item.iladi}}</td>
+                    <td>{{item.ilceadi}}</td>
+                    <td>{{item.koyadi}}</td>
+                    <td>{{item.mahalleadi}}</td>
+                    <td>{{item.blokAciklama}}</td>
+                    <td>
+                        <input v-if="item.statu==2" type='button' class='btn btn-block btn-warning btn-xs' value='Blok Aç' @click="blokAc(item.guid)" />
+                        <input v-if="item.statu!=2 && item.statu!=8 && item.statu!=9" type='button' class='btn btn-block btn-outline-secondary btn-xs' value='Blok Kapat' @click="blokKapat(item.guid)" />
+                        <span v-if="item.statu==8 || item.statu==9" type='button' class='btn btn-block btn-secondary btn-xs'>&nbsp;</span>
+                    </td>
+                    <td> 
+                        <input type='button' class='btn btn-block btn-primary btn-xs' value='Blok Detayı' @click="blokDetay(item.guid)" />
+                    </td>
+
+                </tr>
+
+            </thead>
+
+        </table>
+
+    </div>
+</body>
+<style>
+    [v-cloak] { display: none; }
+  </style>
+</html>

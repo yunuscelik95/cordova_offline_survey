@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <!-- <script src="scripts/app.js"></script> -->
+    <script src="scripts/database.js"></script>
+    <script src="scripts/jsSingleResponseOpen.js"></script>
+    <script type="text/javascript">
+        //var db;
+        var guid;
+        var statu="0";
+
+        var TV = 0;
+        var kisi = 0;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+
+            //var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            InterviewID = window.localStorage["InterviewID"];
+            db.transaction(function (tx) {
+
+                    var queryStrings = getUrlVars();
+                    guid = queryStrings["guid"];
+                    statu = queryStrings["Statu"];
+                    document.forms[0].focus(); otherObj = document.getElementById('GK_O'); otherValue = 1; currentValue = 1;
+                    SetStartUp();
+
+
+            });
+        }
+
+
+
+        window.onload = function () {
+ 
+            //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+        };
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+        function setServer()
+        {
+            var networkState = navigator.connection.type;
+            if (networkState != Connection.NONE) {
+                //   alert("1");
+                db.transaction(function (tx) {
+                    tx.executeSql('SELECT * FROM BLOKOZET WHERE (Bgonderim=0) ', [], function (tx, res) {
+
+                        if (res.rows.length > 0) {
+                            var say = 0;
+                            for (var i = 0; i < res.rows.length; i++) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "https://vta.diyalog.com.tr/api/setBlokStatu/" + window.localStorage["userGuid"] + "/" + res.rows.item(i).statu + "/" + res.rows.item(i).guid,
+                                    data: res.rows.item(i).blokAciklama,
+                                    contentType: "application/json; charset=utf-8",
+                                    dataType: "json",
+                                    success: function (response) {
+                                        responseParse = JSON.parse(response);
+                                        if (responseParse.Sonuc == "OK") {
+                                            myUpdate("BLOKOZET", "gonderim=1", " guid='" + window.localStorage["userGuid"] +"'");
+                                        }
+
+                                        say++;
+                                        if (say == res.rows.length) {
+                                            //   window.localStorage["InterviewID"] = "";
+                                            window.location.href = "blokOzet.html";
+                                            //   myUpdateRedirect("BLOKOZET", "gonderim=1", "blokOzet.html");
+                                        }
+
+
+                                    },
+                                    failure: function (response) {
+                                        //     alert(response.responseText);
+                                        //       window.localStorage["InterviewID"] = "";
+                                        window.location.href = "blokOzet.html";
+                                        //myUpdateRedirect("BLOKOZET", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+                                    },
+                                    error: function (response) {
+                                        // alert(response.responseText);
+                                        //       window.localStorage["InterviewID"] = "";
+                                        window.location.href = "blokOzet.html";
+                                        //   myUpdateRedirect("INTERVIEWS", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+                                    }
+                                });
+                            }
+                        }
+                        else {
+                            //   window.localStorage["InterviewID"] = "";
+                            window.location.href = "blokOzet.html";
+                            // myUpdateRedirect("INTERVIEWS", "InterviewStatu=" + statu, " InterviewID=" + id, "blokOzet.html");
+                        }
+                    })
+                })
+            }
+        }
+
+        function gecisKontrol() {
+            var kontrol = CheckValues();
+            if (kontrol) {
+                myUpdateRedirect("BLOKOZET", "statu=" + statu + ",blokAciklama='" + $("#GK_O").val() + "',Bgonderim=0", " guid='" + guid + "'", "blokOzet.html");
+                }
+                
+                //window.location.href = "Response.html?id=" + window.localStorage["InterviewID"] + "&statu=6";
+                /* db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+                 db.transaction(function (tx) {
+
+                     tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                         if (val.rows.length > 0) {
+
+                         }
+                         else {
+                             alert("Anket Yok");
+                         }
+                     });
+                 });*/
+          
+
+            //window.location.href = "E1.html?id=" + id;
+            /* db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+             db.transaction(function (tx) {
+
+                 tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                     if (val.rows.length > 0) {
+
+                     }
+                     else {
+                         alert("Anket Yok");
+                     }
+                 });
+             });*/
+        }
+                        
+
+        function goBack() {
+            window.history.back();
+        }
+
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText"><tbody><tr><td><span id="StepNameTD"></span><span id="QuestionTextTD"><font face="Calibri" color="#000000" size="2">Lütfen Blok Açıklamasını Yazınız.</font><font face="Arial" color="#000000" size="2"> </font></span></td></tr></tbody></table>
+        <div id="QuestionBuilderPanel">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <table id="QuestionTable" class="cssQuestionTable">
+                            <tbody>
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">1</td>
+                                    <td align="right"><input type="radio" class="radioStyle" name="GK" id="GK_1" value="1" checked="checked"><span></span></td>
+                                    <td><textarea class="textStyle" rows="6" style="width:400px" name="GK_O" id="GK_O" value="" datatype="varchar" stepname="GK" ></textarea></td>
+                                </tr>
+                              
+
+                            </tbody>
+                        </table>
+                <tr><td colspan="4">&nbsp;</td></tr>
+                <tr>
+                    <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                <td  align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td></tr>
+            </table>
+        </div>
+    </form>
+</body>
+</html>

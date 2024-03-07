@@ -1,0 +1,19 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="scripts/app2.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1 v-if="isLoggenIn">Looading...</h1>
+        <div v-for="item in cart">
+            {{item.saller}}
+
+        </div>
+        
+    </div>
+</body>
+</html>

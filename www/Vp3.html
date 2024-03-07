@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="scripts/vuejs.js"></script>
+    <script src="scripts/database.js"></script>
+    <script src="scripts/fnc.js"></script>
+    <script src="scripts/listener.js"></script>
+    <script src="scripts/app3.js"></script>
+</head>
+<body>
+    <style>
+        [v-cloak] {        display:none;        }
+    </style>
+    <script language="javascript">
+
+    </script>
+    <div id="Project">
+        <div id="vcloak" v-cloak v-if="$questions.length">
+            <h1>{{projectname}}</h1>
+
+
+            {{filteredquestion}}
+            <single-question v-if="question.type=='Single'" :question=question></single-question>
+            <text-question v-if="question.type=='Text'" :question=question></text-question>
+
+      
+
+
+            <div v-if="question.type=='Multi'">
+                <h1> {{question.text }}</h1>
+                <div v-for="choise in question.chooises">
+                    <div>
+                        <input type="checkbox" sdsd="" :name="question.num" :id="choise.value" :value="choise.value" v-model="question.answer" @change="singleclick(choise)"
+                               :disabled="!choise.single && singlekontrol" />
+                        <label :for="choise.value">   {{ choise.text }}</label>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div v-if="question.type=='SingleMatris'">
+                <h1> {{question.text }}</h1>
+                <table cellpadding="1" cellspacing="1">
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th v-for="choise in question.chooises">
+                            <label>   {{ choise.text }}</label>
+                        </th>
+
+                    </tr>
+                    <tr v-for="list in question.list">
+                        <td><b> {{list.text }} </b></td>
+
+                        <td v-for="choise in question.chooises">
+                            <div>
+                                <input type="radio" :name="question.num + '_' + list.id" :id="question.num + '_' + list.id + '_' + choise.value" :value="choise.value" v-model="list.answer" />
+                                <label :for="question.num + '_' + list.id + '_' + choise.value">   {{ choise.value }}</label>
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <div v-if="question.type=='MultiMatris'">
+                <h1> {{question.text }}</h1>
+                <table cellpadding="1" cellspacing="1">
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th v-for="choise in question.chooises">
+                            <label>   {{ choise.text }}</label>
+                        </th>
+
+                    </tr>
+                    <tr v-for="list in question.list">
+                        <td><b> {{list.text }} </b></td>
+
+                        <td v-for="choise in question.chooises">
+                            <div>
+                                <input type="checkbox" :name="question.num + '_' + list.id" :id="question.num + '_' + list.id + '_' + choise.value"
+                                       @change="matrissingleclick(choise,list.id)"
+                                       :disabled="question.chooises.filter(x => x.single == true)[0].value!=choise.value && (matrissinglekontrol && (list.answer.includes(question.chooises.filter(x => x.single == true)[0].value)))"
+                                       :value="choise.value" v-model="list.answer" />
+                                <label :for="question.num + '_' + list.id + '_' + choise.value">   {{ choise.value }}</label>
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <p></p>
+            <div><button @click="backCurrentQuestion()">Back</button>&nbsp;<button @click="nextCurrentQuestion()">Next</button></div>
+            <div></div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <script src="scripts/database.js"></script>
+    <script src="scripts/jsMultiResponseOpen.js"></script>
+    <script type="text/javascript">
+        var db;
+        var id;
+
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+
+                //var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+                InterviewID = window.localStorage["InterviewID"];
+                db.transaction(function (tx) {
+                
+                    // tx.executeSql("SELECT A1,A1b FROM INTERVIEWS WHERE InterviewID=" + InterviewID, [], function (tx, val) {
+                    //     TVSay = parseInt(val.rows.item(0).A1);
+                    //     bozukTVSay = parseInt(val.rows.item(0).A1b);
+                            
+                    // });
+
+
+                });
+        }
+
+
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+            document.forms[0].focus();
+            otherValue.push("1");
+            otherObj.push(document.getElementById("A4_O_1"));
+            otherValue.push("2");
+            otherObj.push(document.getElementById("A4_O_2"));
+            otherValue.push("3");
+            otherObj.push(document.getElementById("A4_O_3"));
+            otherValue.push("4");
+            otherObj.push(document.getElementById("A4_O_4"));
+            otherValue.push("5");
+            otherObj.push(document.getElementById("A4_O_5"));
+
+            SetStartUp();
+            //   db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
+        };
+
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var kontrol = CheckValues();
+            if (kontrol) {
+                var aswer = "";
+                $.each($("input[name='A4']:checked"), function () {
+                    if (aswer != "") aswer += ",";
+                    aswer += $(this).val();
+
+                });
+
+                if (aswer != "") {
+                    myUpdate("INTERVIEWS", "A4='" + aswer + "',A4_O_1='" + document.getElementById("A4_O_1").value + "',A4_O_2='" + document.getElementById("A4_O_2").value + "',A4_O_3='" + document.getElementById("A4_O_3").value + "',A4_O_4='" + document.getElementById("A4_O_4").value + "',A4_O_5='" + document.getElementById("A4_O_5").value + "'", " InterviewID=" + window.localStorage["InterviewID"]);
+                    if (aswer.indexOf("1") > -1)
+                    {
+                        window.location.href = "A4a2.html?id=" + window.localStorage["InterviewID"] ;
+                    }
+                    else if (aswer.indexOf("2") > -1)
+                    {
+                        window.location.href = "A4b2.html?id=" + window.localStorage["InterviewID"] ;
+                    }
+                    else if (aswer.indexOf("3") > -1)
+                    {
+                        window.location.href = "A4c2.html?id=" + window.localStorage["InterviewID"] ;
+                    }
+                    else if (aswer.indexOf("4") > -1)
+                    {
+                        window.location.href = "A4d2.html?id=" + window.localStorage["InterviewID"] ;
+                    }
+                    else if (aswer.indexOf("5") > -1)
+                    {
+                        window.location.href = "A4e2.html?id=" + window.localStorage["InterviewID"] ;
+                    }
+                    else if (aswer.indexOf("99") > -1)
+                    {
+                        window.location.href = "C2.html?id=" + window.localStorage["InterviewID"] ;
+                    }
+                }
+                else {
+                    alert("Boş Geçilemez!");
+                }
+
+                //window.location.href = "E1.html?id=" + id;
+                /* db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
+                 db.transaction(function (tx) {
+
+                     tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
+                         if (val.rows.length > 0) {
+
+                         }
+                         else {
+                             alert("Anket Yok");
+                         }
+                     });
+                 });*/
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText"><tbody><tr><td><span id="StepNameTD">A4.</span><span id="QuestionTextTD"><font face="Calibri" color="#000000" size="2">Evinizde size ya da evdeki diğer kişilere ait okuyacağım ve elinizdeki kartta resimlerini göreceğiniz cihazlar var mı? (ANKETÖR: CİHAZLARIN OLDUĞU RESİMLİ KARTI GÖSTERİN)  
+<br /><br />
+            -Evinizde TOPLAM kaç adet ............... olduğunu söyler misiniz? </font></span></td></tr></tbody></table>
+        <div id="QuestionBuilderPanel">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <table id="QuestionTable">
+                            <tbody>
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">1</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A4" id="A4_1" value="1" openend="true" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="A4_1">SABİT / MASA ÜSTÜ BİLGİSAYAR </label>
+                                    <label for="A4_O_1">Evinizde TOPLAM kaç adet olduğunu söyler misiniz? <input type="text" class="textStyle" name="A4_O_1" id="A4_O_1" value="" datatype="varchar" stepname="A4" disabled="">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="columnDivider"></td>
+                                    <td align="right">2</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A4" id="A4_2" value="2" openend="true" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="A4_2">LAP TOP / DİZ ÜSTÜ BİLGİSAYAR   </label>
+                                        <label for="A4_O_2">Evinizde TOPLAM kaç adet olduğunu söyler misiniz? <input type="text" class="textStyle" name="A4_O_2" id="A4_O_2" value="" datatype="varchar" stepname="A4" disabled="">
+                                    </td>
+                                </tr>
+
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">3</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A4" id="A4_3" value="3" openend="true" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="A4_3">KOMŞUDAN / ORTAK İNTERNETTEN FAYDALANIYOR </label>
+                                        <label for="A4_O_3">Evinizde TOPLAM kaç adet olduğunu söyler misiniz? <input type="text" class="textStyle" name="A4_O_3" id="A4_O_3" value="" datatype="varchar" stepname="A4" disabled="">
+                                    </td>
+                                </tr>
+                              
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">4</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A4" id="A4_4" value="4" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="A4_4">AKILLI TV / SMART TV  </label>
+                                        <label for="A4_O_4">Evinizde TOPLAM kaç adet olduğunu söyler misiniz? <input type="text" class="textStyle" name="A4_O_4" id="A4_O_4" value="" datatype="varchar" stepname="A4" disabled=""></label></td>
+                                </tr>
+
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">5</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A4" id="A4_5" value="5" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="A4_5">AKILLI TV / SMART TV  </label>
+                                        <label for="A4_O_5">Evinizde TOPLAM kaç adet olduğunu söyler misiniz? <input type="text" class="textStyle" name="A4_O_5" id="A4_O_5" value="" datatype="varchar" stepname="A4" disabled=""></label></td>
+                                </tr>
+
+                                <tr class="AlternateTableRow">
+                                    <td class="columnDivider"></td>
+                                    <td align="right">99</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A4" id="A4_99" value="99" openend="false" isnumeric=""  size="" maxlength="" norotate="" deselectother="true" itemdisabled="false"><span></span></td>
+                                    <td><label for="A4_4">EVİMİZDE İNTERNET ERİŞİMİ BULUNMAMAKTADIR</label></td>
+                                </tr>
+                                <tr><td colspan="4">&nbsp;</td></tr>
+                                <tr>
+                                    <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                                    <td colspan="4" align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+               
+            </table>
+        </div>
+    </form>
+</body>
+</html>

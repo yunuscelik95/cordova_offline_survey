@@ -1,0 +1,135 @@
+﻿<html>
+<head>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="scripts/vuejs.js"></script>
+    <script src="scripts/vuex.js"></script>
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script src="scripts/listener.js"></script>
+    <script src="scripts/database.js"></script>
+    <script src="scripts/login.js"></script>
+    <script src="scripts/axiosjs.js"></script>
+
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        form {
+            border: 3px solid #f1f1f1;
+        }
+
+        input[type=text], input[type=password] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        #btnCreate {
+            background-color: #ff6a00;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        .cancelbtn {
+            width: auto;
+            padding: 10px 18px;
+            background-color: #f44336;
+        }
+
+        .imgcontainer {
+            text-align: center;
+            margin: 24px 0 12px 0;
+        }
+
+        img.avatar {
+            width: 40%;
+            border-radius: 50%;
+        }
+
+        .container {
+            padding: 16px;
+        }
+
+        span.psw {
+            float: right;
+            padding-top: 16px;
+        }
+
+        /* Change styles for span and cancel button on extra small screens */
+        @media screen and (max-width: 300px) {
+            span.psw {
+                display: block;
+                float: none;
+            }
+
+            .cancelbtn {
+                width: 100%;
+            }
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            updateConnectionProperties();
+            window.history.forward(1);
+            window.history.pushState(null, "", window.location.href);
+            window.onpopstate = function () {
+                window.history.pushState(null, "", window.location.href);
+            };
+        })
+    </script>
+
+</head>
+<body>
+    <div id="login" v-cloak>
+        <h2>DIYALOG RESEARCH SURVEY SYSTEM</h2>
+        <div id="divLabel"></div>
+        <form>
+
+            <!--    <button type="button" id="btnAPK" name="btnAPK">
+        Güncel Program Yükle
+    </button>-->
+
+            <button type="button" id="btnCreate" name="btnCreate" @click="KullaniciYukle()">
+                Kullanıcıları Yükle
+            </button>
+            <div class="container">
+                <label for="uname"><b>Username</b></label>
+                <input type="text" placeholder="Enter Username" name="uname" id="uname" v-model="uname" required>
+
+                <label for="psw"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="psw" id="psw" v-model="psw" required>
+
+                <button type="button" id="btnLogin" @click="loginClick">Login</button>
+
+            </div>
+
+            <div class="container" style="background-color:#f1f1f1">
+                <span style="font-size:8PX" id="version"> </span>
+
+            </div>
+           Yüklenme: <span style="font-size:38PX;color:red" id="spanOran">%{{oran}} </span>
+        </form>
+    </div>
+</body>
+
+<style>
+    [v-cloak] { display: none; }
+  </style>
+  
+</html>
