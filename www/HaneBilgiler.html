@@ -289,6 +289,28 @@
 
             });
 
+            $("input[type=number]").on('blur', function () {
+                var elem = $(this);
+                if (elem.attr("min") != undefined)
+                {
+                    var minVal =parseInt(elem.attr("min"));
+                    if (elem.val() < minVal )
+                    {
+                        alert("Minimum "  + minVal + " değeri girebilirsiniz!");
+                        elem.val("");
+                    }
+                }
+
+                if (elem.attr("max") != undefined)
+                {
+                    var maxVal =parseInt(elem.attr("max"));
+                    if (elem.val() > maxVal )
+                    {
+                        alert("Maksimum "  + maxVal + " değeri girebilirsiniz!");
+                        elem.val("");
+                    }
+                }
+            })
 
             $('select').on('change', function (e) {
                 var optionSelected = $("option:selected", this);
@@ -314,7 +336,8 @@
                         MeslekEk($(this), "meslek");
                         var meslekVal = $(this).val();
                         if (meslekVal === "12") {
-                            row.find(".maasliCalisanPersonel").attr("max", 5);
+                            row.find(".maasliCalisanPersonel").attr("min", 1).attr("max", 5);
+                        
                         }
                         else if (meslekVal === "13")
                         {
@@ -327,6 +350,10 @@
                         else if (meslekVal === "15")
                         {
                             row.find(".maasliCalisanPersonel").attr("min", 21);
+                        }
+                        else if (meslekVal === "14")
+                        {
+                            row.find(".kendiyanindaCalisanSayi").attr("min", 11).attr("max", 20);
                         }
                         //   $(".meslekUzman select option:eq(0)").prop('selected', true);
                         //   $(".meslekYonetici").hide();
@@ -1294,7 +1321,7 @@
 
                                                                     <select id="B5_#" name="B5_#" data-style="btn-white"
                                                                         Soru="Eğitim"
-                                                                        kosul="(parseInt(_B3)<6 && (item==1 || item==2 || item==3 || item==4 || item==5 || item==6 || item==7 || item==8 || item==9 || item==10 || item==11  )) || (parseInt(_B3)>5 && parseInt(_B3)<10 && (item==1 ||item==2 ||item==3 || item==4 || item==5 || item==6 || item==7 || item==8  || item==8  || item==12  )) || (parseInt(_B3)>9 && parseInt(_B3)<13 && (item==1 || item==2 || item==3 || item==4 || item==5 || item==6 || item==7 || item==8  || item==12))  || (parseInt(_B3)>13 && parseInt(_B3)<22 && (item==1 )) || (parseInt(_B3)>13 && parseInt(_B3)<18 && (item==1 || item==2 || item==3 || item==4 || item==9 || item==12 ))  || ((parseInt(_B3)==18 || parseInt(_B3)==19) && ( item==8 || item==9 || item==10 || item==11 || item==12 ))  || ((parseInt(_B3)==20 || parseInt(_B3)==21) && ( item==8 ||  item==9 || item==12 ))  || ((parseInt(_B3)>21) && ( item==12 || item==9))"
+                                                                        kosul="(parseInt(_B3)<6 && (item==1 || item==2 || item==3 || item==4 || item==5 || item==6 || item==7 || item==8 || item==9 || item==10 || item==11  )) || (parseInt(_B3)>5 && parseInt(_B3)<14 && (item==1 || item==2 || item==3 || item==4 || item==5 || item==6 || item==7 || item==8 || item==12)) || (parseInt(_B3)>13 && parseInt(_B3)<16 && (item==1 || item==2 || item==3 || item==4 || item==5 || item==6 || item==9 || item==12 )) || (parseInt(_B3)>15 && parseInt(_B3)<18 && (item==1 || item==2 || item==3 || item==4 || item==9 || item==12 )) || ((parseInt(_B3)==18 || parseInt(_B3)==19) && (item==1 || item==2 || item==3 || item==9 ||  item==12 )) || ((parseInt(_B3)==20 || parseInt(_B3)==21) && (item==1 || item==9 || item==12 )) || ((parseInt(_B3)>21) && (item==12 || item==9))"
                                                                         data-live-search="true"
                                                                         class="egitim selectpicker form-control zorunlu">
                                                                         <option value="">Seçiniz...</option>
@@ -1599,7 +1626,7 @@
                                                         Yanında Çalışan Personel Sayısı Kaçtır?
                                                         <input type="number"
                                                             Soru="Yanında Çalışan Personel Sayısı Kaçtır? "
-                                                            class="number" style="display:none" id="B105_#_O"
+                                                            class="number kendiyanindaCalisanSayi" style="display:none" id="B105_#_O"
                                                             name="B105_O" value="" />
                                                     </div>
 

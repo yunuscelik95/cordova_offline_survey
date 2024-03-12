@@ -30,11 +30,11 @@
                     tx.executeSql("SELECT A2a1,COALESCE(A2a2a1, 0) AS A2a2a1, COALESCE(A2a2a2, 0) AS A2a2a2, COALESCE(A2a2a3, 0) AS A2a2a3, COALESCE(A2a2a4, 0) AS A2a2a4, COALESCE(A2a2a5, 0) AS A2a2a5 FROM INTERVIEWS WHERE InterviewID =" + InterviewID, [], function (tx, val) {
                         if (val.rows.item(0).A2a1 == 1)
                         {
-                            var A2a2a1 = val.rows.item(0).A2a2a1;
-                            var A2a2a2 = val.rows.item(0).A2a2a2;
-                            var A2a2a3 = val.rows.item(0).A2a2a3;
-                            var A2a2a4 = val.rows.item(0).A2a2a4;
-                            var A2a2a5 = val.rows.item(0).A2a2a5;
+                            var A2a2a1 = val.rows.item(0).A2a2a1.toString();
+                            var A2a2a2 = val.rows.item(0).A2a2a2.toString();
+                            var A2a2a3 = val.rows.item(0).A2a2a3.toString();
+                            var A2a2a4 = val.rows.item(0).A2a2a4.toString();
+                            var A2a2a5 = val.rows.item(0).A2a2a5.toString();
                              if (A2a2a1.indexOf("2") < 0 && A2a2a1.indexOf("3") < 0 && A2a2a1.indexOf("4") < 0  && A2a2a1.indexOf("5") < 0  && A2a2a1.indexOf("6") < 0  && A2a2a1.indexOf("7") < 0)
                              {
                                 if (A2a2a2.indexOf("2") < 0 && A2a2a2.indexOf("3") < 0 && A2a2a2.indexOf("4") < 0  && A2a2a2.indexOf("5") < 0  && A2a2a2.indexOf("6") < 0  && A2a2a2.indexOf("7") < 0)

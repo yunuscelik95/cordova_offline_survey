@@ -124,12 +124,8 @@
                     return;
                 }
 
-                myUpdate("INTERVIEWS", str, " InterviewID=" + window.localStorage["InterviewID"]);
+                myUpdateRedirect("INTERVIEWS", str, " InterviewID=" + window.localStorage["InterviewID"],"A4c1.html?id=" + window.localStorage["InterviewID"]);
 
-            
-   
-                window.location.href = "A4c1.html?id=" + window.localStorage["InterviewID"] ;
-            
 
             }
         }

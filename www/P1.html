@@ -65,9 +65,9 @@
                     str += currentValue[i];
                 }
 
-                myUpdate("INTERVIEWS", str, " InterviewID=" + window.localStorage["InterviewID"]);
+                myUpdateRedirect("INTERVIEWS", str, " InterviewID=" + window.localStorage["InterviewID"],"C2.html?id=" + window.localStorage["InterviewID"] );
 
-                window.location.href = "C2.html?id=" + window.localStorage["InterviewID"] ;
+                
 
             }
         }

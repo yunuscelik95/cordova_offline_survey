@@ -50,12 +50,19 @@
             el: "#responsecontain",
             data: {
                 liste: [],
+                selectValue:0,
                 ziyaretSayisi: 100
             },
             methods: {
 
                 listeYukle() {
                     var self = this;
+                    var dummyRes = getUrlVars()["statu"];
+                    if (dummyRes != undefined && dummyRes != "")
+                    {
+                        self.selectValue = dummyRes;
+                    }
+             
                     db.transaction(function (tx) {
                         tx.executeSql("SELECT ResponseID, ResponseText, IsCallBack, ResponseType from RESPONSES where ResponseType = 0 order by SortIndex", [], function (tx, val) {
                             var listeArray = [];
@@ -74,6 +81,13 @@
                             }
                     });
                 }
+            },
+       
+            mounted() {
+                // Vue bileşeni DOM'a monte edildiğinde çalışacak kod
+                this.$nextTick(function () {
+                        $("input[type=radio]:checked").trigger("click");
+                    });
             }
         })
 
@@ -222,6 +236,7 @@
 
         $(document).ready(function () {
            
+            
 
             $("input[type='number']").keydown(function (e) {
                 var max_chars = $(this).attr("maxlength");
@@ -313,6 +328,7 @@
                                                 :id="'InterviewStatu_' + item.ResponseID"
                                                 :value="item.ResponseID"
                                                 :callback="item.IsCallBack"
+                                                :checked="item.ResponseID === parseInt(selectValue)"
                                                 onclick="setValue(this);"
                                                 >
                                             <span></span>

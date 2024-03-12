@@ -97,14 +97,16 @@
                 });
 
                 if (aswer != "") {
-                    myUpdate("INTERVIEWS", "A2a2a1='" + aswer + "',A2a2a1_O_97='" + document.getElementById("A2a2a1_O_97").value + "', A2a2a2 = null, A2a2a2_O_97=null, A2a2a3=null, A2a2a3_O_97=null, A2a2a4=null,A2a2a4_O_97=null, A2a2a5=null,A2a2a5_O_97=null", " InterviewID=" + window.localStorage["InterviewID"]);
+                
                     if (toplamTV < 2)
                     {
-                        window.location.href = "B1.html?id=" + window.localStorage["InterviewID"] ;
+                        myUpdateRedirect("INTERVIEWS", "A2a2a1='" + aswer + "',A2a2a1_O_97='" + document.getElementById("A2a2a1_O_97").value + "', A2a2a2 = null, A2a2a2_O_97=null, A2a2a3=null, A2a2a3_O_97=null, A2a2a4=null,A2a2a4_O_97=null, A2a2a5=null,A2a2a5_O_97=null", " InterviewID=" + window.localStorage["InterviewID"],"B1.html?id=" + window.localStorage["InterviewID"]);
+                        
                     }
                     else
                     {
-                        window.location.href = "A2a2a2.html?id=" + window.localStorage["InterviewID"] ;
+                        myUpdateRedirect("INTERVIEWS", "A2a2a1='" + aswer + "',A2a2a1_O_97='" + document.getElementById("A2a2a1_O_97").value + "', A2a2a2 = null, A2a2a2_O_97=null, A2a2a3=null, A2a2a3_O_97=null, A2a2a4=null,A2a2a4_O_97=null, A2a2a5=null,A2a2a5_O_97=null", " InterviewID=" + window.localStorage["InterviewID"],"A2a2a2.html?id=" + window.localStorage["InterviewID"]);
+
                     }
                 }
                 else {

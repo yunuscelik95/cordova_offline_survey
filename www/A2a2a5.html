@@ -94,8 +94,8 @@
                 });
 
                 if (aswer != "") {
-                    myUpdate("INTERVIEWS", "A2a2a5='" + aswer + "',A2a2a5_O_97='" + document.getElementById("A2a2a5_O_97").value + "'", " InterviewID=" + window.localStorage["InterviewID"]);
-                    window.location.href = "B1.html?id=" + window.localStorage["InterviewID"] ;
+                    myUpdateRedirect("INTERVIEWS", "A2a2a5='" + aswer + "',A2a2a5_O_97='" + document.getElementById("A2a2a5_O_97").value + "'", " InterviewID=" + window.localStorage["InterviewID"],"B1.html?id=" + window.localStorage["InterviewID"]);
+
    
                 }
                 else {

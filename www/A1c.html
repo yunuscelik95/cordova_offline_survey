@@ -78,14 +78,16 @@
                 });
 
                 if (aswer != "") {
-                    myUpdate("INTERVIEWS", "A1c='" + aswer + "',A1c_O_97='" + document.getElementById("A1c_O_97").value + "'", " InterviewID=" + window.localStorage["InterviewID"]);
+                 
                     if (TVSay == 2  && bozukTVSay == 2)
                     {
-                        window.location.href = "B1.html?id=" + window.localStorage["InterviewID"] ;
+                        myUpdateRedirect("INTERVIEWS", "A1c='" + aswer + "',A1c_O_97='" + document.getElementById("A1c_O_97").value + "'", " InterviewID=" + window.localStorage["InterviewID"],"B1.html?id=" + window.localStorage["InterviewID"]);
+
                     }
                     else
                     {
-                        window.location.href = "A2a1.html?id=" + window.localStorage["InterviewID"] ;
+                        myUpdateRedirect("INTERVIEWS", "A1c='" + aswer + "',A1c_O_97='" + document.getElementById("A1c_O_97").value + "'", " InterviewID=" + window.localStorage["InterviewID"],"A2a1.html?id=" + window.localStorage["InterviewID"]);
+
                     }
                 }
                 else {

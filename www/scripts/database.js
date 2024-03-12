@@ -512,7 +512,14 @@ var myUpdateRedirect = function (table, updatestr, where, question) {
         //  alert("update [" + table + '] set ' + updatestr + ' where ' + where);
         tx.executeSql("update [" + table + '] set ' + updatestr + ' where ' + where
         , [], function () {
-            
+            if (question == "blokOzet.html" && updatestr.indexOf("InterviewStatu") > -1) {
+                window.localStorage["InterviewID"] = "";
+             }
+             if (window.localStorage["InterviewID"] == "") {
+                 window.location.href = "blokOzet.html";
+             }
+             window.location.href = question;
+             
         }, function (tx, error) {
             alert(error.message);
 
@@ -525,13 +532,7 @@ var myUpdateRedirect = function (table, updatestr, where, question) {
         },
         function () {
 
-            if (question == "blokOzet.html" && updatestr.indexOf("InterviewStatu") > -1) {
-               window.localStorage["InterviewID"] = "";
-            }
-            if (window.localStorage["InterviewID"] == "") {
-                window.location.href = "blokOzet.html";
-            }
-            window.location.href = question;
+           
         }
     );
 

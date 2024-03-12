@@ -63,13 +63,15 @@
 
             var kontrol = CheckValues();
             if (kontrol) {
-                myUpdate("INTERVIEWS", "A4C1=" + currentValue + ",A4C1_O='" + $("#A4C1_O").val() + "', A4C3= null, A4C4 = null, A4C5_1=null,A4C5_2=null,A4C5_3=null,A4C5_4=null,A4C5_5=null,A4C5_6=null,A4C5_7=null,A4C5_8=null,A4C5_9=null,A4C5_10=null,A4C5_11=null,A4C5_12=null,A4C5_13=null,A4C5_14=null,A4C5_15=null,A4C5_16=null,A4C5_17=null,A4C5_18=null,A4C5_19=null,A4C5_20=null", " InterviewID=" + window.localStorage["InterviewID"],);
+             
                 if (currentValue == "2") {
-                    window.location.href = "A4d1.html?id=" + window.localStorage["InterviewID"]
+                    myUpdateRedirect("INTERVIEWS", "A4C1=" + currentValue + ",A4C1_O='" + $("#A4C1_O").val() + "', A4C3= null, A4C4 = null, A4C5_1=null,A4C5_2=null,A4C5_3=null,A4C5_4=null,A4C5_5=null,A4C5_6=null,A4C5_7=null,A4C5_8=null,A4C5_9=null,A4C5_10=null,A4C5_11=null,A4C5_12=null,A4C5_13=null,A4C5_14=null,A4C5_15=null,A4C5_16=null,A4C5_17=null,A4C5_18=null,A4C5_19=null,A4C5_20=null", " InterviewID=" + window.localStorage["InterviewID"],"A4d1.html?id=" + window.localStorage["InterviewID"]);
+                    
                 }
                 else
                 {
-                    window.location.href = "A4c3.html?id=" + window.localStorage["InterviewID"];
+                    myUpdateRedirect("INTERVIEWS", "A4C1=" + currentValue + ",A4C1_O='" + $("#A4C1_O").val() + "', A4C3= null, A4C4 = null, A4C5_1=null,A4C5_2=null,A4C5_3=null,A4C5_4=null,A4C5_5=null,A4C5_6=null,A4C5_7=null,A4C5_8=null,A4C5_9=null,A4C5_10=null,A4C5_11=null,A4C5_12=null,A4C5_13=null,A4C5_14=null,A4C5_15=null,A4C5_16=null,A4C5_17=null,A4C5_18=null,A4C5_19=null,A4C5_20=null", " InterviewID=" + window.localStorage["InterviewID"],"A4c3.html?id=" + window.localStorage["InterviewID"]);
+
                 }
 
                 
