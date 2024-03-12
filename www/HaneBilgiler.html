@@ -351,9 +351,21 @@
                         {
                             row.find(".maasliCalisanPersonel").attr("min", 21);
                         }
-                        else if (meslekVal === "14")
+                        else if (meslekVal === "21")
+                        {
+                            row.find(".kendiyanindaCalisanSayi").attr("min", 1).attr("max", 5);
+                        }
+                        else if (meslekVal === "22")
+                        {
+                            row.find(".kendiyanindaCalisanSayi").attr("min", 6).attr("max", 10);
+                        }
+                        else if (meslekVal === "23")
                         {
                             row.find(".kendiyanindaCalisanSayi").attr("min", 11).attr("max", 20);
+                        }
+                        else if (meslekVal === "24")
+                        {
+                            row.find(".kendiyanindaCalisanSayi").attr("min", 21);
                         }
                         //   $(".meslekUzman select option:eq(0)").prop('selected', true);
                         //   $(".meslekYonetici").hide();

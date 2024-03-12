@@ -73,10 +73,12 @@
                         var isimFieldName = "B2a_" + yas15BuyukFirstIndex + "_1";
                         var firstRow ="<tr class=\"AlternateTableRow\">" +  row.html().replace("lblisim", val.rows.item(0)[isimFieldName]).replace(/\#/g, yas15BuyukFirstIndex) + "</tr>";
                         $("#QuestionTable tbody>tr:first").replaceWith(firstRow);
-                        $("input[type='text']").each(function () {
+                        $("input[type='number']").each(function () {
                             otherValue.push($(this).attr("id").replace("C4_O_",""));
                             otherObj.push(document.getElementById( $(this).attr("id")));
                         })
+
+
                         SetStartUp();
                      }
                     // alert(haneSayi);
@@ -246,7 +248,7 @@
                                     <td class="columnDivider"></td>
                                     <td align="right">#</td>
                                     <td align="right"><input type="checkbox" class="checkboxStyle" name="C4" id="C4_#" value="#" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td><label for="C4_#"><b>lblisim</b> telefon numarası:</label><label for="C4_O_#"><input type="text" class="textStyle" name="C4_O_#" id="C4_O_#" value="" datatype="varchar" stepname="C4" expression="^[5]{1}[0-9]{9}$" expressionmessage="Cep telefonunu 10 haneli olarak giriniz. Örn: 5554443322" precision="18" scale="2" objecttype="single" style="width: 150px;" disabled=""></label></td>
+                                    <td><label for="C4_#"><b>lblisim</b> telefon numarası:</label><label for="C4_O_#"><input type="number" class="textStyle" name="C4_O_#" id="C4_O_#" value="" datatype="varchar" stepname="C4" expression="^[5]{1}[0-9]{9}$" expressionmessage="Cep telefonunu 10 haneli olarak giriniz. Örn: 5554443322" precision="18" scale="2" objecttype="single" style="width: 150px;" disabled=""></label></td>
 
                                 </tr>
 
