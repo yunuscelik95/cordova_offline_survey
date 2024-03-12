@@ -27,32 +27,33 @@
             //var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
             InterviewID = window.localStorage["InterviewID"];
             db.transaction(function (tx) {
-                    // tx.executeSql("SELECT A2a1,COALESCE(A2a2a1, 0) AS A2a2a1, COALESCE(A2a2a2, 0) AS A2a2a2, COALESCE(A2a2a3, 0) AS A2a2a3, COALESCE(A2a2a4, 0) AS A2a2a4, COALESCE(A2a2a5, 0) AS A2a2a5 FROM INTERVIEWS WHERE InterviewID =" + InterviewID, [], function (tx, val) {
-                    //     if (val.rows.item(0).A2a1 == 1)
-                    //     {
-                    //         A2a2a1 = val.rows.item(0).A2a1;
-                    //         A2a2a2 = val.rows.item(0).A2a2;
-                    //         A2a2a3 = val.rows.item(0).A2a3;
-                    //         A2a2a4 = val.rows.item(0).A2a4;
-                    //         A2a2a5 = val.rows.item(0).A2a5;
-                    //          if (A2a2a1.indexOf("2") < 0 && A2a2a1.indexOf("3") < 0 && A2a2a1.indexOf("4") < 0  && A2a2a1.indexOf("5") < 0  && A2a2a1.indexOf("6") < 0  && A2a2a1.indexOf("7") < 0)
-                    //          {
-                    //             if (A2a2a2.indexOf("2") < 0 && A2a2a2.indexOf("3") < 0 && A2a2a2.indexOf("4") < 0  && A2a2a2.indexOf("5") < 0  && A2a2a2.indexOf("6") < 0  && A2a2a2.indexOf("7") < 0)
-                    //             {
-                    //                 if (A2a2a3.indexOf("2") < 0 && A2a2a3.indexOf("3") < 0 && A2a2a3.indexOf("4") < 0  && A2a2a3.indexOf("5") < 0  && A2a2a3.indexOf("6") < 0  && A2a2a3.indexOf("7") < 0)
-                    //                 {
-                    //                     if (A2a2a4.indexOf("2") < 0 && A2a2a4.indexOf("3") < 0 && A2a2a4.indexOf("4") < 0  && A2a2a4.indexOf("5") < 0  && A2a2a4.indexOf("6") < 0  && A2a2a4.indexOf("7") < 0)
-                    //                     {
-                    //                         if (A2a2a5.indexOf("2") < 0 && A2a2a5.indexOf("3") < 0 && A2a2a5.indexOf("4") < 0  && A2a2a5.indexOf("5") < 0  && A2a2a5.indexOf("6") < 0  && A2a2a5.indexOf("7") < 0)
-                    //                         {
-                                                
-                    //                         }
-                    //                     } 
-                    //                 } 
-                    //             } 
-                    //          }
-                    //     }
-                    // });
+                    tx.executeSql("SELECT A2a1,COALESCE(A2a2a1, 0) AS A2a2a1, COALESCE(A2a2a2, 0) AS A2a2a2, COALESCE(A2a2a3, 0) AS A2a2a3, COALESCE(A2a2a4, 0) AS A2a2a4, COALESCE(A2a2a5, 0) AS A2a2a5 FROM INTERVIEWS WHERE InterviewID =" + InterviewID, [], function (tx, val) {
+                        if (val.rows.item(0).A2a1 == 1)
+                        {
+                            var A2a2a1 = val.rows.item(0).A2a2a1;
+                            var A2a2a2 = val.rows.item(0).A2a2a2;
+                            var A2a2a3 = val.rows.item(0).A2a2a3;
+                            var A2a2a4 = val.rows.item(0).A2a2a4;
+                            var A2a2a5 = val.rows.item(0).A2a2a5;
+                             if (A2a2a1.indexOf("2") < 0 && A2a2a1.indexOf("3") < 0 && A2a2a1.indexOf("4") < 0  && A2a2a1.indexOf("5") < 0  && A2a2a1.indexOf("6") < 0  && A2a2a1.indexOf("7") < 0)
+                             {
+                                if (A2a2a2.indexOf("2") < 0 && A2a2a2.indexOf("3") < 0 && A2a2a2.indexOf("4") < 0  && A2a2a2.indexOf("5") < 0  && A2a2a2.indexOf("6") < 0  && A2a2a2.indexOf("7") < 0)
+                                {
+                                    if (A2a2a3.indexOf("2") < 0 && A2a2a3.indexOf("3") < 0 && A2a2a3.indexOf("4") < 0  && A2a2a3.indexOf("5") < 0  && A2a2a3.indexOf("6") < 0  && A2a2a3.indexOf("7") < 0)
+                                    {
+                                        if (A2a2a4.indexOf("2") < 0 && A2a2a4.indexOf("3") < 0 && A2a2a4.indexOf("4") < 0  && A2a2a4.indexOf("5") < 0  && A2a2a4.indexOf("6") < 0  && A2a2a4.indexOf("7") < 0)
+                                        {
+                                            if (A2a2a5.indexOf("2") < 0 && A2a2a5.indexOf("3") < 0 && A2a2a5.indexOf("4") < 0  && A2a2a5.indexOf("5") < 0  && A2a2a5.indexOf("6") < 0  && A2a2a5.indexOf("7") < 0)
+                                            {
+                                                alert("Abonelik ücreti ödendiği işaretlendi ancak hiçbir ücretli sistem seçilmedi");
+                                                window.location.href = "A2a1.html?id=" + window.localStorage["InterviewID"] ;  
+                                            }
+                                        } 
+                                    } 
+                                } 
+                             }
+                        }
+                     });
                     var queryStrings = getUrlVars();
                     guid = queryStrings["guid"];
                     statu = queryStrings["Statu"];
@@ -156,7 +157,7 @@
                                         <td align="right">1</td>
                                         <td align="right"><input type="radio" class="radioStyle" name="B1" id="B1_1" value="1" checked="checked"><span></span></td>
                                         <td><label for="A1b_1">Toplam Kişi Sayısı</label>
-                                            <input type="text" class="textStyle" name="B1_O" id="B1_O" value="" datatype="varchar" stepname="B1" precision="18" scale="2" objecttype="single" expression="^([1-9]|[1][0-7])$" expressionmessage="Sayısal değer giriniz. (1-17)"></td>
+                                            <input type="number" class="textStyle" name="B1_O" id="B1_O" value="" datatype="varchar" stepname="B1" precision="18" scale="2" objecttype="single" expression="^([1-9]|[1][0-7])$" expressionmessage="Sayısal değer giriniz. (1-17)"></td>
                                     </tr>
                                     <!-- <tr class="AlternateTableRow">
                                         <td class="columnDivider"></td>

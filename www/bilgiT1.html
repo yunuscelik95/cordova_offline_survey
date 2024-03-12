@@ -9,29 +9,28 @@
     <link href="css/lightbox.min.css" rel="stylesheet" />
 
     <script src="scripts/jquery-3.3.1.js"></script>
+
     <script type="text/javascript" src="cordova.js"></script>
-<!-- 
-    <script src="scripts/app.js"></script> -->
+
+    <!-- <script src="scripts/app.js"></script> -->
     <script src="scripts/database.js"></script>
-    <script src="scripts/Gps.js"></script>
     <script src="scripts/jsSingleResponse.js"></script>
     <script type="text/javascript">
-        var db;
+
         var id;
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
+            id = getUrlVars()["id"];
+           // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            db.transaction(function (tx) {
 
-            //var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
-            //   document.getElementById("btnKoordinat").addEventListener("click", getGeo);
-
-
+            });
         }
-
 
 
         window.onload = function () {
             id = getUrlVars()["id"];
-            //   SetStartUp();
+            SetStartUp();
             //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
         };
 
@@ -53,36 +52,43 @@
             return vars;
         }
 
+
         function gecisKontrol() {
 
 
-            window.location.href = "Response.html?statu=17&id=" + window.localStorage["InterviewID"];
+             var kontrol = CheckValues();
+            if (kontrol) {
+                if (currentValue == "2") {
+                    myUpdateRedirect("INTERVIEWS", "T1a=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "Response.html?statu=17&id=" + window.localStorage["InterviewID"]);
+                }
+                else
+                {
+                    myUpdateRedirect("INTERVIEWS", "T1a=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "bilgi.html?id=" + window.localStorage["InterviewID"]);    
+                }
+
+
+            }
 
         }
     </script>
-    <style>
-        #QuestionTable {
-            width: 100%;
-            border-style: solid;
-            border-width: 0px;
-        }
-
-            #QuestionTable td {
-                border-width: 0px;
-            }
-    </style>
 </head>
 <body>
 
-    <form id="form1" class="skinned-form-controls skinned-form-controls-mac">
-        <table id="QuestionText" border="0">
+    <form id="form1" >
+        <table border="0" id="QuestionText">
             <tbody>
                 <tr>
                     <td>
                         <span id="QuestionTextTD">
                             <font color="#000000" face="Arial Narrow" size="2">
-                                Evde görüşülecek 18 yaşından büyük biri varsa çağırmasını isteyin, yoksa daha sonra uygun kişi ile görüşmek üzere randevu alın
-                                .
+                               <b>Anketör Not :</b> Evde görüşülecek 18 yaşından büyük biri varsa çağırmasını isteyin,
+                                 yoksa daha sonra uygun kişi ile görüşmek üzere randevu alın.
+                                 
+                            </font>
+<br />
+                            <font color="#000000" face="Arial Narrow" size="2">
+                              Şu anda hanede 18 yaşından büyük birisi var mı? Var ise görüşme yapmak için çağırabilir misiniz?
+                                 
                             </font>
                             <p align="left"><font color="#ff0000" face="Arial Narrow" size="2"></font><font color="#244061" face="Arial Narrow" size="2"><b>
                                 <u>(18 YAŞINDAN KÜÇÜK KİŞİLERLE KESİNLİKLE GÖRÜŞÜLMEYECEK)     </u></b></font></p>
@@ -95,17 +101,24 @@
             <table id="QuestionTable" class="cssQuestionTable">
                 <tbody>
 
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">1</td>
+                        <td align="right"><input type="radio" class="radioStyle" name="T1a" id="T1a_1" value="1"><span></span></td>
+                        <td><label for="T1a_1">Evet</label></td>
+                    </tr>
+                    <tr>
+                        <td class="columnDivider"></td>
+                        <td align="right">2</td>
+                        <td align="right"><input type="radio" class="radioStyle" name="T1a" id="T1a_2" value="2"><span></span></td>
+                        <td><label for="T1a_2">Hayır</label></td>
+                    </tr>
+
+
                     <tr><td colspan="4">&nbsp;</td></tr>
                     <tr>
-                        <td colspan="3">
-                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
-                            <!--                     <input type="button" value="Koordinat" id="btnKoordinat"  name="btnKoordinat"/>-->
-                        </td>
-                        <td align="right">
-
-                            <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
-
-                        </td>
+                        <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                        <td align="right"> <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
                     </tr>
                 </tbody>
             </table>

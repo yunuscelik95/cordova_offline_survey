@@ -21,9 +21,21 @@
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
             id = getUrlVars()["id"];
+            var A2a2a1 = "0";
+            var A2a2a2 = "0";
+            var A2a2a3 = "0";
+            var A2a2a4 = "0";
+            var A2a2a5 = "0";
             InterviewID = window.localStorage["InterviewID"];
             // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
             db.transaction(function (tx) {
+                tx.executeSql("SELECT A2a1,COALESCE(A2a2a1, 0) AS A2a2a1, COALESCE(A2a2a2, 0) AS A2a2a2, COALESCE(A2a2a3, 0) AS A2a2a3, COALESCE(A2a2a4, 0) AS A2a2a4, COALESCE(A2a2a5, 0) AS A2a2a5 FROM INTERVIEWS WHERE InterviewID =" + InterviewID, [], function (tx, val) {
+                    A2a2a1 = val.rows.item(0).A2a2a1;
+                    A2a2a2 = val.rows.item(0).A2a2a2;
+                    A2a2a3 = val.rows.item(0).A2a2a3;
+                    A2a2a4 = val.rows.item(0).A2a2a4;
+                    A2a2a5 = val.rows.item(0).A2a2a5;
+                })
                 var queryStrings = getUrlVars();
                     guid = queryStrings["guid"];
                     statu = queryStrings["Statu"];
@@ -64,6 +76,14 @@
             var kontrol = CheckValues();
             if (kontrol) {
                 myUpdate("INTERVIEWS", "A4D1=" + currentValue + ",A4D1_O='" + $("#A4D1_O").val() + "', A4D3= null", " InterviewID=" + window.localStorage["InterviewID"],);
+                if ((A2a2a1.indexOf(8) > -1 || A2a2a2.indexOf(8) > -1 || A2a2a3.indexOf(8) > -1 || A2a2a4.indexOf(8) > -1 || A2a2a5.indexOf(8) > -1) && currentValue == "2")
+                {
+                    alert("TV yayını olarak SMART TV seçilmesine rağmen bu soruda Jayır işaretlendi lütfen cevaplarınızı kontrol ediniz!");
+                    
+                    return false;
+                }
+
+
                 if (currentValue == "2") {
                     window.location.href = "A4e1.html?id=" + window.localStorage["InterviewID"]
                 }

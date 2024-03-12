@@ -128,6 +128,18 @@
                 ziyaretTarihi = gun + "-" + ay + "-" + yil + " " + saat;
                 
             }
+
+            var bugun = new Date();
+            var ziyaretTarihDate = new Date(ziyaretTarihi);
+
+            
+            if (ziyaretTarihDate < bugun) {
+                // Ziyaret tarihi bugünün tarihinden geride
+                alert("Ziyaret tarihi bugünün tarihinden geride olamaz.");
+                return false;
+                // İlgili işlemleri gerçekleştirme veya kullanıcıya uygun bir geri bildirim verme
+            }
+
             else if (callback=="1")
             {
                 alert("Ziyaret tarihini işaretleyiniz! 2024 yılı 9. Ay öncesine randevu alınabilinir");
