@@ -122,29 +122,33 @@
             var yil = $("#timeYil").val();
             var saat = $("#CALLBACKTIME").val();
             var ziyaretTarihi = "";
-            
+            var ziyaretTarihiGecmis ="";
+
+
+
             if (callback=="1" && gun != "" && ay != "" && parseInt(ay) < 9 && yil == "2024" && saat!="")
             {
                 ziyaretTarihi = gun + "-" + ay + "-" + yil + " " + saat;
                 
+                ziyaretTarihiGecmis = yil + "-" + ay + "-" + gun + " " + saat;
             }
-
-            var bugun = new Date();
-            var ziyaretTarihDate = new Date(ziyaretTarihi);
-
+            else if (callback=="1")
+            {
+                alert("Ziyaret tarihini işaretleyiniz! 2024 yılı 9. Ay öncesine randevu alınabilinir");
+                return false;
+            }
             
+            var bugun = new Date();
+            bugun.setDate(bugun.getDate() - 1);
+            var ziyaretTarihDate = new Date(ziyaretTarihiGecmis);
+
             if (ziyaretTarihDate < bugun) {
                 // Ziyaret tarihi bugünün tarihinden geride
                 alert("Ziyaret tarihi bugünün tarihinden geride olamaz.");
                 return false;
                 // İlgili işlemleri gerçekleştirme veya kullanıcıya uygun bir geri bildirim verme
             }
-
-            else if (callback=="1")
-            {
-                alert("Ziyaret tarihini işaretleyiniz! 2024 yılı 9. Ay öncesine randevu alınabilinir");
-                return false;
-            }
+          
             if (kontrol) {
              //   myUpdate("INTERVIEWS", "InterviewStatu=" + currentValue + ",[stop]=getdate()", " InterviewID=" + id);
             //    myUpdate("LISTE", "statu=" + currentValue, " id=" + id);
