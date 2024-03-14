@@ -23,20 +23,27 @@
         var A2a2a3 = "0";
         var A2a2a4 = "0";
         var A2a2a5 = "0";
-
+        var A1Tv = 0;
+        var A1bBozukTv = 0;
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
             id = getUrlVars()["id"];
-          
+            
             InterviewID = window.localStorage["InterviewID"];
             // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
             db.transaction(function (tx) {
-                tx.executeSql("SELECT A2a1,COALESCE(A2a2a1, 0) AS A2a2a1, COALESCE(A2a2a2, 0) AS A2a2a2, COALESCE(A2a2a3, 0) AS A2a2a3, COALESCE(A2a2a4, 0) AS A2a2a4, COALESCE(A2a2a5, 0) AS A2a2a5 FROM INTERVIEWS WHERE InterviewID =" + InterviewID, [], function (tx, val) {
+                tx.executeSql("SELECT  A1,A1b,A2a1,COALESCE(A2a2a1, 0) AS A2a2a1, COALESCE(A2a2a2, 0) AS A2a2a2, COALESCE(A2a2a3, 0) AS A2a2a3, COALESCE(A2a2a4, 0) AS A2a2a4, COALESCE(A2a2a5, 0) AS A2a2a5 FROM INTERVIEWS WHERE InterviewID =" + InterviewID, [], function (tx, val) {
+                    A1Tv = val.rows.item(0).A1;
+                    A1bBozukTv = val.rows.item(0).A1b;
                     A2a2a1 = val.rows.item(0).A2a2a1;
                     A2a2a2 = val.rows.item(0).A2a2a2;
                     A2a2a3 = val.rows.item(0).A2a2a3;
                     A2a2a4 = val.rows.item(0).A2a2a4;
                     A2a2a5 = val.rows.item(0).A2a2a5;
+                    if (A1Tv == 2 && A1bBozukTv == 2)
+                    {
+                        window.location.href = "A4e1.html?id=" + window.localStorage["InterviewID"];
+                    }
                 })
                 var queryStrings = getUrlVars();
                     guid = queryStrings["guid"];
@@ -80,7 +87,7 @@
                 
                 if ((A2a2a1.toString().indexOf(8) > -1 || A2a2a2.toString().indexOf(8) > -1 || A2a2a3.toString().indexOf(8) > -1 || A2a2a4.toString().indexOf(8) > -1 || A2a2a5.toString().indexOf(8) > -1) && currentValue == "2")
                 {
-                    alert("TV yayını olarak SMART TV seçilmesine rağmen bu soruda Jayır işaretlendi lütfen cevaplarınızı kontrol ediniz!");
+                    alert("TV yayını olarak SMART TV seçilmesine rağmen bu soruda HAYIR işaretlendi lütfen cevaplarınızı kontrol ediniz!");
 
                     return false;
                 }
@@ -88,17 +95,17 @@
                 
 
                 if (currentValue == "2") {
-                    myUpdateRedirect("INTERVIEWS", "A4D1=" + currentValue + ",A4D1_O='" + $("#A4D1_O").val() + "', A4D3= null", " InterviewID=" + window.localStorage["InterviewID"],"A4e1.html?id=" + window.localStorage["InterviewID"]);
+                    myUpdateRedirect("INTERVIEWS", "A4D1=" + currentValue + ",A4D1_O='" + $("#A4D1_O").val() + "'", " InterviewID=" + window.localStorage["InterviewID"],"A4e1.html?id=" + window.localStorage["InterviewID"]);
                     
                 }
                 else
                 {
-                    myUpdateRedirect("INTERVIEWS", "A4D1=" + currentValue + ",A4D1_O='" + $("#A4D1_O").val() + "', A4D3= null", " InterviewID=" + window.localStorage["InterviewID"],"A4e1.html?id=" + window.localStorage["InterviewID"]);
+                    myUpdateRedirect("INTERVIEWS", "A4D1=" + currentValue + ",A4D1_O='" + $("#A4D1_O").val() + "'", " InterviewID=" + window.localStorage["InterviewID"],"A4e1.html?id=" + window.localStorage["InterviewID"]);
                     
                 }
 
                 
-           //     window.location.href = "R3.html?id=" + id;
+           //     window.location.href = "A4e1.html?id=" + window.localStorage["InterviewID"];
                 /* db = openDatabase({ name: 'my.db', location: 'default' });
                  db.transaction(function (tx) {
 

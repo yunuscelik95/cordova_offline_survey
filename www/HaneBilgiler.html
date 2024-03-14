@@ -747,18 +747,22 @@
                 //   function fnkYas()
 
                 //   alert("sdsd");
-                if ($(this).val() == "" || parseInt($(this).val()) < 18) {
+                if ($(this).val() == "" || parseInt($(this).val()) < 15) {
                     $(this).closest("tr").nextAll(".buyukYas").hide()
 
                     $("select[Soru=Meslek]").find("option:selected").removeAttr("selected");
-                    /*  find("td:eq(7)").nextAll('td').h if ($(this).parent().parent().find("#E3b").length > -1)
-                    {
-                        alert("Görüşülen kişi 18 yaşından küçük olamaz!");
-                    }*/
                 }
                 else {
                     //  $(this).closest("tr").next().show()
                     $(this).closest("tr").nextAll(".buyukYas").show()
+                }
+
+                if ($(this).val() == "" || parseInt($(this).val()) < 18) {
+                    $(this).closest("tr").nextAll(".buyukYas18").hide()          
+                }
+                else {
+                    //  $(this).closest("tr").next().show()
+                    $(this).closest("tr").nextAll(".buyukYas18").show()
                 }
                 //   $("input:radio[name=E3b]")
                 var row = $(this).closest("table");
@@ -1001,7 +1005,7 @@
                                 }
                                 var yas = parseInt($(this).closest("table").find("input[name^='B3']").val());
                                 var buyuyas = $(this).closest("tr").attr("class");
-                                if ((yas > 17) || (yas < 18 && buyuyas != "buyukYas")) {
+                                if ((yas > 17) || (yas > 14 && buyuyas != "buyukYas18") || (yas < 15 && buyuyas != "buyukYas" && buyuyas != "buyukYas18")) {
                                     if ($(this).type == "select-one" && $(this).hasClass("selectPicker")) {
                                         $(this).selectpicker('refresh');
                                     }
@@ -1364,7 +1368,7 @@
 
                                                             </tr>
                                                             <!--GÖRÜŞÜLEN KİŞİ-->
-                                                            <tr id="tr#" class="buyukYas">
+                                                            <tr id="tr#" class="buyukYas18">
 
                                                                 <td class="col-lg-1" style="text-align:left;"
                                                                     aling="left" colspan="2">
@@ -1464,7 +1468,7 @@
                                             </tr>
 
                                           
-                                            <tr class="buyukYas">
+                                            <tr class="buyukYas18">
 
                                      
                                             <td class="col-lg-1" colspan="4">
