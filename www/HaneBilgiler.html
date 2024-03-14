@@ -283,7 +283,7 @@
                     $("#example").find(".tdreis").text("");
                     $(this).closest("tr").closest("table").closest("tr").prev().find("td").eq(5).text("Hane Reisi");
                     $(this).closest("tr").closest("table").find(".meslek").trigger("change");
-                    //MeslekEk($(this), "reis");
+                    MeslekEk($(this), "reis");
                     onLoad(false, $(this).attr("id"), "tablolar");
                 }
 
@@ -579,66 +579,68 @@
                 // $(".meslekMaasliGundelik").find("select").selectpicker('refresh');
                 // $(".meslekPersonelCalisan").find("select").selectpicker('refresh');
 
-
-                var meslek = elem.closest("table").find(".tdMeslek").children().filter("select").filter(".meslek");
-                $("#" + meslek.attr("id").replace("B8", "B101") + "_O").parent().show();
-                $("#" + meslek.attr("id").replace("B8", "B101") + "_O").show();
                 if (ayrac == "reis") {
                     $("#" + meslek.attr("id").replace("B8", "B101") + "_O").val("");
                 }
 
+                var meslek = elem.closest("table").find(".tdMeslek").children().filter("select").filter(".meslek");
 
-                if (parseInt(meslek.val()) > 7) {
-                    $("#" + meslek.attr("id").replace("B8", "B102")).parent().show();
-                    $("#" + meslek.attr("id").replace("B8", "B102")).show();
-                }
+                if (ayrac == "meslek")
+                {
+                    $("#" + meslek.attr("id").replace("B8", "B101") + "_O").parent().show();
+                    $("#" + meslek.attr("id").replace("B8", "B101") + "_O").show();
 
-                if ((parseInt(meslek.val()) > 11 && parseInt(meslek.val()) < 16) || meslek.val() == 10) {
-                    $("#" + meslek.attr("id").replace("B8", "B103")).parent().show();
-                    $("#" + meslek.attr("id").replace("B8", "B103")).show();
-                }
+                    if (parseInt(meslek.val()) > 7) {
+                        $("#" + meslek.attr("id").replace("B8", "B102")).parent().show();
+                        $("#" + meslek.attr("id").replace("B8", "B102")).show();
+                    }
 
-                if (parseInt(meslek.val()) == 8 || parseInt(meslek.val()) == 9 || parseInt(meslek.val()) == 10) {
-                    $("#" + meslek.attr("id").replace("B8", "B104")).parent().show();
-                    $("#" + meslek.attr("id").replace("B8", "B104")).show();
-                }
+                    if ((parseInt(meslek.val()) > 11 && parseInt(meslek.val()) < 16) || meslek.val() == 10) {
+                        $("#" + meslek.attr("id").replace("B8", "B103")).parent().show();
+                        $("#" + meslek.attr("id").replace("B8", "B103")).show();
+                    }
+
+                    if (parseInt(meslek.val()) == 8 || parseInt(meslek.val()) == 9 || parseInt(meslek.val()) == 10) {
+                        $("#" + meslek.attr("id").replace("B8", "B104")).parent().show();
+                        $("#" + meslek.attr("id").replace("B8", "B104")).show();
+                    }
 
 
-                if (parseInt(meslek.val()) > 17 && parseInt(meslek.val()) < 26) {
-                    $("#" + meslek.attr("id").replace("B8", "B105") + "_O").parent().show();
-                    $("#" + meslek.attr("id").replace("B8", "B105") + "_O").show();
-                }
-              
-
-                if (parseInt(meslek.val()) == 17) {
-                    $("#" + meslek.attr("id").replace("B8", "B107")).parent().show();
-                    $("#" + meslek.attr("id").replace("B8", "B107")).show();
-                }
-
-                if (parseInt(meslek.val()) > 2 && parseInt(meslek.val()) < 8) {
-                    $("#" + meslek.attr("id").replace("B8", "B106")).parent().show();
-                    $("#" + meslek.attr("id").replace("B8", "B106")).show();
-                }
-
-                // if (parseInt(meslek.val()) == 17 || parseInt(meslek.val()) == 25) {
-                //     $("#" + meslek.attr("id").replace("B8", "B107") + "_O").parent().show();
-                //     $("#" + meslek.attr("id").replace("B8", "B107") + "_O").show();
-                // }
-
-                else if (meslek.val() == "1" || meslek.val() == "2") {
-                    $("#" + meslek.attr("id").replace("B8", "B8e")).removeClass("bs-select-hidden").show();
-                }
-                else {
-                    $("#" + meslek.attr("id").replace("B8", "B8e")).hide();
-                   
-                }
+                    if (parseInt(meslek.val()) > 17 && parseInt(meslek.val()) < 26) {
+                        $("#" + meslek.attr("id").replace("B8", "B105") + "_O").parent().show();
+                        $("#" + meslek.attr("id").replace("B8", "B105") + "_O").show();
+                    }
                 
-                if (parseInt(meslek.val()) < 18) {
-                    $("#" + meslek.attr("id").replace("B8", "B105") + "_O").parent().hide();
-                    $("#" + meslek.attr("id").replace("B8", "B105") + "_O").hide();
- 
+
+                    if (parseInt(meslek.val()) == 17) {
+                        $("#" + meslek.attr("id").replace("B8", "B107")).parent().show();
+                        $("#" + meslek.attr("id").replace("B8", "B107")).show();
+                    }
+
+                    if (parseInt(meslek.val()) > 2 && parseInt(meslek.val()) < 8) {
+                        $("#" + meslek.attr("id").replace("B8", "B106")).parent().show();
+                        $("#" + meslek.attr("id").replace("B8", "B106")).show();
+                    }
+
+                    // if (parseInt(meslek.val()) == 17 || parseInt(meslek.val()) == 25) {
+                    //     $("#" + meslek.attr("id").replace("B8", "B107") + "_O").parent().show();
+                    //     $("#" + meslek.attr("id").replace("B8", "B107") + "_O").show();
+                    // }
+
+                    else if (meslek.val() == "1" || meslek.val() == "2") {
+                        $("#" + meslek.attr("id").replace("B8", "B8e")).removeClass("bs-select-hidden").show();
+                    }
+                    else {
+                        $("#" + meslek.attr("id").replace("B8", "B8e")).hide();
+                    
+                    }
+                    
+                    if (parseInt(meslek.val()) < 18) {
+                        $("#" + meslek.attr("id").replace("B8", "B105") + "_O").parent().hide();
+                        $("#" + meslek.attr("id").replace("B8", "B105") + "_O").hide();
+    
+                    }
                 }
-           
                 /*   else if (meslek.val() == "17") {s
                        $("#" + meslek.attr("id").replace("B8", "B6b")).parent().show();
                        $("#" + meslek.attr("id").replace("B8", "B6b")).show();
@@ -766,16 +768,18 @@
                 }
                 //   $("input:radio[name=E3b]")
                 var row = $(this).closest("table");
-                if (parseInt($(this).val()) < 15) {
+                if (parseInt($(this).val()) < 18) {
                     if (row.find("input:radio[name^=E3b]").is(':checked') > 0) {
-                        alert("Görüşülen kişi 15 yaşından küçük olamaz! İşaretlemeler kaldırılıyor");
+                        alert("Görüşülen kişi 18 yaşından küçük olamaz! İşaretlemeler kaldırılıyor");
                         row.find("input:radio[name^=E3b]").prop("checked", false);
                     }
+                }
 
+                if (parseInt($(this).val()) < 15) {
                     if (row.find("input:radio[name^=B9]").is(':checked') > 0) {
-                        alert("Hane Reisi kişi 15 yaşından küçük olamaz! İşaretlemeler kaldırılıyor");
-                        row.find("input:radio[name^=B9]").prop("checked", false);
-                    }
+                            alert("Hane Reisi kişi 15 yaşından küçük olamaz! İşaretlemeler kaldırılıyor");
+                            row.find("input:radio[name^=B9]").prop("checked", false);
+                        }
                 }
 
                 $(this).closest("tr").closest("table").closest("tr").prev().find("td").eq(3).text($(this).val());
@@ -1006,7 +1010,7 @@
                                 var yas = parseInt($(this).closest("table").find("input[name^='B3']").val());
                                 var buyuyas = $(this).closest("tr").attr("class");
                                 if ((yas > 17) || (yas > 14 && buyuyas != "buyukYas18") || (yas < 15 && buyuyas != "buyukYas" && buyuyas != "buyukYas18")) {
-                                    if ($(this).type == "select-one" && $(this).hasClass("selectPicker")) {
+                                    if ($(this).prop("tagName") == "SELECT" && $(this).hasClass("selectPicker")) {
                                         $(this).selectpicker('refresh');
                                     }
                                     alert(Index + ".Kişinin " + $(this).attr("Soru") + " Kutucuğu Boş. Tüm kutucukların doldurulması gerekli!");
@@ -1050,7 +1054,7 @@
                         
                         if (updateStrArr.indexOf($(this).attr("name")) < 0 )
                         {
-                            if ($(this).hasClass("selectpicker") == false || $(this).type != "select-one")
+                            if ($(this).hasClass("selectpicker") == false || $(this).prop("tagName") != "SELECT")
                             {
                                 var visibleControl = false;
                                 if ($(this).is(":visible"))
@@ -1368,9 +1372,9 @@
 
                                                             </tr>
                                                             <!--GÖRÜŞÜLEN KİŞİ-->
-                                                            <tr id="tr#" class="buyukYas18">
+                                                            <tr id="tr#">
 
-                                                                <td class="col-lg-1" style="text-align:left;"
+                                                                <td class="col-lg-1 buyukYas18" style="text-align:left;"
                                                                     aling="left" colspan="2">
                                                                     <label class="radio" style="margin-top:0px">
                                                                         <span class="name"></span> Görüşülen Kişi Mi?
@@ -1389,7 +1393,7 @@
                                                                     </label>
                                                                 </td>
                                                                 <!--REİS-->
-                                                                <td class="col-lg-1" colspan="2">
+                                                                <td class="col-lg-1  buyukYas" colspan="2">
                                                                     <label class="radio" style="margin-top:0px">
                                                                         Hane Reisi Mi?
                                                                         <div id="divReis">
@@ -1414,7 +1418,7 @@
                                                                         nedir?</b>
                                                                     <select id="B2b_#" Soru="Yakınlık"
                                                                         style="display:block" name="B2b_#"
-                                                                        kosul="(E3b==Index && item>1) || (E3b!=Index && item==1) || (parseInt(B3)<15 && (item==2 || item==3))  || (parseInt(B3)<18 && (item==1 || item==4 || item==5 || item==10 || item==11 || item==12)) || (B4==2 && ( item==3 || item==5 || item==9 || item==11))  || (B4==1 && ( item==2 || item==4 || item==8 || item==10))"
+                                                                        kosul="(E3b==Index && item>1) || (E3b!=Index && item==1) || (parseInt(_B3)<15 && (item==2 || item==3)) || (parseInt(_B3)<18 && (item==1)) || (parseInt(_B3)<30 && (item==4 || item==5 || item==12)) || (parseInt(_B3)<45 && (item==10 || item==11))|| (_B4==2 && ( item==3 || item==5 || item==9 || item==11))  || (_B4==1 && ( item==2 || item==4 || item==8 || item==10))"
                                                                         data-style="btn-white" data-live-search="true"
                                                                         class="form-control yakinlik zorunlu">
 
@@ -1533,8 +1537,8 @@
 
 
                                                     <select Soru="Meslek"  style="display:none" id="B8_#" name="B8"
-                                                        kosul="(_B4==2 && ( item==5 || item==6)) || (parseInt(_B3)<40 && (item==1 || item==2)) || (parseInt(_B5)>3 && (item==17 || item==25)) || ((_B7 == 1 && item > 2) || (_B7 == 2 && (item < 3 || item > 7)) || (_B7 == 3 && (item < 8 || item > 17) ) || (_B7 == 4 && item < 18)  )"
-                                                        data-live-search="true" class="meslek selectpicker">
+                                                        kosul="(_B4==2 && ( item==5 || item==6)) || (parseInt(_B3)<40 && (item==1 || item==2)) || (parseInt(_B5)>3 && (item==17 || item==25)) || ((_B7 == 1 && item > 2) || (_B7 == 2 && (item < 3 || item > 7)) || (_B7 == 3 && (item < 8 || item > 17) ) || (_B7 == 4 && item < 18))"
+                                                         class="meslek">
                                                         <option value="">Seçiniz...</option>
                                                         <option value="1">Emekli-çalışıyor</option>
                                                         <option value="2">Emekli-çalışmıyor</option>

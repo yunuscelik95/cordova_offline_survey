@@ -53,11 +53,12 @@
             sendData(where) {
                 var self = this;
                 self.gonderilen = 0;
+                var toplamGonderilecek = 0;
                 db.transaction(function (tx) {
                     tx.executeSql('SELECT * FROM INTERVIEWS WHERE ' + where, [], function (tx, res) {
                         self.gonderimsayisi = res.rows.length;
                         if (res.rows.length > 0) {
-        
+                            toplamGonderilecek = res.rows.length;
                             for (var i = 0; i < res.rows.length; i++) {
                                 var link = "https://vta.diyalog.com.tr/api/veri/" + window.localStorage["userGuid"];
                                 //{   headers: headers   }
@@ -76,6 +77,10 @@
                                         if (responseParse.Sonuc == "OK") {
                                             myUpdate("INTERVIEWS", "gonderim=1", " InterviewID=" + responseParse.InterviewID);
                                             self.gonderilen = parseInt(self.gonderilen) + 1;
+                                            if (toplamGonderilecek == self.gonderilen)
+                                            {
+                                                alert("Datalar başarı ile sunucuya gönderildi");
+                                            }
                                         }
 
                                     })
