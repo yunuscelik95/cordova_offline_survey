@@ -25,20 +25,7 @@
             }
 
             $(document).ready(function () {
-                function disableBackButton() {
-                    window.history.forward()
-                }
-                disableBackButton();
-                window.onload = disableBackButton();
-                window.onpageshow = function (evt) { if (evt.persisted) disableBackButton() }
-                window.onunload = function () { void (0) }
-
-                updateConnectionProperties();
-                //window.history.forward(1);
-                window.history.pushState(null, "", window.location.href);
-                window.onpopstate = function () {
-                    window.history.pushState(null, "", window.location.href);
-                };
+            
             })
     </script>
 </head>

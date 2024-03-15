@@ -126,7 +126,7 @@
         $(document).ready(function () {
 
             InterviewID = window.localStorage["InterviewID"];//window.localStorage["InterviewID"]; //queryStrings["id"];
-            
+          
 
             var queryStrings = getUrlVars();
             var sayi = parseInt(queryStrings["hanesayi"]);
@@ -971,9 +971,10 @@
                 var sondeger = 0;
                 var updateStr = "";
                 var yasKontrol = false;
+                var yas = 0;
                 $("form").find(':input').each(function () {
 
-
+                    yas = parseInt($(this).closest("table").find(".yas").val());
                     if (($(this).prop("tagName") == "SELECT" || $(this).attr("type") == "text" || $(this).attr("type") == "radio" || $(this).attr("type") == "number") &&  $(this).attr("name") != undefined && $(this).attr("class") != "input-block-level form-control" ) {
 
                         if ($(this).attr("type") == "radio") {
@@ -1011,14 +1012,14 @@
                             elem = "false";
                             return false;
                         }
-                        else if (($(this).is(':visible') == true || $(this).hasClass("zorunlu")) && $(this).val() == "" /*&& ($(this).attr("id").indexOf("B2b") > -1 || $(this).attr("id").indexOf("E7") > -1 || $(this).attr("id").indexOf("E8") > -1) && $(this).attr("id").indexOf("_O") < 0*/) {
-                            if ($(this).attr("type") != "text" && $(this).attr("type") != "number" && $(this).attr("name").indexOf("B107") < 0 && $(this).attr("name").indexOf("B7") < 0) {
+                        else if ((((yas > 14 &&  $(this).hasClass("zorunbuyukyas")) || (yas > 17 &&  $(this).hasClass("zorunbuyukyas18"))) && $(this).val() == "")  || (($(this).is(':visible') == true || $(this).hasClass("zorunlu")) && $(this).val() == "") /*&& ($(this).attr("id").indexOf("B2b") > -1 || $(this).attr("id").indexOf("E7") > -1 || $(this).attr("id").indexOf("E8") > -1) && $(this).attr("id").indexOf("_O") < 0*/) {
+                            if ($(this).attr("type") != "text" && $(this).attr("type") != "number" && $(this).attr("name").indexOf("B107") < 0 ) {
                                 var list = $(this).attr("id").split('_');
                                 var Index = list[list.length - 1];
                                 if (list[list.length - 1] == "O" || list.length == 3) {
                                     Index = list[list.length - 2];
                                 }
-                                var yas = parseInt($(this).closest("table").find("input[name^='B3']").val());
+                               
                                 var buyuyas = $(this).closest("tr").attr("class");
                                 if ((yas > 17) || (yas > 14 && buyuyas != "buyukYas18") || (yas < 15 && buyuyas != "buyukYas" && buyuyas != "buyukYas18")) {
                                     if ($(this).prop("tagName") == "SELECT" && $(this).hasClass("selectPicker")) {
@@ -1219,7 +1220,7 @@
                 }
                 return vars;
             }
-
+           
         })
 
         function goBack() {
@@ -1494,7 +1495,7 @@
                                             <td class="col-lg-1" colspan="4">
                                             <b>      .................'nın medeni durumu nedir? </b>
                                                 <select id="B6_#" Soru="Medeni Durum" name="B6_#"
-                                                 data-style="btn-white" data-live-search="true" class="selectpicker form-control"
+                                                 data-style="btn-white" data-live-search="true" class="form-control zorunbuyukyas18"
                                                  kosul="((_B2b==2 || _B2b ==3) && (item!=3))"
                                                  >
                                                     <option value="">Seçiniz...</option>
@@ -1515,7 +1516,7 @@
                                                     <b> …………….. çalışma durumu nedir? </b>
                                                     <select id="B7_#" Soru="Çalışma Durumu" name="B7_#"
                                                         data-header="Select a condiment" data-live-search="true"
-                                                        class="selectpicker"  kosul="(parseInt(_B3)<40 && item==1)">
+                                                        class="zorunbuyukyas"  kosul="(parseInt(_B3)<40 && item==1)">
                                                         <option value="">Seçiniz...</option>
                                                         <option value="1">Emekli</option>
                                                         <option value="2">Çalışmıyor / Gelir Getiren Bir İşi Yok
@@ -1554,7 +1555,7 @@
 
                                                     <select Soru="Meslek"  style="display:none" id="B8_#" name="B8"
                                                         kosul="(_B4==2 && ( item==5 || item==6)) || (parseInt(_B3)<40 && (item==1 || item==2)) || (parseInt(_B5)>3 && (item==17 || item==25)) || ((_B7 == 1 && item > 2) || (_B7 == 2 && (item < 3 || item > 7)) || (_B7 == 3 && (item < 8 || item > 17) ) || (_B7 == 4 && item < 18))"
-                                                         class="meslek">
+                                                         class="meslek zorunbuyukyas">
                                                         <option value="">Seçiniz...</option>
                                                         <option value="1">Emekli-çalışıyor</option>
                                                         <option value="2">Emekli-çalışmıyor</option>
