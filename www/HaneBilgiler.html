@@ -151,7 +151,15 @@
                         sayi = parseInt(val.rows.item(0).B1_O);
 
                     });
+
+
+
+
+
                 });
+                
+                var resetVal = "B1=NULL,B1_O=NULL,B3_1_1=NULL,B3_2_1=NULL,B4_1=NULL,B4_2=NULL,B5_1=NULL,B5_2=NULL,B6_1=NULL,B6_2=NULL,B7_1=NULL,B7_2=NULL,B2a_1_1=NULL,B2a_2_1=NULL,B2Text=NULL,B9=NULL,B101=NULL,B101_O=NULL,B102=NULL,B103=NULL,B103_O=NULL,B104=NULL,B105=NULL,B105_O=NULL,B12=NULL,B13=NULL,B2a_16_1=NULL,B2a_11_1=NULL,B2a_10_1=NULL,B2a_15_1=NULL,B2a_14_1=NULL,B2a_13_1=NULL,B2a_12_1=NULL,B2a_9_1=NULL,B2a_8_1=NULL,B2a_7_1=NULL,B2a_6_1=NULL,B2a_5_1=NULL,B2a_4_1=NULL,B2a_3_1=NULL,B2a_17_1=NULL,B2a_18_1=NULL,B2a_19_1=NULL,B2a_20_1=NULL,B22=NULL,B3_3_1=NULL,B3_4_1=NULL,B3_5_1=NULL,B3_6_1=NULL,B3_7_1=NULL,B3_8_1=NULL,B3_9_1=NULL,B3_10_1=NULL,B3_11_1=NULL,B3_12_1=NULL,B3_13_1=NULL,B3_14_1=NULL,B3_15_1=NULL,B3_16_1=NULL,B3_17_1=NULL,B3_18_1=NULL,B3_19_1=NULL,B3_20_1=NULL,B4_3=NULL,B4_4=NULL,B4_5=NULL,B4_6=NULL,B4_7=NULL,B4_8=NULL,B4_9=NULL,B4_10=NULL,B4_11=NULL,B4_12=NULL,B4_13=NULL,B4_14=NULL,B4_15=NULL,B4_16=NULL,B4_17=NULL,B4_18=NULL,B4_19=NULL,B4_20=NULL,B5_3=NULL,B5_4=NULL,B5_5=NULL,B5_6=NULL,B5_7=NULL,B5_8=NULL,B5_9=NULL,B5_10=NULL,B5_11=NULL,B5_12=NULL,B5_13=NULL,B5_14=NULL,B5_15=NULL,B5_16=NULL,B5_17=NULL,B5_18=NULL,B5_19=NULL,B5_20=NULL,B6_4=NULL,B6_3=NULL,B6_5=NULL,B6_6=NULL,B6_7=NULL,B6_8=NULL,B6_9=NULL,B6_10=NULL,B6_11=NULL,B6_12=NULL,B6_13=NULL,B6_14=NULL,B6_15=NULL,B6_16=NULL,B6_17=NULL,B6_18=NULL,B6_19=NULL,B6_20=NULL,B7_3=NULL,B7_4=NULL,B7_5=NULL,B7_6=NULL,B7_7=NULL,B7_8=NULL,B7_9=NULL,B7_10=NULL,B7_11=NULL,B7_12=NULL,B7_13=NULL,B7_14=NULL,B7_15=NULL,B7_16=NULL,B7_17=NULL,B7_18=NULL,B7_19=NULL,B7_20=NULL,B6A_1=NULL,B6A_2=NULL,B2b_1=NULL,B2b_O_1_97=NULL,B2b_2=NULL,B2b_O_2_97=NULL,B2b_3=NULL,B2b_O_3_97=NULL,B2b_4=NULL,B2b_O_4_97=NULL,B2b_5=NULL,B2b_O_5_97=NULL,B2b_6=NULL,B2b_O_6_97=NULL,B2b_7=NULL,B2b_O_7_97=NULL,B2b_8=NULL,B2b_O_8_97=NULL,B2b_9=NULL,B2b_O_9_97=NULL,B2b_10=NULL,B2b_O_10_97=NULL,B2b_11=NULL,B2b_O_11_97=NULL,B2b_12=NULL,B2b_O_12_97=NULL,B2b_13=NULL,B2b_O_13_97=NULL,B2b_14=NULL,B2b_O_14_97=NULL,B2b_15=NULL,B2b_O_15_97=NULL,B2b_16=NULL,B2b_O_16_97=NULL,B2b_17=NULL,B2b_O_17_97=NULL,B2b_18=NULL,B2b_O_18_97=NULL,B2b_19=NULL,B2b_O_19_97=NULL,B2b_20=NULL,B2b_O_20_97=NULL,B8H=NULL,B8A=NULL,B8=NULL,B2b_O_97=NULL,B106=NULL,B107=NULL,B8E=NULL";
+                myUpdate("INTERVIEWS", resetVal, " InterviewID=" + InterviewID);
             }
 
 
@@ -269,7 +277,7 @@
                 }
                 else {
                     //      $(this).parent().append($("#divReis"));
-                    $("input:radio[name=B9]").val($(this).attr("value"));
+                   // $("input:radio[name=B9]").val($(this).attr("value"));
                     $(".trMeslek").find(".meslek").val("").change();
                     $(".trMeslek").find(".meslekOpen").val("");
                     $(".trMeslek").hide();
@@ -580,7 +588,7 @@
                 // $(".meslekPersonelCalisan").find("select").selectpicker('refresh');
 
                 if (ayrac == "reis") {
-                    $("#" + meslek.attr("id").replace("B8", "B101") + "_O").val("");
+                    //$("#" + meslek.attr("id").replace("B8", "B101") + "_O").val("");
                 }
 
                 var meslek = elem.closest("table").find(".tdMeslek").children().filter("select").filter(".meslek");
@@ -752,7 +760,8 @@
                 if ($(this).val() == "" || parseInt($(this).val()) < 15) {
                     $(this).closest("tr").nextAll(".buyukYas").hide()
 
-                    $("select[Soru=Meslek]").find("option:selected").removeAttr("selected");
+                    //$("select[Soru=Meslek]").find("option:selected").removeAttr("selected");
+                    $(this).closest("table").find("select[Soru=Meslek]").find("option:selected").removeAttr("selected");
                 }
                 else {
                     //  $(this).closest("tr").next().show()
@@ -760,7 +769,9 @@
                 }
 
                 if ($(this).val() == "" || parseInt($(this).val()) < 18) {
-                    $(this).closest("tr").nextAll(".buyukYas18").hide()          
+                    $(this).closest("tr").nextAll(".buyukYas18").hide()  
+                    $(this).closest("tr").nextAll(".buyukYas18").find("select").val("");
+
                 }
                 else {
                     //  $(this).closest("tr").next().show()
@@ -1245,7 +1256,7 @@
 
         </script>
         <div class="contain">
-
+   
 
 
 
@@ -1253,6 +1264,11 @@
 
                 <div class="col-lg-12">
                     <table style="width:100%">
+<tr><td>
+    <span id="StepNameTD">B2</span><span id="QuestionTextTD"><font face="Calibri" color="#000000" size="2">Lütfen evinizde yaşayan <b>TÜM KİŞİLERİN İSİMLERİNİ</b> söyler misiniz? LÜTFEN YAŞI EN BÜYÜK KİŞİDEN BAŞLAYARAK SIRALAYINIZ.</font></span>
+
+</td></tr>
+                        
                         <tr>
                             <td>
                                 <div>
