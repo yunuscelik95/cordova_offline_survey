@@ -284,6 +284,7 @@
                     $(".meslek").hide();
                     $(this).closest("tr").closest("table").find(".trMeslek").show();
                     $(this).closest("tr").closest("table").find(".trMeslek").find(".meslek").show();
+                   
                     //   var dTable = $("#example").find(".tdreis").closest("tr").next().find("table"); //.find(".sira").attr("id").split('_');
                     //    TableFor(dTable);
 
@@ -351,13 +352,17 @@
                         {
                             row.find(".maasliCalisanPersonel").attr("min", 6).attr("max", 10);
                         }
+                        else if (meslekVal === "10")
+                        {
+                            row.find(".maasliCalisanPersonel").attr("min", 0).removeAttr("max");
+                        }
                         else if (meslekVal === "14")
                         {
                             row.find(".maasliCalisanPersonel").attr("min", 11).attr("max", 20);
                         }
                         else if (meslekVal === "15")
                         {
-                            row.find(".maasliCalisanPersonel").attr("min", 21);
+                            row.find(".maasliCalisanPersonel").attr("min", 21).removeAttr("max");
                         }
                         else if (meslekVal === "21")
                         {
@@ -373,7 +378,7 @@
                         }
                         else if (meslekVal === "24")
                         {
-                            row.find(".kendiyanindaCalisanSayi").attr("min", 21);
+                            row.find(".kendiyanindaCalisanSayi").attr("min", 21).removeAttr("max");
                         }
                         //   $(".meslekUzman select option:eq(0)").prop('selected', true);
                         //   $(".meslekYonetici").hide();
@@ -606,6 +611,8 @@
                     if ((parseInt(meslek.val()) > 11 && parseInt(meslek.val()) < 16) || meslek.val() == 10) {
                         $("#" + meslek.attr("id").replace("B8", "B103")).parent().show();
                         $("#" + meslek.attr("id").replace("B8", "B103")).show();
+                        $("#" + meslek.attr("id").replace("B8", "B103") + "_O").parent().show();
+                        $("#" + meslek.attr("id").replace("B8", "B103") + "_O").show();
                     }
 
                     if (parseInt(meslek.val()) == 8 || parseInt(meslek.val()) == 9 || parseInt(meslek.val()) == 10) {
@@ -1034,7 +1041,17 @@
                                 }
                             }
                         }
-
+                        else if ($(this).hasClass("meslek") && $(this).closest("table").find(".reis").is(":checked") &&  $(this).val() == "")
+                        {
+                            var list = $(this).attr("id").split('_');
+                            var Index = list[list.length - 1];
+                            alert(Index + ".Kişinin " + $(this).attr("Soru") + " Kutucuğu Boş. Tüm kutucukların doldurulması gerekli!");
+                            //  alert("Tüm kutucukların doldurulması gerekli!");
+                            $(this).focus();
+                            elem = "false";
+                            return false;
+                        }
+                        
                         if ($(this).attr("type") == "number" && $(this).attr("id").indexOf("B3") > -1) {
                             if (sondeger == 0) sondeger = parseInt($(this).val());
                             /* if (sondeger < parseInt($(this).val())) {
@@ -1555,7 +1572,7 @@
 
                                                     <select Soru="Meslek"  style="display:none" id="B8_#" name="B8"
                                                         kosul="(_B4==2 && ( item==5 || item==6)) || (parseInt(_B3)<40 && (item==1 || item==2)) || (parseInt(_B5)>3 && (item==17 || item==25)) || ((_B7 == 1 && item > 2) || (_B7 == 2 && (item < 3 || item > 7)) || (_B7 == 3 && (item < 8 || item > 17) ) || (_B7 == 4 && item < 18))"
-                                                         class="meslek zorunbuyukyas">
+                                                         class="meslek">
                                                         <option value="">Seçiniz...</option>
                                                         <option value="1">Emekli-çalışıyor</option>
                                                         <option value="2">Emekli-çalışmıyor</option>
@@ -1629,9 +1646,8 @@
 
 
                                                     <div class="meslekPersonelCalisan" style="display:none">
-                                                        Maaşlı Çalışan İse Altında Çalışan Personel Var mı, varsa kaç
-                                                        kişi var?
-                                                        <select id="B103_#"
+                                                        Altında çalışan kaç kişi var?
+                                                        <!-- <select id="B103_#"
                                                             Soru=" Maaşlı Çalışan İse Altında Çalışan Personel Var mı, varsa kaç kişi var? "
                                                             name="B103" style="display:none" class="maasliCalisanVarMi">
                                                             <option value="">Seçiniz...</option>
@@ -1640,7 +1656,7 @@
                                                             </option>
                                                             <option value="2">Altında Çalışan Personel Yok</option>
 
-                                                        </select>
+                                                        </select> -->
                                                         <input type="number" Soru="Altında çalışan kaç kişi var?"
                                                             class="number maasliCalisanPersonel" style="display:none"
                                                             id="B103_#_O" name="B103_O" value="" />
