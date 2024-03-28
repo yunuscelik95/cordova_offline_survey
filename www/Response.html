@@ -135,7 +135,7 @@
                 //db.transaction(function (tx) {
                     //   alert("update [INTERVIEWS] set  InterviewStatu= " + statu + ", [stop] =  datetime('now'),gonderim=0 where InterviewID=" + window.localStorage["InterviewID"]);
     
-                    myUpdate("INTERVIEWS", "InterviewStatu= " + statu + ", [stop] =  datetime('now'),gonderim=0,ZiyaretSayi=case when ZiyaretSayi is null then 0 else ZiyaretSayi end + 1", " InterviewID=" + window.localStorage["InterviewID"]);
+                    myUpdate("INTERVIEWS", "InterviewStatu= " + statu + ",updatedate =  datetime('now'), [stop] =  datetime('now'),gonderim=0,ZiyaretSayi=case when ZiyaretSayi is null then 0 else ZiyaretSayi end + 1", " InterviewID=" + window.localStorage["InterviewID"]);
                     myUpdate("LISTE", "statu=" + statu + ",ZiyaretSayi=case when ZiyaretSayi is null then 0 else ZiyaretSayi end + 1", " id=" + window.localStorage["InterviewID"]);
 
                 //});
@@ -184,7 +184,11 @@
                                         data: JSON.stringify(res.rows.item(i), function(key, value) {
                                                     // Özel karakterleri temizle
                                                     if (typeof value === 'string') {
-                                                        return value.replace(/[^\x20-\x7E]+/g, ''); // ASCII dışındaki karakterleri temizle
+                                                        value =value.replace(/[^\x20-\x7EİıŞşĞğÜüÇç]/g, function(match) {
+                                                            return match;
+                                                        });
+
+                                                        return value; // ASCII dışındaki karakterleri temizle
                                                     }
                                                     return value;
                                                 }),

@@ -65,8 +65,13 @@
                                 var veri = JSON.stringify(res.rows.item(i), function(key, value) {
                                     // Özel karakterleri temizle
                                     if (typeof value === 'string') {
-                                        return value.replace(/[^\x20-\x7E]+/g, ''); // ASCII dışındaki karakterleri temizle
+                                        value =value.replace(/[^\x20-\x7EİıŞşĞğÜüÇç]/g, function(match) {
+                                            return match;
+                                        });
+
+                                        return value;// ASCII dışındaki karakterleri temizle
                                     }
+                                    
                                     return value;
                                 });
 
