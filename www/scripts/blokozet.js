@@ -242,6 +242,11 @@
                         var items1 = [];
                         var j = jQuery.parseJSON(response.data);
                         var say = 0;
+                        if (j.length  < 1)
+                        {
+                            self.querySuccess();
+                            return;
+                        }
                         $.each(j, function (key, val) {
                             var keys = [];
                             var values = [];
@@ -299,7 +304,9 @@
                             blokno += val.blokno;
                         })
                         db.transaction(function (tx) {
-                            tx.executeSql("delete from [BLOKOZET] where blokno in (" + blokno + ") and userID=" + window.localStorage["userID"]);
+                            tx.executeSql("delete from [BLOKOZET] where blokno in (" + blokno + ") and userID=" + window.localStorage["userID"], [], function (tx1, res1) {
+                                self.onlineBlokIndir();
+                            })
                         },
                             function (error) {
                                 self.onlineBlokIndir();
@@ -307,7 +314,7 @@
                                 { self.querySuccess(); }
                             },
                             function () {
-                                self.onlineBlokIndir();
+                              
                                 // if (tanimliBlokYok)
                                 // { self.querySuccess(); }
                             }

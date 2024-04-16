@@ -94,6 +94,12 @@
         </table>
 
     </div>
+    <script type="text/javascript">
+        document.addEventListener("backbutton", function(e) {
+            e.preventDefault();
+            alert("Buradan Geriye Gidemezsiniz!");
+        }, false);
+    </script>
 </body>
 <style>
     [v-cloak] { display: none; }
