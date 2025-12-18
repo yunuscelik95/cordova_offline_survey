@@ -135,7 +135,7 @@
                 //db.transaction(function (tx) {
                     //   alert("update [INTERVIEWS] set  InterviewStatu= " + statu + ", [stop] =  datetime('now'),gonderim=0 where InterviewID=" + window.localStorage["InterviewID"]);
     
-                    myUpdate("INTERVIEWS", "InterviewStatu= " + statu + ",updatedate =  datetime('now'), [stop] =  datetime('now'),gonderim=0,ZiyaretSayi=case when ZiyaretSayi is null then 0 else ZiyaretSayi end + 1", " InterviewID=" + window.localStorage["InterviewID"]);
+                    myUpdate("INTERVIEWS", "InterviewStatu= " + statu + ",updatedate = datetime('now', 'localtime'), [stop] = datetime('now', 'localtime'),gonderim=0,ZiyaretSayi=case when ZiyaretSayi is null then 0 else ZiyaretSayi end + 1", " InterviewID=" + window.localStorage["InterviewID"]);
                     myUpdate("LISTE", "statu=" + statu + ",ZiyaretSayi=case when ZiyaretSayi is null then 0 else ZiyaretSayi end + 1", " id=" + window.localStorage["InterviewID"]);
 
                 //});

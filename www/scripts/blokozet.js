@@ -8,6 +8,7 @@
     }
 
     var tanimliBlokYok = true;
+    console.log("Vue instance oluşturuluyor...");
     window.blokOzet = new Vue({
         el: "#blokozet",
         data: {
@@ -31,6 +32,9 @@
                 window.location.href = "liste.html?guid=" + guid;
             },
             sendOfflineData(ayrac) {
+                // İnternet durumunu güncelle
+                updateConnectionProperties();
+                
                 if (state.isOnline) {
               
                     this.sendData(" (gonderim is null or gonderim=0) and InterviewStatu is not null and InterviewStatu<>0");
@@ -51,6 +55,14 @@
 
             },
             sendData(where) {
+                // İnternet durumunu güncelle
+                updateConnectionProperties();
+                
+                if (!state.isOnline) {
+                    alert("İnternet bağlantısı yok! Lütfen interneti açın.");
+                    return;
+                }
+                
                 var self = this;
                 self.gonderilen = 0;
                 var toplamGonderilecek = 0;
@@ -150,17 +162,19 @@
             },
 
             btnWebService() {
+                console.log("btnWebService çağrıldı");
                 this.blokYukle();
             },
 
             blokYukle() {
-
+                console.log("blokYukle başladı, isOnline:", state.isOnline);
                 this.liste=[];
                 if (state.isOnline) {
+                    console.log("Online mod - onlineFunction çağrılıyor");
                     this.onlineFunction();
                 }
                 else {
-                    
+                    console.log("Offline mod - querySuccess çağrılıyor");
                     this.querySuccess();
                 }
             },
@@ -198,7 +212,9 @@
                         var items1 = [];
                         //JSON.parse
                         var j = jQuery.parseJSON(response.data);
-                        var say = 0;
+                        var insertData = [];
+                        
+                        // Tüm insert verilerini hazırla
                         $.each(j, function (key, val) {
                             var keys = [];
                             var values = [];
@@ -211,14 +227,22 @@
                                 keysStr += key1;
                                 Parameters += "?";
                             });
-                            db.transaction(function (tx) {
-                                tx.executeSql("insert into [LISTE] (" + keysStr + ") values(" + Parameters + ")", values);
-                                say++;
-                                if (say == j.length) {
-                                    self.querySuccess();
-                                }
-                            }), function (error) { alert(error);  self.querySuccess();};
-
+                            insertData.push({ keysStr: keysStr, Parameters: Parameters, values: values });
+                        });
+                        
+                        // Tek transaction'da tüm insert'leri yap
+                        db.transaction(function (tx) {
+                            for (var i = 0; i < insertData.length; i++) {
+                                var item = insertData[i];
+                                tx.executeSql("insert into [LISTE] (" + item.keysStr + ") values(" + item.Parameters + ")", item.values);
+                            }
+                        }, function (error) { 
+                            alert(error); 
+                            self.querySuccess();
+                        }, function () {
+                            // Transaction başarılı
+                            console.log("Liste insert tamamlandı, querySuccess çağrılıyor");
+                            self.querySuccess();
                         });
                     })
                     .catch((error) => { alert("Hata:" + error); self.querySuccess(); })
@@ -233,17 +257,22 @@
     // });
 // });
 
+                console.log("onlineBlokIndir başladı");
                 tanimliBlokYok = true;
                 var self = this;
                 var bloknos = "";
                 var serviceUrl = 'https://vta.diyalog.com.tr/api/getUserToBlok/' + window.localStorage["userGuid"];
+                console.log("getUserToBlok Service URL:", serviceUrl);
                 axios.get(serviceUrl, "", config)
                     .then((response) => {
+                        console.log("getUserToBlok response:", response.data);
                         var items1 = [];
                         var j = jQuery.parseJSON(response.data);
+                        console.log("Parsed blok sayısı:", j.length);
                         var say = 0;
                         if (j.length  < 1)
                         {
+                            console.log("Kullanıcıya atanmış blok yok");
                             self.querySuccess();
                             return;
                         }
@@ -290,15 +319,25 @@
 
             onlineDeleteBlok() {
                 var self = this;
-
+                console.log("onlineDeleteBlok başladı");
                 var bloknos = "";
                 var serviceUrl = 'https://vta.diyalog.com.tr/api/deleteBlok/' + window.localStorage["userGuid"];
+                console.log("Service URL:", serviceUrl);
                 axios.get(serviceUrl,"", config)
                     .then((response) => {
+                        console.log("deleteBlok response:", response.data);
                         var items1 = [];
                         var j = jQuery.parseJSON(response.data);
                         var say = 0;
                         var blokno = '';
+                        
+                        // Eğer silinecek blok yoksa direkt onlineBlokIndir'e geç
+                        if (j.length === 0) {
+                            console.log("Silinecek blok yok, direkt onlineBlokIndir çağrılıyor");
+                            self.onlineBlokIndir();
+                            return;
+                        }
+                        
                         $.each(j, function (key, val) {
                             if (blokno != "") { blokno += ","; }
                             blokno += val.blokno;
@@ -320,7 +359,10 @@
                             }
                         )
                     })
-                    .catch((error) => { alert("Hata:" + error); })
+                    .catch((error) => { 
+                        console.log("onlineDeleteBlok HATA:", error);
+                        alert("Hata:" + error); 
+                    })
             },
 
              querySuccess() {
@@ -345,10 +387,15 @@
             }
         },
         beforeMount() {
+            console.log("Vue beforeMount çağrıldı");
             //this.blokYukle();
         },
+        mounted() {
+            console.log("Vue mounted - instance hazır");
+        }
 
     })
+    console.log("Vue instance oluşturuldu:", window.blokOzet);
 
     document.addEventListener("deviceready", onDeviceReady, false);
 

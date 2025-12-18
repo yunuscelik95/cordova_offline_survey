@@ -41,6 +41,30 @@ window.addEventListener('load', () => {
         },
         methods: {
             InterviewSelect(id) {
+                // Önce GPS kontrolü yap
+                var self = this;
+                if (cordova.plugins.diagnostic) {
+                    cordova.plugins.diagnostic.isLocationEnabled(function(enabled) {
+                        if (enabled) {
+                            console.log("GPS açık, anket başlatılıyor");
+                            self.startInterview(id);
+                        } else {
+                            console.log("GPS kapalı!");
+                            alert("Konum kapalı! Lütfen konumu açın ve tekrar deneyin.");
+                            cordova.plugins.diagnostic.switchToLocationSettings();
+                        }
+                    }, function(error) {
+                        console.error("GPS kontrol hatası: " + error);
+                        // Hata olursa yine de başlat
+                        self.startInterview(id);
+                    });
+                } else {
+                    // Plugin yoksa direkt başlat
+                    self.startInterview(id);
+                }
+            },
+            
+            startInterview(id) {
                 window.localStorage["InterviewID"] = id;
                 db.transaction(function (tx) {
                     tx.executeSql("SELECT InterviewID FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
@@ -61,7 +85,7 @@ window.addEventListener('load', () => {
                     function () {
     
                         //myUpdateRedirect("INTERVIEWS", "userID=" + window.localStorage["userID"].split('.')[0] + ",[start]= datetime('now'),ziyaretTarihi='',ziyaretAciklama=''", " InterviewID=" + id, "p3.html?id=" + id);
-                        myUpdateRedirect("INTERVIEWS", "userID=" + window.localStorage["userID"].split('.')[0] + ",[start]= datetime('now'),ziyaretTarihi='',ziyaretAciklama=''", " InterviewID=" + id, "Giris.html?id=" + id);
+                        myUpdateRedirect("INTERVIEWS", "userID=" + window.localStorage["userID"].split('.')[0] + ",[start]= datetime('now', 'localtime'),ziyaretTarihi='',ziyaretAciklama=''", " InterviewID=" + id, "Giris.html?id=" + id);
                     }
                 );
             },
@@ -93,11 +117,19 @@ window.addEventListener('load', () => {
                         
                         if (val.rows.length <1 && state.isOnline && request == "start")
                         {
+                            console.log("Liste boş ve internet var, online yükleme yapılıyor");
                             self.onlineYukleme();
                             return true;
                         }
+                        else if (val.rows.length <1 && !state.isOnline)
+                        {
+                            console.log("Liste boş ama internet yok!");
+                            alert("Blok listesi boş! İnternet bağlantısı ile listeyi yükleyin.");
+                            self.liste = [];
+                        }
                         else
                         {
+                            console.log("Offline listeden " + val.rows.length + " kayıt yüklendi");
                             for (var i = 0; i < val.rows.length; i++) {
                                 var row = val.rows.item(i);
                                 listeArray.push(row);

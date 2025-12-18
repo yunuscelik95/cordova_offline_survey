@@ -137,7 +137,7 @@ window.addEventListener('load', () => {
                     return;
                 }
                 
-                window.localStorage["version"] = "1.5.5";
+                window.localStorage["version"] = "1.5.6";
 
                 if (state.isOnline) {
                     this.getVersion();

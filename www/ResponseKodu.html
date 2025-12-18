@@ -169,7 +169,7 @@
                 db.transaction(function (tx) {
                     var aciklama = $("#COMMENT").val().replace("'", "").replace("'", "").replace("'", "");
                     myUpdate("LISTE", "statu=" + currentValue + ",ziyaretTarihi='" + ziyaretTarihi + "',ziyaretAciklama='" + aciklama + "'", " InterviewID=" + window.localStorage["InterviewID"]);
-                    myUpdate("INTERVIEWS", "InterviewStatu= " + currentValue + ", [stop] = datetime('now'),gonderim=0,ziyaretTarihi='" + ziyaretTarihi + "',ziyaretAciklama='" + aciklama + "'", " InterviewID=" + window.localStorage["InterviewID"]);
+                    myUpdate("INTERVIEWS", "InterviewStatu= " + currentValue + ", [stop] = datetime('now', 'localtime'),gonderim=0,ziyaretTarihi='" + ziyaretTarihi + "',ziyaretAciklama='" + aciklama + "'", " InterviewID=" + window.localStorage["InterviewID"]);
                     window.location.href = "Response.html?id=" + window.localStorage["InterviewID"] + "&statu=" + currentValue;
                 });
                 /* db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });

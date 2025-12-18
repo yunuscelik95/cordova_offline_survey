@@ -2,93 +2,82 @@
     var options = {
         maximumAge: 0,
         enableHighAccuracy: true,
-        timeout: 10000
+        timeout: 45000
     };
 
-    cordova.plugins.diagnostic.isLocationEnabled(function(enabled) {
-        if (enabled) {
+    console.log("GPS fonksiyonu çağrıldı, kolon: " + kolon);
+    
+    // İzin kontrolü yap
+    checkPermissions(kolon);
 
-    cordova.plugins.diagnostic.getLocationAuthorizationStatus(function(status) {
-        if (status === cordova.plugins.diagnostic.permissionStatus.GRANTED) {
-            // İzin daha önce verildiyse, konumu al
-            getCurrentLocation(kolon);
-        } else {
-            // İzin daha önce verilmediyse, GPS'i kontrol et
-            requestLocationPermission();
-        }
-    }, function(error) {
-        console.error("Permission check error: " + error);
-    });
-  } else {
-        // Konum servisi kapalı, kullanıcıyı konum servisini açmaya yönlendir
-        // cordova.plugins.diagnostic.switchToLocationSettings();
-        checkGPS();
-    }
-}, function(error) {
-    console.error("Konum servisi durumu kontrol edilemedi. Hata: " + error);
-});
-
-
-    function checkGPS() {
-        cordova.plugins.diagnostic.isLocationAvailable(function(available) {
-            if (available) {
-                // GPS açık, izin ekranını göster
-                requestLocationPermission();
-            } else {
-                
-                cordova.plugins.diagnostic.switchToLocationSettings();
-            }
-        }, function(error) {
-            if (error.code == 3) {
-                console.error("Location not available. Switching to location settings.");
-                cordova.plugins.diagnostic.switchToLocationSettings();
-            }
-        });
-    }
-
-    function requestLocationPermission() {
+    function checkPermissions(kolon) {
+        console.log("İzin kontrolü başladı");
         var permissions = cordova.plugins.permissions;
+        var permissionsList = [
+            permissions.ACCESS_FINE_LOCATION,
+            permissions.ACCESS_COARSE_LOCATION
+        ];
 
-        permissions.hasPermission(permissions.ACCESS_FINE_LOCATION, function(status) {
+        permissions.checkPermission(permissions.ACCESS_FINE_LOCATION, function(status) {
+            console.log("ACCESS_FINE_LOCATION izin durumu:", status.hasPermission);
             if (status.hasPermission) {
-                // İzin zaten varsa konumu al
+                console.log("İzinler tamam, konum alınıyor");
                 getCurrentLocation(kolon);
             } else {
-                // İzin yoksa izin talep et
-                permissions.requestPermission(
-                    permissions.ACCESS_FINE_LOCATION,
+                console.log("İzin yok, izin isteniyor");
+                permissions.requestPermissions(permissionsList, 
                     function(status) {
+                        console.log("İzin talebi sonucu:", status);
                         if (status.hasPermission) {
-                            // İzin alındıysa konumu al
+                            console.log("İzin verildi, konum alınıyor");
                             getCurrentLocation(kolon);
                         } else {
-                            // Kullanıcı izni reddetti
-                            console.warn('Konum izni reddedildi.');
-                            checkGPS(); // İzin reddedildiyse tekrar kontrol et
+                            console.error("İzin reddedildi!");
+                            alert("Konum izni gerekli!");
                         }
                     },
                     function() {
-                        console.error('Konum izni talebi sırasında bir hata oluştu.');
+                        console.error("İzin talebi hatası");
                     }
                 );
             }
+        }, function() {
+            console.error("İzin kontrolü hatası");
         });
     }
 
     function getCurrentLocation(kolon) {
-        navigator.geolocation.getCurrentPosition(
+        console.log("getCurrentLocation başladı - watchPosition kullanılıyor");
+        
+        var watchId = navigator.geolocation.watchPosition(
             function(position) {
-                // Konumu başarıyla aldıktan sonra yapılacak işlemler
+                console.log("✓ SUCCESS! LAT: " + position.coords.latitude + ", LON: " + position.coords.longitude);
+                navigator.geolocation.clearWatch(watchId);
                 onSucces(position, kolon);
             },
             function(error) {
+                console.log("✗ ERROR! Kod: " + error.code + ", Mesaj: " + error.message);
+                navigator.geolocation.clearWatch(watchId);
                 onErrror(error);
             },
             options
         );
+        
+        console.log("watchPosition başlatıldı, ID: " + watchId);
     }
 
     function onSucces(position, kolon) {
+        // Ekranda başarı mesajı göster
+        var statusDiv = document.getElementById('gpsStatus');
+        if (statusDiv) {
+            statusDiv.style.backgroundColor = '#D4EDDA';
+            statusDiv.style.borderColor = '#28A745';
+            statusDiv.innerHTML = '✅ Konum alındı! Ankete devam edebilirsiniz.';
+            setTimeout(function() {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
+        
         if (kolon == "start") {
             myUpdate("INTERVIEWS", "startlatitude=" + position.coords.latitude + ",startlongitude=" + position.coords.longitude, " InterviewID=" + window.localStorage["InterviewID"]);
         } else {
@@ -98,9 +87,29 @@
 
     function onErrror(error) {
         console.error("Koordinat alınamadı: " + error.message + " Kodu: " + error.code);
-        if (error.code == 3) {
-            console.error("GPS bağlantınız kapalı. Lütfen GPS bağlantınızı açın.");
-            cordova.plugins.diagnostic.switchToLocationSettings();
+        
+        // Ekranda hata mesajı göster
+        var statusDiv = document.getElementById('gpsStatus');
+        if (statusDiv) {
+            statusDiv.style.backgroundColor = '#F8D7DA';
+            statusDiv.style.borderColor = '#DC3545';
+        }
+        
+        if (error.code == 1) {
+            // İzin reddedildi
+            if (statusDiv) statusDiv.innerHTML = '❌ Konum izni reddedildi! Uygulama ayarlarından konum iznini açın.';
+            alert("Konum izni reddedildi! Uygulama ayarlarından konum iznini açın.");
+        } else if (error.code == 2) {
+            // GPS kapalı veya konum alınamıyor
+            if (statusDiv) statusDiv.innerHTML = '❌ GPS kapalı! Lütfen GPS\'i açın.';
+            alert("GPS kapalı! Lütfen GPS'i açın.");
+            if (cordova.plugins.diagnostic) {
+                cordova.plugins.diagnostic.switchToLocationSettings();
+            }
+        } else if (error.code == 3) {
+            // Timeout
+            if (statusDiv) statusDiv.innerHTML = '❌ Konum alınamadı! Sinyal iyi olan yere geçin ve sayfayı yenileyin.';
+            alert("Konum alınamadı (zaman aşımı). GPS sinyali zayıf olabilir, açık alana çıkın.");
         }
     }
 }
