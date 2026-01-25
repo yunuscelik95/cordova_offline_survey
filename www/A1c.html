@@ -42,8 +42,8 @@
         window.onload = function () {
             id = getUrlVars()["id"];
             document.forms[0].focus();
-            otherValue.push("97");
-            otherObj.push(document.getElementById("A1c_O_97"));
+            otherValue.push("4");
+            otherObj.push(document.getElementById("A1c_O_4"));
 
             SetStartUp();
             //   db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
@@ -81,12 +81,12 @@
                  
                     if (TVSay == 2  && bozukTVSay == 2)
                     {
-                        myUpdateRedirect("INTERVIEWS", "A1c='" + aswer + "',A1c_O_97='" + document.getElementById("A1c_O_97").value + "'", " InterviewID=" + window.localStorage["InterviewID"],"B1.html?id=" + window.localStorage["InterviewID"]);
+                        myUpdateRedirect("INTERVIEWS", "A1c='" + aswer + "',A1c_O_4='" + document.getElementById("A1c_O_4").value + "'", " InterviewID=" + window.localStorage["InterviewID"],"A241.html?id=" + window.localStorage["InterviewID"]);
 
                     }
                     else
                     {
-                        myUpdateRedirect("INTERVIEWS", "A1c='" + aswer + "',A1c_O_97='" + document.getElementById("A1c_O_97").value + "'", " InterviewID=" + window.localStorage["InterviewID"],"A2a1.html?id=" + window.localStorage["InterviewID"]);
+                        myUpdateRedirect("INTERVIEWS", "A1c='" + aswer + "',A1c_O_4='" + document.getElementById("A1c_O_4").value + "'", " InterviewID=" + window.localStorage["InterviewID"],"A2a1.html?id=" + window.localStorage["InterviewID"]);
 
                     }
                 }
@@ -118,9 +118,9 @@
 <body>
     <form id="form1">
         <table border="0" id="QuestionText"><tbody><tr><td><span id="StepNameTD">A1c.</span><span id="QuestionTextTD"><font face="Calibri" color="#000000" size="2">
-            Siz ve evdeki diğer kişiler evinizde hangi yolla internete bağlanıyorsunuz okuyacağım seçeneklere uygun olarak söyler misiniz? 
-             <br><br><b>(ANKETÖR DİKKAT : ÖZELLİKLE EVDE SABİT İNTERNET OLUP OLMADIĞINI İRDELEYİNİZ.) 
-                <br>(ANKETÖR DİKKAT: ÇOK CEVAP OLABİLİR. SADECE <u>EVDEKİ BAĞLANTI ŞEKLİNİ</u> SORDUĞUMUZU GEREKİRSE HATIRLATIN).</b></font></span></td></tr></tbody></table>
+            Siz ve evdeki diğer kişiler evinizde hangi şekilde internete bağlanıyorsunuz okuyacağım seçeneklere uygun olarak söyler misiniz? Evde cep telefonunu üzerinden whatsApp, facebook,instagram,vb. uygulamalarını kullanılıyorsa mobil internetinizin internet seçeneğini seçebilirsiniz. 
+             <br><br><b>(ANKETÖR DİKKAT : ÖZELLİKLE EVDE SABİT İNTERNET OLUP OLMADIĞINI İRDELEYİNİZ.)  
+                <br>(ANKETÖR DİKKAT: EKRANI GÖSTERİN-ÇOK CEVAP OLABİLİR. SADECE EVDEKİ BAĞLANTI ŞEKLİNİ SORDUĞUMUZU GEREKİRSE HATIRLATIN)</b></font></span></td></tr></tbody></table>
         <div id="QuestionBuilderPanel">
             <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
@@ -131,40 +131,47 @@
                                     <td class="columnDivider"></td>
                                     <td align="right">1</td>
                                     <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_1" value="1" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td><label for="A1c_1">SABİT İNTERNET  (MODEM İLE ADSL, KABLO NET, FİBER INTERNET, WIFI-KABLOSUZ vb.) </label></td>
+                                    <td><label for="A1c_1">SABİT İNTERNET YANI MODEM İLE KABLO NET, FİBER İNTERNET, WIFI-KABLOSUZ vb.)</label></td>
                                 </tr>
 
                                 <tr>
                                     <td class="columnDivider"></td>
-                                    <td align="right">2</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td><label for="A1c_2">MOBİL INTERNET </label><br />
-                                        -TURKCELL SÜPERBOX, VODAFONE REDBOX VB.<br />
-                                        -MOBİL – TAŞINABİLİR MODEM (KÜÇÜK KUTU)  
-                                        -CEP TELEFONUNDAN ALINAN INTERNET<br />
-                                       
+                                    <td align="right">6</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_6" value="6" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="A1c_6">TAŞINABİLİR MODEM KUTULARI</label><br />
+                                        - TURKCELL SUPERBOX, VODAFONE REDBOX VB TAŞINABİLER KUTULAR İLE .<br />
+                                        - MOBİL – TAŞINABİLİR MODEM (KUÇUK KUTU)
                                     </td>
                                 </tr>
 
                                 <tr class="AlternateTableRow">
                                     <td class="columnDivider"></td>
+                                    <td align="right">2</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="A1c_2">MOBİL İNTERNET</label><br />
+                                        - CEP TELEFONUNDAN ALINAN İNTERNET ARACILIĞI İLE
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="columnDivider"></td>
                                     <td align="right">3</td>
                                     <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_3" value="3" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td><label for="A1c_3">KOMŞUDAN / ORTAK İNTERNETTEN FAYDALANIYOR </label></td>
+                                    <td><label for="A1c_3">KOMSUDAN / ORTAK İNTERNETTEN FAYDALANIYOR</label></td>
                                 </tr>
                               
                                 <tr class="AlternateTableRow">
                                     <td class="columnDivider"></td>
-                                    <td align="right">97</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_97" value="97" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td><label for="A1c_97">DİĞER / FARKLI BİR ŞEKİLDE (Yöntemi Yazınız)</label><label for="A1c_O_97"><input type="text" class="textStyle" name="A1c_O_97" id="A1c_O_97" value="" datatype="varchar" stepname="A1c" disabled=""></label></td>
+                                    <td align="right">4</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_4" value="4" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td><label for="A1c_4">DİĞER / FARKLI BİR ŞEKİLDE (Nasıl Kullanıldığını Sorarak Nasıl Kullandığını Yazınız)</label><label for="A1c_O_4"><input type="text" class="textStyle" name="A1c_O_4" id="A1c_O_4" value="" datatype="varchar" stepname="A1c" disabled=""></label></td>
                                 </tr>
 
-                                <tr class="AlternateTableRow">
+                                <tr>
                                     <td class="columnDivider"></td>
-                                    <td align="right">4</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_4" value="4" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="true" itemdisabled="false"><span></span></td>
-                                    <td><label for="A1c_4">EVİMİZDE HERHANGİ BİR ŞEKİLDE İNTERNET ERİŞİMİ BULUNMAMAKTADIR</label></td>
+                                    <td align="right">5</td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A1c" id="A1c_5" value="5" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="true" itemdisabled="false"><span></span></td>
+                                    <td><label for="A1c_5">EVİMİZDE HERHANGİ BİR ŞEKİLDE İNTERNET ERİŞİMİ BULUNMAMAKTADIR</label></td>
                                 </tr>
                                 <tr><td colspan="4">&nbsp;</td></tr>
                                 <tr>

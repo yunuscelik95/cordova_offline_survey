@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="scripts/database.js"></script>
+    <script src="scripts/index.js"></script>
+    
+    <script type="text/javascript">
+        var id = 0;
+        var ses25s4Value = null;
+        var ses25s1Value = null;
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+            console.log("Device ready! InterviewID:", window.localStorage["InterviewID"]);
+            
+            var checkDB = setInterval(function() {
+                if (typeof db !== 'undefined' && db !== null) {
+                    clearInterval(checkDB);
+                    LoadData();
+                }
+            }, 100);
+        }
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+        };
+
+        function LoadData() {
+            console.log("LoadData çağrıldı");
+            db.transaction(function (tx) {
+                var sqlQuery = "SELECT SES25S1, SES25S4, SES25S5 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
+                console.log("SQL sorgusu:", sqlQuery);
+                
+                tx.executeSql(sqlQuery, [], 
+                    function (tx, val) {
+                        console.log("SQL başarılı, satır sayısı:", val.rows.length);
+                        if (val.rows.length > 0) {
+                            var row = val.rows.item(0);
+                            console.log("Row data:", row);
+                            
+                            ses25s4Value = row.SES25S4;
+                            ses25s1Value = row.SES25S1;
+                            
+                            // Soru metnini ve seçenekleri koşula göre ayarla
+                            applyConditions();
+                            
+                            // Daha önce kaydedilmiş değeri seç
+                            if (row.SES25S5) {
+                                $('input[name="SES25S5"][value="' + row.SES25S5 + '"]').prop('checked', true);
+                            }
+                        } else {
+                            console.log("Hiç satır bulunamadı");
+                        }
+                    },
+                    function(tx, error) {
+                        console.error("SQL hatası:", error.message);
+                    });
+            });
+        }
+
+        function applyConditions() {
+            // Tüm soru metinlerini gizle
+            $('.question-text').hide();
+            
+            // Tüm seçenekleri gizle
+            $('.option-row').hide();
+            
+            if (!ses25s4Value) return;
+            
+            // SES25S4 değerine göre soru metnini ve seçenekleri göster
+            if (ses25s4Value == 13) {
+                // Yönetim alanında kişi sayısı kaçtır?
+                $('#question-13').show();
+                $('#option-1').show();
+                $('#option-2').show();
+                $('#option-3').show();
+            } else if (ses25s4Value == 15) {
+                // Uzmanlık alanını en iyi hangisi tanımlar?
+                $('#question-15').show();
+                // Seçenek 4: SES25S1>=9
+                if (ses25s1Value >= 9) {
+                    $('#option-4').show();
+                }
+                // Seçenek 5,6: SES25S1>=6
+                if (ses25s1Value >= 6) {
+                    $('#option-5').show();
+                    $('#option-6').show();
+                }
+                // Seçenek 7,8: SES25S1>=7
+                if (ses25s1Value >= 7) {
+                    $('#option-7').show();
+                    $('#option-8').show();
+                }
+            } else if (ses25s4Value == 16) {
+                // Öğretmenlik / eğitmenlik alanını en iyi hangisi tanımlar?
+                $('#question-16').show();
+                // Seçenek 9: SES25S1>=10
+                if (ses25s1Value >= 10) {
+                    $('#option-9').show();
+                }
+                // Seçenek 10,11: SES25S1>=8
+                if (ses25s1Value >= 8) {
+                    $('#option-10').show();
+                    $('#option-11').show();
+                }
+                // Seçenek 12: SES25S1>=3
+                if (ses25s1Value >= 3) {
+                    $('#option-12').show();
+                }
+            } else if (ses25s4Value == 17) {
+                // Askeri görevini en iyi hangisi tanımlar?
+                $('#question-17').show();
+                // Seçenek 13,14: SES25S1>=9
+                if (ses25s1Value >= 9) {
+                    $('#option-13').show();
+                    $('#option-14').show();
+                }
+                // Seçenek 15,16: SES25S1>=7
+                if (ses25s1Value >= 7) {
+                    $('#option-15').show();
+                    $('#option-16').show();
+                }
+            } else if (ses25s4Value == 18) {
+                // Kamu personelinin görevini en iyi hangisi tanımlar?
+                $('#question-18').show();
+                // Seçenek 17: SES25S1>=9
+                if (ses25s1Value >= 9) {
+                    $('#option-17').show();
+                }
+                // Seçenek 18: SES25S1>=7
+                if (ses25s1Value >= 7) {
+                    $('#option-18').show();
+                }
+                // Seçenek 19: SES25S1>=6
+                if (ses25s1Value >= 6) {
+                    $('#option-19').show();
+                }
+                // Seçenek 20: SES25S1>=4
+                if (ses25s1Value >= 4) {
+                    $('#option-20').show();
+                }
+                // Seçenek 21,22,23,24: SES25S1>=3
+                if (ses25s1Value >= 3) {
+                    $('#option-21').show();
+                    $('#option-22').show();
+                    $('#option-23').show();
+                    $('#option-24').show();
+                }
+            } else if (ses25s4Value == 19) {
+                // Yaptığı işi en iyi tanımlayan seçenek hangisidir?
+                $('#question-19').show();
+                // Seçenek 25: SES25S1>=5
+                if (ses25s1Value >= 5) {
+                    $('#option-25').show();
+                }
+                // Seçenek 26,27,28,29: SES25S1>=3
+                if (ses25s1Value >= 3) {
+                    $('#option-26').show();
+                    $('#option-27').show();
+                    $('#option-28').show();
+                    $('#option-29').show();
+                }
+                // Seçenek 30: SES25S1>=4
+                if (ses25s1Value >= 4) {
+                    $('#option-30').show();
+                }
+                // Seçenek 31: SES25S1>=7
+                if (ses25s1Value >= 7) {
+                    $('#option-31').show();
+                }
+            } else if (ses25s4Value == 21) {
+                // Haneye asıl geliri getiren kişinin yaptığı işi en iyi tanımlayan seçenek hangisidir?
+                $('#question-21').show();
+                $('#option-32').show();
+                $('#option-34').show();
+                $('#option-35').show();
+                $('#option-36').show();
+                $('#option-37').show();
+            } else if (ses25s4Value == 22) {
+                // Haneye asıl geliri getiren kişinin yaptığı işi en iyi tanımlayan seçenek hangisidir?
+                $('#question-22').show();
+                $('#option-38').show();
+                $('#option-39').show();
+                $('#option-40').show();
+                $('#option-41').show();
+                $('#option-42').show();
+            } else if (ses25s4Value == 23) {
+                // Haneye asıl geliri getiren kişinin yaptığı işi en iyi tanımlayan seçenek hangisidir?
+                $('#question-21').show();
+                // Seçenek 33: SES25S1>=3
+                if (ses25s1Value >= 3) {
+                    $('#option-33').show();
+                }
+                // Seçenek 37: 21 veya 23
+                $('#option-37').show();
+            }
+        }
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var secilenDeger = $('input[name="SES25S5"]:checked').val();
+            
+            if (!secilenDeger) {
+                alert("Lütfen bir seçenek seçiniz!");
+                return;
+            }
+            
+            var updateStr = "SES25S5='" + secilenDeger + "'";
+            
+            myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], "SES25EK1.html?id=" + window.localStorage["InterviewID"]);
+        }
+
+        function goBack() {
+            window.location.href = "SES25S4.html?id=" + window.localStorage["InterviewID"];
+        }
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">SES25S5.</span>
+                        <span id="QuestionTextTD">
+                            <!-- SES25S4 = 13 için -->
+                            <div id="question-13" class="question-text" style="display:none;">
+                                <font face="calibri" color="#000000" size="2">
+                                    <b>Yönetim alanında kişi sayısı kaçtır?</b>
+                                </font>
+                            </div>
+                            
+                            <!-- SES25S4 = 15 için -->
+                            <div id="question-15" class="question-text" style="display:none;">
+                                <font face="calibri" color="#000000" size="2">
+                                    <b>Uzmanlık alanını en iyi hangisi tanımlar?</b>
+                                </font>
+                            </div>
+                            
+                            <!-- SES25S4 = 16 için -->
+                            <div id="question-16" class="question-text" style="display:none;">
+                                <font face="calibri" color="#000000" size="2">
+                                    <b>Öğretmenlik / eğitmenlik alanını en iyi hangisi tanımlar?</b>
+                                </font>
+                            </div>
+                            
+                            <!-- SES25S4 = 17 için -->
+                            <div id="question-17" class="question-text" style="display:none;">
+                                <font face="calibri" color="#000000" size="2">
+                                    <b>Askeri görevini en iyi hangisi tanımlar?</b>
+                                </font>
+                            </div>
+                            
+                            <!-- SES25S4 = 18 için -->
+                            <div id="question-18" class="question-text" style="display:none;">
+                                <font face="calibri" color="#000000" size="2">
+                                    <b>Kamu personelinin görevini en iyi hangisi tanımlar?</b>
+                                </font>
+                            </div>
+                            
+                            <!-- SES25S4 = 19 için -->
+                            <div id="question-19" class="question-text" style="display:none;">
+                                <font face="calibri" color="#000000" size="2">
+                                    <b>Yaptığı işi en iyi tanımlayan seçenek hangisidir?</b>
+                                </font>
+                            </div>
+                            
+                            <!-- SES25S4 = 21 için -->
+                            <div id="question-21" class="question-text" style="display:none;">
+                                <font face="calibri" color="#000000" size="2">
+                                    <b>Haneye asıl geliri getiren kişinin yaptığı işi en iyi tanımlayan seçenek hangisidir?</b>
+                                </font>
+                            </div>
+                            
+                            <!-- SES25S4 = 22 için -->
+                            <div id="question-22" class="question-text" style="display:none;">
+                                <font face="calibri" color="#000000" size="2">
+                                    <b>Haneye asıl geliri getiren kişinin yaptığı işi en iyi tanımlayan seçenek hangisidir?</b>
+                                </font>
+                            </div>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable" class="cssQuestionTable">
+                <tbody>
+                    <!-- Seçenek 1 -->
+                    <tr id="option-1" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">1</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_1" value="1">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_1">Yönetim alanında / Yanında çalışan kişi sayısı 50'den fazla</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 2 -->
+                    <tr id="option-2" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">2</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_2" value="2">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_2">Yönetim alanında / Yanında çalışan kişi sayısı 10-50 arası</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 3 -->
+                    <tr id="option-3" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">3</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_3" value="3">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_3">Yönetim alanında / Yanında çalışan kişi sayısı 10'dan az</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 4 -->
+                    <tr id="option-4" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">4</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_4" value="4">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_4">Doktor / diş hekimi / mimar / mühendis / avukat /eczacı vb. meslek sahibi</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 5 -->
+                    <tr id="option-5" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">5</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_5" value="5">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_5">Gemi kaptanı, pilot</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 6 -->
+                    <tr id="option-6" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">6</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_6" value="6">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_6">Teknik personel / teknisyen / tıbbi mümessil / hostes/ laborant / hemşire</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 7 -->
+                    <tr id="option-7" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">7</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_7" value="7">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S5_7">Pazarlama satış sorumluları ya da beyaz yakalı uzman</label><br />
+                            <font face="calibri" color="#888888" size="1">
+                                <i>Tüm firmaların pazarlama-satış departmanı çalışanlarını (yönetici olanlar hariç) içerir. Distribütörler ya da plasiyerler de buraya dahildir.</i>
+                            </font>
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 8 -->
+                    <tr id="option-8" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">8</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_8" value="8">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S5_8">Moda, gıda ya da tasarım uzmanı (dekorasyon, gastronomi, moda, grafik  vb alanlarda çalışan)</label><br />
+                            <font face="calibri" color="#888888" size="1">
+                                <i>Stilist, gastronomi eğitimi almış aşçı/şef, tasarım eğitimi almış grafikerler,  dekorasyon uzmanları yer alır.</i>
+                            </font>
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 9 -->
+                    <tr id="option-9" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">9</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_9" value="9">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_9">Öğretim görevlisi (Doçent/profesör)</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 10 -->
+                    <tr id="option-10" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">10</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_10" value="10">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_10">Öğretim görevlisi (Asistan/Doktor)</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 11 -->
+                    <tr id="option-11" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">11</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_11" value="11">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_11">Öğretmen (Okul öncesi , ilköğretim, lise )</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 12 -->
+                    <tr id="option-12" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">12</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_12" value="12">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_12">Eğitmen / Kurs öğretmeni / kuran kursu hocası vb</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 13 -->
+                    <tr id="option-13" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">13</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_13" value="13">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_13">Üst rütbeli subay (Binbaşı ve üzeri)</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 14 -->
+                    <tr id="option-14" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">14</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_14" value="14">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_14">Alt rütbeli subay (Binbaşının altı)</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 15 -->
+                    <tr id="option-15" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">15</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_15" value="15">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_15">Astsubay</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 16 -->
+                    <tr id="option-16" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">16</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_16" value="16">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_16">Subay olmayan silahlı kuvvetlerin daimî mensupları</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 17 -->
+                    <tr id="option-17" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">17</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_17" value="17">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S5_17">Doktor, diş hekimi, mimar, mühendis, hakim, savcı</label><br />
+                            <font face="calibri" color="#888888" size="1">
+                                <i>(en az 4 yıllık üniversite eğitimini aldığı alanda çalışan)</i>
+                            </font>
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 18 -->
+                    <tr id="option-18" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">18</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_18" value="18">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_18">Polis komiseri, amir</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 19 -->
+                    <tr id="option-19" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">19</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_19" value="19">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_19">Teknik personel / teknisyen / tıbbi mümessil / hostes/ laborant / hemşire</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 20 -->
+                    <tr id="option-20" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">20</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_20" value="20">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_20">Memur - büro elemanı - beyaz yakalı kamu personeli</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 21 -->
+                    <tr id="option-21" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">21</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_21" value="21">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_21">İmam-din görevlisi</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 22 -->
+                    <tr id="option-22" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">22</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_22" value="22">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_22">Belediye memuru</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 23 -->
+                    <tr id="option-23" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">23</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_23" value="23">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_23">Polis, itfaiye görevlisi, uzman er, çavuş</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 24 -->
+                    <tr id="option-24" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">24</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_24" value="24">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_24">Bekçi</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 25 -->
+                    <tr id="option-25" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">25</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_25" value="25">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_25">Eczacı kalfası, tıbbi sekreter</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 26 -->
+                    <tr id="option-26" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">26</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_26" value="26">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_26">Satış temsilcisi /  sekreter /….  vb</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 27 -->
+                    <tr id="option-27" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">27</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_27" value="27">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_27">İmam / din görevlisi</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 28 -->
+                    <tr id="option-28" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">28</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_28" value="28">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S5_28">Sanatçı / müzisyen</label><br />
+                            <font face="calibri" color="#888888" size="1">
+                                <i>Bir orkestrada ya da mekanda düzenli olarak çalışan ve uzmanlaşmış müzisyenler burada olmalı</i>
+                            </font>
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 29 -->
+                    <tr id="option-29" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">29</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_29" value="29">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_29">Zanaatkar</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 30 -->
+                    <tr id="option-30" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">30</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_30" value="30">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_30">Memur - büro elemanı - beyaz yakalı ofis çalışanları</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 31 -->
+                    <tr id="option-31" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">31</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_31" value="31">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S5_31">Moda, gıda ya da tasarım uzmanı (dekorasyon, gastronomi, moda, grafik  vb alanlarda çalışan)</label><br />
+                            <font face="calibri" color="#888888" size="1">
+                                <i>Otellerin ya da zincir restoranların aşçıları da burada olmalı</i>
+                            </font>
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 32 -->
+                    <tr id="option-32" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">32</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_32" value="32">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_32">Beden gücü ile çalışan ofis personeli (çaycı, odacı,  kurye...)</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 33 -->
+                    <tr id="option-33" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">33</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_33" value="33">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_33">Araç sahibi olmayan şoför (Taksi, Minibüs, Kamyonet, Servis, Motosiklet vb.)</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 34 -->
+                    <tr id="option-34" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">34</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_34" value="34">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_34">Şef-garson / barmen / baş aşçı</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 35 -->
+                    <tr id="option-35" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">35</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_35" value="35">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_35">Garson / aşçı / güvenlik personeli vb</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 36 -->
+                    <tr id="option-36" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">36</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_36" value="36">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S5_36">Satış görevlisi / tezgâhtar / pazar tezgahtarı  vb</label><br />
+                            <font face="calibri" color="#888888" size="1">
+                                <i>perakende sektöründe çalışan satış-tezgahtar-kasiyer gibi ekipler burada olmalı</i>
+                            </font>
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 37 -->
+                    <tr id="option-37" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">37</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_37" value="37">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S5_37">Düzensiz geliri olan sanatçı, müzisyen, oyuncu vb</label><br />
+                            <font face="calibri" color="#888888" size="1">
+                                <i>düğün-dernek gibi etkinliklerde parçabaşı çalışanlar burada olmalı</i>
+                            </font>
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 38 -->
+                    <tr id="option-38" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">38</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_38" value="38">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S5_38">Düzenli maaşlı işi olan vasıfsız işçiler</label><br />
+                            <font face="calibri" color="#888888" size="1">
+                                <i>(Fabrika çalışanları / temizlik işçileri / vasıfsız belediye çalışanları/ inşaat işçileri/ apartman görevlisi vb.)</i>
+                            </font>
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 39 -->
+                    <tr id="option-39" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">39</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_39" value="39">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S5_39">Düzenli maaşlı işi olan uzman işçiler</label><br />
+                            <font face="calibri" color="#888888" size="1">
+                                <i>(Usta, kalfa, tesisatçı, elektrikçi, operatör, tamirci vb.)</i>
+                            </font>
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 40 -->
+                    <tr id="option-40" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">40</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_40" value="40">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S5_40">Düzensiz günlük/yevmiye ile çalışan uzman işçi</label><br />
+                            <font face="calibri" color="#888888" size="1">
+                                <i>(Kalfa, tesisatçı, elektrikçi, tamirci, aşçı tarım işçisi vb)</i>
+                            </font>
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 41 -->
+                    <tr id="option-41" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">41</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_41" value="41">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S5_41">Düzensiz günlük/yevmiye ile çalışan vasıfsız işçi</label><br />
+                            <font face="calibri" color="#888888" size="1">
+                                <i>(Temizlik işçileri / inşaat işçileri  vb)</i>
+                            </font>
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 42 -->
+                    <tr id="option-42" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">42</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_42" value="42">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25S5_42">Tarım - orman işçisi</label></td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" value="Geri" onclick="goBack();" />
+                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                        </td>
+                        <td colspan="2" align="right">
+                            <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</body>
+</html>

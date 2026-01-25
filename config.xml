@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.example.televizyonizleme" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>TelevizyonIzleme</name>
+    <name>TelevizyonIzleme2026</name>
     <description>Tiak Televizyon İzleme</description>
     <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
         TelevizyonIzleme
@@ -10,8 +10,8 @@
     <allow-intent href="https://*/*" />
     <platform name="android"> 
         <icon src="res/icon.png" />
-        <preference name="android-minSdkVersion" value="21" />
-        <preference name="android-targetSdkVersion" value="21" />
+        <preference name="android-minSdkVersion" value="24" />
+        <preference name="android-targetSdkVersion" value="33" />
         <preference name="android-compileSdkVersion" value="35" />
     </platform>
 </widget>

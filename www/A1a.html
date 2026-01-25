@@ -59,13 +59,13 @@
 
             var kontrol = CheckValues();
             if (kontrol) {
-                if (currentValue == "5") {
-                    myUpdateRedirect("INTERVIEWS", "A1a1=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "A1a2.html?id=" + window.localStorage["InterviewID"]);
-                }
-                else
-                {
-                    myUpdateRedirect("INTERVIEWS", "A1a1=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "A1a2.html?id=" + window.localStorage["InterviewID"]);    
-                }
+                // if (currentValue == "6") {
+                //     myUpdateRedirect("INTERVIEWS", "A2=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "HaneBilgiler.html?id=" + window.localStorage["InterviewID"] + "&hanesayi=" + haneSayi);
+                // }
+                // else
+                // {
+                    myUpdateRedirect("INTERVIEWS", "A1a=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "A1b.html?id=" + window.localStorage["InterviewID"]);    
+//                }
 
                 
            //     window.location.href = "R3.html?id=" + id;
@@ -96,15 +96,9 @@
             <tbody>
                 <tr>
                     <td>
-                        <span id="StepNameTD">A1a1.</span><span id="QuestionTextTD">
-                        <font face="calibri" color="#000000" >
-                            Evinizde televizyon programlarını izleme durumunuzu elinizdeki ekrandaki ifadelerden hangisi en iyi şekilde açıklar, lütfen sadece kendi izleme durumunuzu değil evdeki tüm kişileri düşünerek  cevap veriniz. Televizyonda sadece Netflix, Amazon, Exxen gibi platformlar izleniyor ve kanalların televizyon programları izlenmiyorsa TELEVİZYON İZLENMİYOR cevabını verebilirsiniz? 
-                            <b>(EKRANI GÖSTER – TEK CEVAP)</b>  </font>
-                                                            <!-- <font face="arial" color="#000000" size="2">         </font> -->
-                            <!-- <p align="left"><font face="calibri" color="#000000" > <b><br />
-    (Sadece playstation, Xbox gibi oyun konsolu bağlı ya da sadece DVD bağlı bir televizyon varsa bunun sayılmaması gerekmektedir)<br />
-    (Çeyiz Olarak Alınmış, Daha Sonra Kullanmak Üzere Alınmış Şu Anda Kullanılmayan Televizyonlar Sayılmayacak)
-</b>    </font></p> -->
+                        <span id="StepNameTD">A1a.</span><span id="QuestionTextTD">
+                        <font face="calibri" color="#000000" >Evinizde televizyon yayınlarını seyretmek için kullandığınız <b>Çalışır Durumda</b> KAÇ TANE televizyon var? <b>(TEK CEVAP) </b><br><br><b>ANKETÖR DİKKAT: Çeyiz Olarak Alınmış, Daha Sonra Kullanmak Üzere Alınmış Şu Anda kurulu olmayan Televizyonlar   Sayılmayacaktır/Ayrıca televizyon izlenmeyen oyun konsololuna bağlı monitor olarak kullanılan TV ler sayılmayacaktır.</b>
+                        </font>                                                            
                         </span>
                     </td>
                 </tr>
@@ -118,32 +112,38 @@
                         <td class="columnDivider"></td>
                         <td align="right">1</td>
                         <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_1" value="1"><span></span></td>
-                        <td><label for="A1_1">HEMEN HEMEN HER GÜN TV İZLENİR</label></td>
+                        <td><label for="A1_1">1 TELEVİZYON</label></td>
                     </tr>
                     <tr>
                         <td class="columnDivider"></td>
                         <td align="right">2</td>
                         <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_2" value="2"><span></span></td>
-                        <td><label for="A1_2">EN AZ HAFTADA 3-4 GÜN İZLENİR </label></td>
+                        <td><label for="A1_2">2 TELEVİZYON</label></td>
                     </tr>
                     <tr class="AlternateTableRow">
                         <td class="columnDivider"></td>
                         <td align="right">3</td>
                         <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_3" value="3"><span></span></td>
-                        <td><label for="A1_3">HAFTADA BİR-İKİ GÜN İZLENİR </label></td>
+                        <td><label for="A1_3">3 TELEVİZYON</label></td>
                     </tr>
                     <tr>
                         <td class="columnDivider"></td>
                         <td align="right">4</td>
                         <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_4" value="4"><span></span></td>
-                        <td><label for="A1_4">AYDA BİR KAÇ KEZ İZLENİR</label></td>
+                        <td><label for="A1_4">4 TELEVİZYON</label></td>
                     </tr>
                     <tr class="AlternateTableRow">
                         <td class="columnDivider"></td>
                         <td align="right">5</td>
                         <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_5" value="5"><span></span></td>
-                        <td><label for="A1_5">EVİMİZDE HİÇ KİMSE TELEVİZYON İZLEMİYOR</label></td>
+                        <td><label for="A1_5">5 VEYA DAHA FAZLA TELEVİZYON </label></td>
                     </tr>
+                    <!-- <tr>
+                        <td class="columnDivider"></td>
+                        <td align="right">6</td>
+                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_6" value="6"><span></span></td>
+                        <td><label for="A1_6">TV YOK</label></td>
+                    </tr> -->
 
                     <tr><td colspan="4">&nbsp;</td></tr>
                     <tr>

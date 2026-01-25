@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -12,7 +12,6 @@
 
     <script type="text/javascript" src="cordova.js"></script>
 
-    <!-- <script src="scripts/app.js"></script> -->
     <script src="scripts/database.js"></script>
     <script src="scripts/jsSingleResponse.js"></script>
     <script type="text/javascript">
@@ -21,12 +20,10 @@
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
             id = getUrlVars()["id"];
-           // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
             db.transaction(function (tx) {
                 tx.executeSql("SELECT B1_O,B2a_1_1,B2a_2_1,B2a_3_1,B2a_4_1,B2a_5_1,B2a_6_1,B2a_7_1,B2a_8_1,B2a_9_1,B2a_10_1,B2a_11_1,B2a_12_1,B2a_13_1,B2a_14_1,B2a_15_1,B2a_16_1,B2a_17_1,B2a_18_1,B2a_19_1,B2a_20_1,B3_1_1,B3_2_1,B3_3_1,B3_4_1,B3_5_1,B3_6_1,B3_7_1,B3_8_1,B3_9_1,B3_10_1,B3_11_1,B3_12_1,B3_13_1,B3_14_1,B3_15_1,B3_16_1,B3_17_1,B3_18_1,B3_19_1,B3_20_1 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
                     sayi = parseInt(val.rows.item(0).B1_O);
-  
-        
+         
                     if (sayi > 0) {
                         var yas15BuyukSay = 0;
                         var yas15BuyukFirstIndex = 0;
@@ -44,7 +41,6 @@
                                     var isimFieldName = "B2a_" + i + "_1";
                                     var newRowHtml = row.html().replace("lblisim",val.rows.item(0)[isimFieldName]).replace(/\#/g, i);
                                     if (i % 2 === 0) {
-                                       // newRowHtml =newRowHtml.replace("AlternateTableRow", "");
                                        newRowHtml = "<tr>" + newRowHtml + "</tr>";
                                     }
                                     else
@@ -56,8 +52,6 @@
                                 }
                                 yas15BuyukSay++;
                             }
-
-                          
                         }
                         
                         var row = $("#QuestionTable tbody>tr:first").clone(true);
@@ -66,19 +60,13 @@
                         $("#QuestionTable tbody>tr:first").replaceWith(firstRow);
                         SetStartUp();
                      }
-                    // alert(haneSayi);
                 });
             });
         }
 
 
-
         window.onload = function () {
-
-
             id = getUrlVars()["id"];
-            SetStartUp();
-            //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
         };
 
 
@@ -103,23 +91,7 @@
 
             var kontrol = CheckValues();
             if (kontrol) {
-                myUpdateRedirect("INTERVIEWS", "B13=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "C2.html?id=" + window.localStorage["InterviewID"]);
-                
-
-                
-           //     window.location.href = "R3.html?id=" + id;
-                /* db = openDatabase({ name: 'my.db', location: 'default' });
-                 db.transaction(function (tx) {
-
-                     tx.executeSql("SELECT F0 FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {
-                         if (val.rows.length > 0) {
-
-                         }
-                         else {
-                             alert("Anket Yok");
-                         }
-                     });
-                 });*/
+                myUpdateRedirect("INTERVIEWS", "B9=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "B10.html?id=" + window.localStorage["InterviewID"]);
             }
         }
 
@@ -135,15 +107,10 @@
             <tbody>
                 <tr>
                     <td>
-                        <span id="StepNameTD">B13.</span><span id="QuestionTextTD">
+                        <span id="StepNameTD">B9.</span><span id="QuestionTextTD">
                         <font face="calibri" color="#000000" >
-                            Peki evinizde Yiyecek, içecek, temizlik ürünleri gibi ürünlerin alışverişinden sorumlu olan kişinin kim olduğunu öğrenebilir miyim? 
-                              </font>
-                                                            <!-- <font face="arial" color="#000000" size="2">         </font> -->
-                            <!-- <p align="left"><font face="calibri" color="#000000" > <b><br />
-    (Sadece playstation, Xbox gibi oyun konsolu bağlı ya da sadece DVD bağlı bir televizyon varsa bunun sayılmaması gerekmektedir)<br />
-    (Çeyiz Olarak Alınmış, Daha Sonra Kullanmak Üzere Alınmış Şu Anda Kullanılmayan Televizyonlar Sayılmayacak)
-</b>    </font></p> -->
+                            Eve gelir getiren kişiler arasında EVE DÜZENLİ VE EN YÜKSEK GELİRİ GETİREN kişinin kim olduğunu söyler misiniz?
+                        </font>
                         </span>
                     </td>
                 </tr>
@@ -156,12 +123,10 @@
                     <tr class="AlternateTableRow">
                         <td class="columnDivider"></td>
                         <td align="right">#</td>
-                        <td align="right"><input type="radio" class="radioStyle" name="B13" id="B13_#" value="#"><span></span></td>
-                        <td><label for="B13_#" id="">lblisim</label></td>
+                        <td align="right"><input type="radio" class="radioStyle" name="B9" id="B9_#" value="#"><span></span></td>
+                        <td><label for="B9_#">lblisim</label></td>
                     </tr>
-                  
 
-                    <!-- <tr><td colspan="4">&nbsp;</td></tr> -->
                     <tr>
                         <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
                         <td align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>

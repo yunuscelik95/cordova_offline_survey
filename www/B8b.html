@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <script src="scripts/database.js"></script>
+    <script src="scripts/jsMultiResponseOpen.js"></script>
+    <script type="text/javascript">
+
+        var id;
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT B1_O,B2a_1_1,B2a_2_1,B2a_3_1,B2a_4_1,B2a_5_1,B2a_6_1,B2a_7_1,B2a_8_1,B2a_9_1,B2a_10_1,B2a_11_1,B2a_12_1,B2a_13_1,B2a_14_1,B2a_15_1,B2a_16_1,B2a_17_1,B2a_18_1,B2a_19_1,B2a_20_1 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
+                    var sayi = parseInt(val.rows.item(0).B1_O);
+         
+                    if (sayi > 0) {
+                        for (var i = 1; i < sayi + 1; i++) {
+                            var isimFieldName = "B2a_" + i + "_1";
+                            var isim = val.rows.item(0)[isimFieldName];
+                            
+                            if (i === 1) {
+                                // İlk satırı güncelle
+                                var firstRow = $("#QuestionTable tbody>tr:first");
+                                firstRow.find('input[type=checkbox]').attr('id', 'B8b_' + i).attr('value', i);
+                                firstRow.find('label').attr('for', 'B8b_' + i).text(isim);
+                            } else {
+                                // Yeni satır ekle
+                                var row = $("#QuestionTable tbody>tr:first").clone(true);
+                                var newRowHtml = row.html().replace(/B8b_1/g, 'B8b_' + i).replace(/value="1"/g, 'value="' + i + '"').replace('lblisim', isim);
+                                
+                                if (i % 2 === 0) {
+                                    newRowHtml = "<tr>" + newRowHtml + "</tr>";
+                                } else {
+                                    newRowHtml = "<tr class=\"AlternateTableRow\">" + newRowHtml + "</tr>";
+                                }
+                                
+                                $("#QuestionTable tbody tr:last").before(newRowHtml);
+                            }
+                        }
+                        SetStartUp();
+                    }
+                });
+            });
+        }
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+            document.forms[0].focus();
+            SetStartUp();
+        };
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var kontrol = CheckValues();
+            if (kontrol) {
+                var answer = "";
+                $.each($("input[name='B8b']:checked"), function () {
+                    if (answer != "") answer += ",";
+                    answer += $(this).val();
+                });
+
+                if (answer != "") {
+                    myUpdateRedirect("INTERVIEWS", "B8b='" + answer + "'", " InterviewID=" + window.localStorage["InterviewID"], "B9.html?id=" + window.localStorage["InterviewID"]);
+                } else {
+                    alert("Boş Geçilemez!");
+                }
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">B8b.</span><span id="QuestionTextTD">
+                        <font face="calibri" color="#000000" >
+                            Ev gelirine katkısı olan kişiler evde yaşayan hangi kişiler? (Listeden işaretleyiniz)
+                        </font>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable" class="cssQuestionTable">
+                <tbody>
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">1</td>
+                        <td align="right"><input type="checkbox" class="checkboxStyle" name="B8b" id="B8b_1" value="1"><span></span></td>
+                        <td><label for="B8b_1">lblisim</label></td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                        <td align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </form>
+</body>
+</html>

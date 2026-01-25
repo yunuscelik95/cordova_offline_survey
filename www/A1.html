@@ -57,11 +57,11 @@
             var kontrol = CheckValues();
             if (kontrol) {
                 if (currentValue == "2") {
-                    myUpdateRedirect("INTERVIEWS", "A1=" + currentValue + ", A1a1 =null, A1a2 = null", " InterviewID=" + window.localStorage["InterviewID"], "A1b.html?id=" + window.localStorage["InterviewID"]);
+                    myUpdateRedirect("INTERVIEWS", "A1=" + currentValue + ", A1a = null", " InterviewID=" + window.localStorage["InterviewID"], "A1b.html?id=" + window.localStorage["InterviewID"]);
                 }
                 else
                 {
-                    myUpdateRedirect("INTERVIEWS", "A1=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "A1a1.html?id=" + window.localStorage["InterviewID"]);    
+                    myUpdateRedirect("INTERVIEWS", "A1=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "A1a.html?id=" + window.localStorage["InterviewID"]);    
                 }
 
                 
@@ -94,7 +94,7 @@
                 <tr>
                     <td>
                         <span id="StepNameTD">A1.</span><span id="QuestionTextTD">
-                        <font face="calibri" color="#000000" >Evinizde çalışır durumda olan ve TELEVİZYON PROGRAMLARINI İZLEMEK için kullandığınız bir televizyonunuz var mı?  <b>(TEK CEVAP) </b>  </font>
+                        <font face="calibri" color="#000000" >Evinizde çalışır durumda olan bir televizyon var mı? <b>(TEK CEVAP) </b>  </font>
                                                             <!-- <font face="arial" color="#000000" size="2">         </font> -->
                             <!-- <p align="left"><font face="calibri" color="#000000" > <b><br />
     (Sadece playstation, Xbox gibi oyun konsolu bağlı ya da sadece DVD bağlı bir televizyon varsa bunun sayılmaması gerekmektedir)<br />

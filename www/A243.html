@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <script src="scripts/database.js"></script>
+    <script type="text/javascript">
+        var id = 0;
+        var cihazDurumlari = {};
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+            console.log("Device ready! InterviewID:", window.localStorage["InterviewID"]);
+            // Database açılana kadar bekle
+            var checkDB = setInterval(function() {
+                if (typeof db !== 'undefined' && db !== null) {
+                    clearInterval(checkDB);
+                    LoadData();
+                }
+            }, 100);
+        }
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+        };
+
+        function LoadData() {
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT A241_1, A241_2, A241_3, A241_4, A241_5, A242_1_1, A242_2_1, A242_3_1, A242_4_1, A242_5_1, A243_1, A243_2, A243_3, A243_4, A243_5 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
+                    if (val.rows.length > 0) {
+                        var row = val.rows.item(0);
+                        console.log("DB Row:", row);
+                        
+                        // A242'de değer olanları göster
+                        cihazDurumlari = {
+                            'A243_1': row.A242_1_1 && row.A242_1_1 != '',
+                            'A243_2': row.A242_2_1 && row.A242_2_1 != '',
+                            'A243_3': row.A242_3_1 && row.A242_3_1 != '',
+                            'A243_4': row.A242_4_1 && row.A242_4_1 != '',
+                            'A243_5': row.A242_5_1 && row.A242_5_1 != ''
+                        };
+                        console.log("Cihaz Durumlari:", cihazDurumlari);
+                        
+                        // Sadece EVET denen cihazları göster
+                        var gosterilecekCihaz = false;
+                        console.log("cihazRow sayisi:", $('.cihazRow').length);
+                        $('.cihazRow').each(function() {
+                            var radioName = $(this).find('input[type="radio"]').attr('name');
+                            console.log("Checking:", radioName, "=", cihazDurumlari[radioName]);
+                            if (cihazDurumlari[radioName]) {
+                                console.log("Showing:", radioName);
+                                $(this).show();
+                                gosterilecekCihaz = true;
+                                
+                                // Kayıtlı değeri yükle
+                                var kayitliDeger = row[radioName];
+                                if (kayitliDeger) {
+                                    $('#' + radioName + '_' + kayitliDeger).prop('checked', true);
+                                }
+                            } else {
+                                $(this).hide();
+                            }
+                        });
+                        
+                        // Hiç cihaz yoksa uyarı göster
+                        if (!gosterilecekCihaz) {
+                            alert("Önceki soruda hiçbir cihaz için EVET seçmediniz. Geri dönüyorsunuz.");
+                            window.history.back();
+                        }
+                    }
+                });
+            });
+        }
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var kontrol = true;
+            var updateStr = "";
+            
+            // Sadece görünür olan cihazları kontrol et
+            $('.cihazRow:visible').each(function() {
+                var radioName = $(this).find('input[type="radio"]').attr('name');
+                var radioValue = $(this).find('input[type="radio"]:checked').val();
+                var cihazLabel = $(this).find('label').text();
+                
+                if (!radioValue) {
+                    alert(cihazLabel + " için bir seçenek işaretleyiniz!");
+                    kontrol = false;
+                    return false;
+                }
+                
+                if (updateStr != "") updateStr += ",";
+                updateStr += radioName + "='" + radioValue + "'";
+            });
+            
+            if (kontrol) {
+                myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], "P1.html?id=" + window.localStorage["InterviewID"]);
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+    <style>
+        .cihazRow {
+            border-bottom: 1px solid #ddd;
+            display: none; /* Başlangıçta gizli */
+        }
+        .cihazRow:hover {
+            background-color: #f5f5f5;
+        }
+        table#QuestionTable {
+            width: 100%;
+        }
+        table#QuestionTable td {
+            padding: 10px;
+            vertical-align: middle;
+        }
+        .cihazLabel {
+            font-weight: normal;
+            min-width: 300px;
+        }
+        .radioCell {
+            text-align: center;
+            width: 100px;
+        }
+        .radioStyle {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">A243.</span>
+                        <span id="QuestionTextTD">
+                            <font face="Calibri" color="#000000" size="2">
+                                Bu cihazlarda internet bağlı olarak televizyon kanalları/programları izlenmekte midir? <b>(HER BİR CİHAZ İÇİN TEK TEK SORULACAK)
+                            </font>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable" cellpadding="0" cellspacing="0">
+                <thead>
+                    <tr style="background-color: #e0e0e0; font-weight: bold;">
+                        <td class="columnDivider" style="width: 30px;"></td>
+                        <td style="padding: 10px;"></td>
+                        <td class="radioCell">EVET İZLENİYOR</td>
+                        <td class="radioCell">HAYIR İZLENMİYOR</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- A243_1 - Sadece A242_1_1'de değer varsa görünür -->
+                    <tr class="AlternateTableRow cihazRow">
+                        <td class="columnDivider"></td>
+                        <td class="cihazLabel">
+                            <label>MASAÜSTÜ BİLGİSAYAR / PC</label>
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A243_1" id="A243_1_1" value="1">
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A243_1" id="A243_1_2" value="2">
+                        </td>
+                    </tr>
+                    
+                    <!-- A243_2 - Sadece A242_2_1'de değer varsa görünür -->
+                    <tr class="cihazRow">
+                        <td class="columnDivider"></td>
+                        <td class="cihazLabel">
+                            <label>DİZÜSTÜ BİLGİSAYAR / LAP TOP</label>
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A243_2" id="A243_2_1" value="1">
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A243_2" id="A243_2_2" value="2">
+                        </td>
+                    </tr>
+                    
+                    <!-- A243_3 - Sadece A242_3_1'de değer varsa görünür -->
+                    <tr class="AlternateTableRow cihazRow">
+                        <td class="columnDivider"></td>
+                        <td class="cihazLabel">
+                            <label>TABLET BİLGİSAYAR</label>
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A243_3" id="A243_3_1" value="1">
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A243_3" id="A243_3_2" value="2">
+                        </td>
+                    </tr>
+                    
+                    <!-- A243_4 - Sadece A242_4_1'de değer varsa görünür -->
+                    <tr class="cihazRow">
+                        <td class="columnDivider"></td>
+                        <td class="cihazLabel">
+                            <label>AKILLI TELEFON</label>
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A243_4" id="A243_4_1" value="1">
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A243_4" id="A243_4_2" value="2">
+                        </td>
+                    </tr>
+                    
+                    <!-- A243_5 - Sadece A242_5_1'de değer varsa görünür -->
+                    <tr class="AlternateTableRow cihazRow">
+                        <td class="columnDivider"></td>
+                        <td class="cihazLabel">
+                            <label>AKILLI TELEVİZYON / SMART TELEVİZYON olarak adlandırılan internete bağlanabilen bir televizyon</label>
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A243_5" id="A243_5_1" value="1">
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A243_5" id="A243_5_2" value="2">
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                        </td>
+                        <td colspan="2" align="right">
+                            <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</body>
+</html>

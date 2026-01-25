@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
@@ -24,16 +25,16 @@
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
             id = getUrlVars()["id"];
-           // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
             db.transaction(function (tx) {
-             
+
             });
         }
 
         window.onload = function () {
             id = getUrlVars()["id"];
             SetStartUp();
-        
+
             //   db = openDatabase("my.db", '1.0', "My WebSQL Database", 2 * 1024 * 1024);
         };
 
@@ -65,9 +66,9 @@
                     str += currentValue[i];
                 }
 
-                myUpdateRedirect("INTERVIEWS", str, " InterviewID=" + window.localStorage["InterviewID"],"C2.html?id=" + window.localStorage["InterviewID"] );
+                myUpdateRedirect("INTERVIEWS", str, " InterviewID=" + window.localStorage["InterviewID"], "B1.html?id=" + window.localStorage["InterviewID"]);
 
-                
+
 
             }
         }
@@ -77,6 +78,7 @@
         }
     </script>
 </head>
+
 <body>
 
     <form id="form1">
@@ -85,12 +87,13 @@
                 <tr>
                     <td>
                         <span id="StepNameTD">P1.</span><span id="QuestionTextTD">
-                            <font face="Calibri" color="#000000" size="2">Şimdi size okuyacağım internet üzerinden FİLM / DİZİ yayını yapan platformlardan herhangi birine üye misiniz? 
+                            <font face="Calibri" color="#000000" size="2">Şimdi size okuyacağım internet üzerinden FİLM
+                                / DİZİ yayını yapan platformlardan izleme yapılıyor mu?
                                 <br />
                                 <b>(EKRANI GÖSTER - SEÇENEKLERİ OKUYUN – HER SEÇENEK TEK CEVAP) </b>
-                                
+
                             </font>
-                            
+
                         </span>
                     </td>
                 </tr>
@@ -109,92 +112,191 @@
                                     <th>&nbsp;</th>
                                     <th align="center" valign="middle">EVET ÜYEYİZ </th>
                                     <th align="center" valign="middle">HAYIR ÜYE DEĞİLİZ </th>
-                                    
+
                                 </tr>
-                                
+
                                 <tr class="AlternateTableRow">
                                     <th align="right">1</th>
-                                    <td  class="img-cell"><div><img src="/images/survey/P1_1.png" class="img-P1"></div><label> NETFLIX</label></td>
-                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_1" id="P1_1_1" value="1"  openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="1" onclick="SingleMatrisClick(this);"><span></span></td>
-                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_1" id="P1_1_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="1" onclick="SingleMatrisClick(this);"><span></span></td>
+                                    <td class="img-cell">
+                                        <div><img src="/images/survey/P1_1.png" class="img-P1"></div><label>
+                                            NETFLIX</label>
+                                    </td>
+                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_1"
+                                            id="P1_1_1" value="1" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="1" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
+                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_1"
+                                            id="P1_1_2" value="2" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="1" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
                                 </tr>
 
 
-                                <tr >
+                                <tr>
                                     <th align="right">2</th>
-                                    <td class="img-cell"><div><img src="/images/survey/P1_2.png" class="img-P1"></div><label>DISNEY + (PLUS)</label> </td>
-                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_2" id="P1_2_1" value="1"  openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="2" onclick="SingleMatrisClick(this);"><span></span></td>
-                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_2" id="P1_2_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="2" onclick="SingleMatrisClick(this);"><span></span></td>
+                                    <td class="img-cell">
+                                        <div><img src="/images/survey/P1_2.png" class="img-P1"></div><label>DISNEY +
+                                            (PLUS)</label>
+                                    </td>
+                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_2"
+                                            id="P1_2_1" value="1" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="2" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
+                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_2"
+                                            id="P1_2_2" value="2" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="2" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
                                 </tr>
 
                                 <tr class="AlternateTableRow">
                                     <th align="right">3</th>
-                                    <td class="img-cell"><div><img src="/images/survey/P1_3.png" class="img-P1"></div><label>AMAZON PRIME</label>  </td>
-                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_3" id="P1_3_1" value="1"  openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="3" onclick="SingleMatrisClick(this);"><span></span></td>
-                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_3" id="P1_3_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="3" onclick="SingleMatrisClick(this);"><span></span></td>
+                                    <td class="img-cell">
+                                        <div><img src="/images/survey/P1_3.png" class="img-P1"></div><label>AMAZON
+                                            PRIME</label>
+                                    </td>
+                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_3"
+                                            id="P1_3_1" value="1" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="3" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
+                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_3"
+                                            id="P1_3_2" value="2" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="3" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
                                 </tr>
 
                                 <tr>
                                     <th align="right">4</th>
-                                    <td class="img-cell"><div><img src="/images/survey/P1_4.png" class="img-P1"></div><label>EXXEN</label>  </td>
-                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_4" id="P1_4_1" value="1"  openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="4" onclick="SingleMatrisClick(this);"><span></span></td>
-                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_4" id="P1_4_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="4" onclick="SingleMatrisClick(this);"><span></span></td>
+                                    <td class="img-cell">
+                                        <div><img src="/images/survey/P1_4.png" class="img-P1"></div>
+                                        <label>EXXEN</label>
+                                    </td>
+                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_4"
+                                            id="P1_4_1" value="1" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="4" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
+                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_4"
+                                            id="P1_4_2" value="2" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="4" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
                                 </tr>
 
                                 <tr class="AlternateTableRow">
                                     <th align="right">5</th>
-                                    <td class="img-cell"><div><img src="/images/survey/P1_5.png" class="img-P1"></div><label>GAIN </label> </td>
-                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_5" id="P1_5_1" value="1"  openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="5" onclick="SingleMatrisClick(this);"><span></span></td>
-                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_5" id="P1_5_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="5" onclick="SingleMatrisClick(this);"><span></span></td>
+                                    <td class="img-cell">
+                                        <div><img src="/images/survey/P1_5.png" class="img-P1"></div><label>GAIN
+                                        </label>
+                                    </td>
+                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_5"
+                                            id="P1_5_1" value="1" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="5" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
+                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_5"
+                                            id="P1_5_2" value="2" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="5" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
                                 </tr>
 
-                                <tr >
+                                <tr>
                                     <th align="right">6</th>
-                                    <td class="img-cell"><div><img src="/images/survey/P1_6.png" class="img-P1"></div><label>BLU TV</label> </td>
-                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_6" id="P1_6_1" value="1"  openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="6" onclick="SingleMatrisClick(this);"><span></span></td>
-                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_6" id="P1_6_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="6" onclick="SingleMatrisClick(this);"><span></span></td>
+                                    <td class="img-cell">
+                                        <div><img src="/images/survey/P1_6.png" class="img-P1"><img src="/images/survey/P1_6_2.png" class="img-P1"></div><label>BLU
+                                            TV / HBO MAX</label>
+                                    </td>
+                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_6"
+                                            id="P1_6_1" value="1" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="6" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
+                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_6"
+                                            id="P1_6_2" value="2" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="6" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
                                 </tr>
 
                                 <tr class="AlternateTableRow">
                                     <th align="right">7</th>
-                                    <td class="img-cell"><div><img src="/images/survey/P1_7.png" class="img-P1"></div><label>PUHU TV </label></td>
-                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_7" id="P1_7_1" value="1"  openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="7" onclick="SingleMatrisClick(this);"><span></span></td>
-                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_7" id="P1_7_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="7" onclick="SingleMatrisClick(this);"><span></span></td>
+                                    <td class="img-cell">
+                                        <div><img src="/images/survey/P1_7.png" class="img-P1"></div><label>PUHU TV
+                                        </label>
+                                    </td>
+                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_7"
+                                            id="P1_7_1" value="1" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="7" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
+                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_7"
+                                            id="P1_7_2" value="2" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="7" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
                                 </tr>
 
-                                <tr >
+                                <tr>
                                     <th align="right">8</th>
-                                    <td class="img-cell"><div><img src="/images/survey/P1_8.png" class="img-P1"></div><label>MUBI</label> </td>
-                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_8" id="P1_8_1" value="1"  openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="8" onclick="SingleMatrisClick(this);"><span></span></td>
-                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_8" id="P1_8_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="8" onclick="SingleMatrisClick(this);"><span></span></td>
+                                    <td class="img-cell">
+                                        <div><img src="/images/survey/P1_8.png" class="img-P1"></div><label>MUBI</label>
+                                    </td>
+                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_8"
+                                            id="P1_8_1" value="1" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="8" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
+                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_8"
+                                            id="P1_8_2" value="2" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="8" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
                                 </tr>
 
                                 <tr class="AlternateTableRow">
                                     <th align="right">9</th>
-                                    <td class="img-cell"><div><img src="/images/survey/P1_9.png" class="img-P1"></div><label>TABİİ</label> </td>
-                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_9" id="P1_9_1" value="1"  openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="9" onclick="SingleMatrisClick(this);"><span></span></td>
-                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_9" id="P1_9_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="true" groupid="9" onclick="SingleMatrisClick(this);"><span></span></td>
+                                    <td class="img-cell">
+                                        <div><img src="/images/survey/P1_9.png" class="img-P1"></div>
+                                        <label>TABİİ</label>
+                                    </td>
+                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_9"
+                                            id="P1_9_1" value="1" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="9" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
+                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_9"
+                                            id="P1_9_2" value="2" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="9" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th align="right">10</th>
+                                    <td class="img-cell">
+                                        <div><img src="/images/survey/P1_10.png" class="img-P1"></div>
+                                        <label>S SPORT</label>
+                                    </td>
+                                    <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_10"
+                                            id="P1_10_1" value="1" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="10" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
+                                    <td style="text-align:center;">2<input type="radio" class="radioStyle" name="P1_10"
+                                            id="P1_10_2" value="2" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="true" groupid="10" onclick="SingleMatrisClick(this);"><span></span>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
-                                    <td align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
+                                    <td colspan="3"> <input type="button" value="Durum Kodla"
+                                            onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                                    <td align="right"> <input type="button" id="next" name="next" value="İleri"
+                                            onclick="gecisKontrol();" /></td>
                                 </tr>
-    
+
                             </tbody>
                         </table>
- 
-            <tr>
-                <td>
-                    <table width="90%">
-                        <tbody>
-                          
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
+
+                <tr>
+                    <td>
+                        <table width="90%">
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
             </table>
         </div>
 
     </form>
 </body>
+
 </html>

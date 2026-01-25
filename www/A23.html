@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="scripts/database.js"></script>
+
+    <script type="text/javascript">
+        var id = 0;
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+            var checkDB = setInterval(function() {
+                if (typeof db !== 'undefined' && db !== null) {
+                    clearInterval(checkDB);
+                    LoadData();
+                }
+            }, 100);
+        }
+
+        function LoadData() {
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT A23_1_1, A23_2_1 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
+                    if (val.rows.length > 0) {
+                        var row = val.rows.item(0);
+                        if (row.A23_1_1) $('#A23_1_1').val(row.A23_1_1);
+                        if (row.A23_2_1) $('#A23_2_1').val(row.A23_2_1);
+                    }
+                });
+            });
+        }
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var A23_1_1 = $('#A23_1_1').val();
+            var A23_2_1 = $('#A23_2_1').val();
+
+            // Boş kontrol
+            if (!A23_1_1 || A23_1_1 == "") {
+                alert("HAFTAİÇI ORTALAMA 1 GÜN değerini giriniz!");
+                $('#A23_1_1').focus();
+                return false;
+            }
+
+            if (!A23_2_1 || A23_2_1 == "") {
+                alert("HAFTASONU ORTALAMA 1 GÜN değerini giriniz!");
+                $('#A23_2_1').focus();
+                return false;
+            }
+
+            // Sayısal kontrol (0-24 arası)
+            var hafta_ici = parseInt(A23_1_1);
+            var hafta_sonu = parseInt(A23_2_1);
+
+            if (isNaN(hafta_ici) || hafta_ici < 0) {
+                alert("HAFTAİÇI ORTALAMA için geçerli bir sayı giriniz (0 veya üzeri)!");
+                $('#A23_1_1').focus();
+                return false;
+            }
+
+            if (hafta_ici > 24) {
+                alert("HAFTAİÇI ORTALAMA 24 saatten fazla olamaz!");
+                $('#A23_1_1').focus();
+                return false;
+            }
+
+            if (isNaN(hafta_sonu) || hafta_sonu < 0) {
+                alert("HAFTASONU ORTALAMA için geçerli bir sayı giriniz (0 veya üzeri)!");
+                $('#A23_2_1').focus();
+                return false;
+            }
+
+            if (hafta_sonu > 24) {
+                alert("HAFTASONU ORTALAMA 24 saatten fazla olamaz!");
+                $('#A23_2_1').focus();
+                return false;
+            }
+
+            var updateStr = "A23_1_1='" + A23_1_1 + "',A23_2_1='" + A23_2_1 + "'";
+            myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], "A241.html?id=" + window.localStorage["InterviewID"]);
+        }
+    </script>
+
+    <style>
+        table#QuestionTable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table#QuestionTable td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        .headerRow {
+            background-color: #e0e0e0;
+            font-weight: bold;
+            text-align: center;
+        }
+        .questionRow {
+            background-color: #fff;
+        }
+        .questionRow:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .inputCell {
+            text-align: center;
+            width: 200px;
+        }
+        .numericInput {
+            width: 100px;
+            height: 30px;
+            text-align: center;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+        }
+        .rowNumber {
+            width: 30px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">A23.</span>
+                        <span id="QuestionTextTD">
+                            <font face="Calibri" color="#000000" size="2">
+                                SORACAĞIM SORUYU HAFTA İÇİ VE HAFTASONU OLMAK ÜZERE AYRI AYRI CEVAPLAMANIZI RİCA EDİYORUM.
+                                <br><br>
+                                Bu soruya lütfen evinizdeki tüm kişiler ve tüm televizyonların izlenme süresini düşünerek cevap verin.
+                                <br><br>
+                                <b>(ANKETÖR DİKKAT: BURADA ÖĞRENİLMEK İSTENEN EVDE BULUNAN TÜM TELEVİZYONLARIN 1 GÜNDE KAÇ SAAT İZLEDİKLERİDİR. SALONDAKİ TV 2 SAAT MUTFAKTA KI TV 3 SAAT AÇIK KALARAK İZLENİYOR İSE TOPLAM 5 SAAT YAZILACAKTIR. HİÇ İZLENMİYORSA 0 YAZINIZ.)</b>
+                                <br><br>
+                                -Öncelike HAFTAİÇİ ortalama bir gün için evinizde tüm aile fertleri tarafından toplam kaç saat televizyonunun izlendiğini / farklı bir deyişle evinizdeki tüm televizyonlarınızlenerek kaç saat açık kaldığını söyler misiniz?
+                                <br><br>
+                                -Şimdide lütfen CUMARTESİ PAZAR GÜNLERİ ortalama bir günde evinizde tüm aile fertleri tarafından toplam kaç saat televizyon izlendiğini yani evinizdeki tüm televizyonların kaç saat açık kaldığını söyler misiniz?
+                            </font>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable">
+                <thead>
+                    <tr class="headerRow">
+                        <td class="rowNumber"></td>
+                        <td></td>
+                        <td class="inputCell">GÜNLÜK ORTALAMA</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="questionRow">
+                        <td class="rowNumber">1</td>
+                        <td>HAFTAİÇİ ORTALAMA 1 GÜN</td>
+                        <td class="inputCell">
+                            <input type="number" class="numericInput" name="A23_1_1" id="A23_1_1" min="0" max="24" placeholder="Saat">
+                        </td>
+                    </tr>
+                    <tr class="questionRow">
+                        <td class="rowNumber">2</td>
+                        <td>HAFTASONU ORTALAMA 1 GÜN</td>
+                        <td class="inputCell">
+                            <input type="number" class="numericInput" name="A23_2_1" id="A23_2_1" min="0" max="24" placeholder="Saat">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top: 20px;">
+                <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" style="float: right;" />
+            </div>
+        </div>
+    </form>
+</body>
+</html>

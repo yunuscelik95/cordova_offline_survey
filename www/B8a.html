@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <script src="scripts/database.js"></script>
+    <script type="text/javascript">
+        var id;
+        var b1_o_value = "";
+        
+        document.addEventListener("deviceready", onDeviceReady, false);
+        
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+            
+            // B1_O değerini çek ve soru metnine yerleştir
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT B1_O, B8a_O FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
+                    if (val.rows.length > 0) {
+                        b1_o_value = val.rows.item(0).B1_O || "";
+                        
+                        // Soru metnindeki .... yerine B1_O değerini yerleştir
+                        var questionText = "Evinizde toplam " + b1_o_value + " kişi yaşadığınızı belirttiniz. Yaşan kişiler içersinde hane gelirine katkısı olan kaç kişi var?";
+                        $("#QuestionTextTD font").text(questionText);
+                        
+                        // Daha önceki cevabı yükle
+                        var savedValue = val.rows.item(0).B8a_O;
+                        if (savedValue != null && savedValue != "") {
+                            $("#B8a_O").val(savedValue);
+                        }
+                    }
+                });
+            });
+        }
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+        };
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var b8aValue = $("#B8a_O").val();
+            
+            if (b8aValue == "" || b8aValue == null) {
+                alert("Lütfen bir değer giriniz!");
+                return;
+            }
+            
+            var numValue = parseInt(b8aValue);
+            var maxValue = parseInt(b1_o_value);
+            
+            if (isNaN(numValue) || numValue < 0) {
+                alert("Geçerli bir sayı giriniz!");
+                return;
+            }
+            
+            if (numValue > maxValue) {
+                alert("Girilen değer toplam kişi sayısından (" + maxValue + ") fazla olamaz!");
+                return;
+            }
+            
+            myUpdateRedirect("INTERVIEWS", "B8a_O='" + numValue + "'", " InterviewID=" + window.localStorage["InterviewID"], "B8b.html?id=" + window.localStorage["InterviewID"]);
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <div id="pnlCenter">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <table border="0" id="QuestionText">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span id="StepNameTD">B8a.</span><span id="QuestionTextTD">
+                                            <font face="calibri" color="#000000" size="2">
+                                                Evinizde toplam .... kişi yaşadığınızı belirttiniz. Yaşan kişiler içersinde hane gelirine katkısı olan kaç kişi var?
+                                            </font>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="QuestionBuilderPanel">
+                            <table id="QuestionTable" class="cssQuestionTable">
+                                <tbody>
+                                    <tr class="AlternateTableRow">
+                                        <td class="columnDivider"></td>
+                                        <td align="right">1</td>
+                                        <td align="right"><span></span></td>
+                                        <td>
+                                            <label for="B8a_O">Kişi Sayısı</label>
+                                            <input type="number" class="textStyle" name="B8a_O" id="B8a_O" value="" min="0" step="1">
+                                        </td>
+                                    </tr>
+                                    <tr><td colspan="4">&nbsp;</td></tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                                        </td>
+                                        <td align="right">
+                                            <input id="btnIleri" type="button" value="İleri" onclick="gecisKontrol();" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+    <table>
+        <tbody>
+            <tr>
+                <td align="left">
+                    <input type="button" value="Geri" onclick="goBack();" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

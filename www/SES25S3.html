@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="scripts/database.js"></script>
+    <script src="scripts/index.js"></script>
+    
+    <script type="text/javascript">
+        var id = 0;
+        var ses25s2Value = null;
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+            console.log("Device ready! InterviewID:", window.localStorage["InterviewID"]);
+            
+            var checkDB = setInterval(function() {
+                if (typeof db !== 'undefined' && db !== null) {
+                    clearInterval(checkDB);
+                    LoadData();
+                }
+            }, 100);
+        }
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+        };
+
+        function LoadData() {
+            console.log("LoadData çağrıldı");
+            db.transaction(function (tx) {
+                var sqlQuery = "SELECT SES25S2, SES25S3 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
+                console.log("SQL sorgusu:", sqlQuery);
+                
+                tx.executeSql(sqlQuery, [], 
+                    function (tx, val) {
+                        console.log("SQL başarılı, satır sayısı:", val.rows.length);
+                        if (val.rows.length > 0) {
+                            var row = val.rows.item(0);
+                            console.log("Row data:", row);
+                            
+                            ses25s2Value = row.SES25S2;
+                            
+                            // Soru metnini ve seçenekleri koşula göre ayarla
+                            applyConditions();
+                            
+                            // Daha önce kaydedilmiş değeri seç
+                            if (row.SES25S3) {
+                                $('input[name="SES25S3"][value="' + row.SES25S3 + '"]').prop('checked', true);
+                            }
+                        } else {
+                            console.log("Hiç satır bulunamadı");
+                        }
+                    },
+                    function(tx, error) {
+                        console.error("SQL hatası:", error.message);
+                    });
+            });
+        }
+
+        function applyConditions() {
+            // Tüm soru metinlerini gizle
+            $('.question-text').hide();
+            
+            // Tüm seçenekleri gizle
+            $('.option-row').hide();
+            
+            if (!ses25s2Value) return;
+            
+            // SES25S2 değerine göre soru metnini ve seçenekleri göster
+            if (ses25s2Value == 1 || ses25s2Value == 2) {
+                $('#question-1-2').show();
+                // İşveren, Kendi hesabına çalışan, Ücretli çalışan seçeneklerini göster
+                $('#option-3').show();
+                $('#option-4').show();
+                $('#option-5').show();
+            } else if (ses25s2Value == 3) {
+                $('#question-3').show();
+                // Düzenli gelir sahibi ve Yardım seçeneklerini göster
+                $('#option-1').show();
+                $('#option-2').show();
+            } else if (ses25s2Value == 4) {
+                $('#question-4').show();
+                // İşveren, Kendi hesabına çalışan, Ücretli çalışan seçeneklerini göster
+                $('#option-3').show();
+                $('#option-4').show();
+                $('#option-5').show();
+            }
+        }
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var secilenDeger = $('input[name="SES25S3"]:checked').val();
+            
+            if (!secilenDeger) {
+                alert("Lütfen bir seçenek seçiniz!");
+                return;
+            }
+            
+            var updateStr = "SES25S3='" + secilenDeger + "'";
+            
+            myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], "SES25S4.html?id=" + window.localStorage["InterviewID"]);
+        }
+
+        function goBack() {
+            window.location.href = "SES25S2.html?id=" + window.localStorage["InterviewID"];
+        }
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">SES25S3.</span>
+                        <span id="QuestionTextTD">
+                            <!-- SES25S2 = 1 veya 2 için -->
+                            <div id="question-1-2" class="question-text" style="display:none;">
+                                <font face="calibri" color="#000000" size="2">
+                                    <b>Haneye asıl geliri getiren kişinin çalışma durumunu öğrenebilir miyiz?</b><br />
+                                    <font color="#888888" size="1">
+                                        <i>Freelance çalışanlar ücretini kendisine alıyorsa yani, başka biri üzerinden değil, işi doğrudan kendisi alıyorsa kendi hesabına çalışandır. Parça başı çalışan danışman, müzisyen vb. bu gruba girer. Tarla-bahçe gelirleri olanlar veya kendine ait aracı çalıştıranlar da kendi hesabına çalışandır. Eğer bir yere bağlı çalışıyor ve iş o kurum üzerinden geliyor ve ücretini oradan alıyor, orada sigortalanıyorsa ücretli çalışana girer.</i>
+                                    </font>
+                                </font>
+                            </div>
+                            
+                            <!-- SES25S2 = 3 için -->
+                            <div id="question-3" class="question-text" style="display:none;">
+                                <font face="calibri" color="#000000" size="2">
+                                    <b>Haneye asıl geliri kazanan kişinin gelir kaynaklarını en iyi hangisi açıklar?</b>
+                                    <font color="#888888" size="1">
+                                        <i>Hem kendisi emekli olmamış olan, hem de çalışmayan kişinin gelir kaynaklarını sorgulamaktayız. Eşinden veya babasından dul veya yetim maaşı alanlar bu gruptadır. Aynı şekilde kira geliri olanlarla, aileden veya kurumlardan yardım alanlar da bu gruptadır. Bu gruptaki kişilerin gelirleri sabit ve düzenli mi aile veya kurumdan yardım alarak mı geçimini sağlıyor bilgisinin öğrenilmesi amaçlanıyor.</i>
+                                    </font>
+                                </font>
+                            </div>
+                            
+                            <!-- SES25S2 = 4 için -->
+                            <div id="question-4" class="question-text" style="display:none;">
+                                <font face="calibri" color="#000000" size="2">
+                                    <b>Haneye asıl geliri getiren kişinin emekli olmadan önceki çalışma durumunu öğrenebilir miyiz?</b><br />
+                                    <font color="#888888" size="1">
+                                        <i>Freelance çalışanlar ücretini kendisine alıyorsa yani, başka biri üzerinden değil, işi doğrudan kendisi alıyorsa kendi hesabına çalışandır. Parça başı çalışan danışman, müzisyen vb. bu gruba girer. Tarla-bahçe gelirleri olanlar veya kendine ait aracı çalıştıranlar da kendi hesabına çalışandır.  Eğer bir yere bağlı çalışıyor ve iş o kurum üzerinden geliyor ve ücretini oradan alıyor, orada sigortalanıyorsa ücretli çalışana girer.</i>
+                                    </font>
+                                </font>
+                            </div>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable" class="cssQuestionTable">
+                <tbody>
+                    <!-- Seçenek 1: Düzenli gelir sahibi - SES25S2=3 -->
+                    <tr id="option-1" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">1</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S3" id="SES25S3_1" value="1">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S3_1">Düzenli gelir sahibi, (dul-yetim maaşı, gayrimenkul, mevduat gelirleri olanlar). Eşinin emekli maaşı ile geçinenler de bu gruptadır)</label><br />
+                            
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 2: Yardım - SES25S2=3 -->
+                    <tr id="option-2" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">2</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S3" id="SES25S3_2" value="2">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S3_2">Yardım (sosyal yardım, aile yardımı, devlet yardımı) Eğer şehir dışında çalışan bir aile bireyinin maaşı ile hane geçiniyorsa bu gruptadır.</label><br />
+                            
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 3: İşveren - SES25S2=1,2,4 -->
+                    <tr id="option-3" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">3</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S3" id="SES25S3_3" value="3">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S3_3">İşveren (aile dışında en az iki sürekli çalışanı olan)</label>
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 4: Kendi hesabına çalışan - SES25S2=1,2,4 -->
+                    <tr id="option-4" class="option-row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">4</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S3" id="SES25S3_4" value="4">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S3_4">Kendi hesabına çalışan (en fazla 1 çalışanı olan) Yanında tek çırakla çalışan esnaf bu gruba dahildir. Freelance çalışanlar ücretini kendisine alıyorsa yani, başka biri üzerinden değil, işi doğrudan kendisi alıyorsa kendi hesabına çalışandır. Parça başı çalışan danışman, müzisyen vb. bu gruba girer. Tarla-bahçe gelirleri olanlar veya kendine ait aracı çalıştıranlar da bu sınıfa girer.</label><br />
+                            
+                        </td>
+                    </tr>
+                    
+                    <!-- Seçenek 5: Ücretli çalışan - SES25S2=1,2,4 -->
+                    <tr id="option-5" class="option-row AlternateTableRow" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td align="right">5</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="SES25S3" id="SES25S3_5" value="5">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="SES25S3_5">Ücretli çalışan Ücretli çalışanlar düzenli-düzensiz-mevsimsel-yevmiyeli ücretlerin hepsini kapsar. Freelance çalışan eğer bir yere bağlı çalışıyor ve işi oranın üzerinden geliyor ve ücretini oradan alıyor, orada sigortalanıyorsa bu gruba girer.</label><br />
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" value="Geri" onclick="goBack();" />
+                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                        </td>
+                        <td colspan="2" align="right">
+                            <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</body>
+</html>

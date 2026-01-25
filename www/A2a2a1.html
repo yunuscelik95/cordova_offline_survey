@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
@@ -24,36 +25,33 @@
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
 
-                //var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
-                InterviewID = window.localStorage["InterviewID"];
-                db.transaction(function (tx) {
-                
-                    tx.executeSql("SELECT COALESCE(A1a2, 0) AS A1a2, COALESCE(A1b_O, 0) AS A1b_O, A2a1 FROM INTERVIEWS WHERE InterviewID =" + id, [], function (tx, val) {
-                    if (val.rows.item(0).A1a2 != "null" && val.rows.item(0).A1a2 != "")
-                    {
-                      tvSay = parseInt(val.rows.item(0).A1a2);
+            //var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            InterviewID = window.localStorage["InterviewID"];
+            db.transaction(function (tx) {
+
+                tx.executeSql("SELECT COALESCE(A1a, 0) AS A1a, COALESCE(A1b_O, 0) AS A1b_O, A2a1 FROM INTERVIEWS WHERE InterviewID =" + id, [], function (tx, val) {
+                    if (val.rows.item(0).A1a != "null" && val.rows.item(0).A1a != "") {
+                        tvSay = parseInt(val.rows.item(0).A1a);
                     }
 
-                    if (val.rows.item(0).A1b_O != "null" && val.rows.item(0).A1b_O != "")
-                    {
-                      bozukTVSay = parseInt(val.rows.item(0).A1b_O);
+                    if (val.rows.item(0).A1b_O != "null" && val.rows.item(0).A1b_O != "") {
+                        bozukTVSay = parseInt(val.rows.item(0).A1b_O);
                         $(".bozuktvquestion").show();
                     }
 
                     toplamTV = tvSay + bozukTVSay;
-                         
+
                     var A2a1 = val.rows.item(0).A2a1
 
-                    if (A2a1 == 2)
-                    {
+                    if (A2a1 == 2) {
                         $('#QuestionTable tbody tr.ucretli').hide();
-         
+
                     }
 
-                    });
-
-
                 });
+
+
+            });
         }
 
 
@@ -97,17 +95,38 @@
                 });
 
                 if (aswer != "") {
-                
-                    if (toplamTV < 2)
-                    {
-                        myUpdateRedirect("INTERVIEWS", "A2a2a1='" + aswer + "',A2a2a1_O_97='" + document.getElementById("A2a2a1_O_97").value + "', A2a2a2 = null, A2a2a2_O_97=null, A2a2a3=null, A2a2a3_O_97=null, A2a2a4=null,A2a2a4_O_97=null, A2a2a5=null,A2a2a5_O_97=null", " InterviewID=" + window.localStorage["InterviewID"],"B1.html?id=" + window.localStorage["InterviewID"]);
-                        
-                    }
-                    else
-                    {
-                        myUpdateRedirect("INTERVIEWS", "A2a2a1='" + aswer + "',A2a2a1_O_97='" + document.getElementById("A2a2a1_O_97").value + "', A2a2a2 = null, A2a2a2_O_97=null, A2a2a3=null, A2a2a3_O_97=null, A2a2a4=null,A2a2a4_O_97=null, A2a2a5=null,A2a2a5_O_97=null", " InterviewID=" + window.localStorage["InterviewID"],"A2a2a2.html?id=" + window.localStorage["InterviewID"]);
+                    // A2a1 kontrolü - Eğer ücret ödüyoruz dediyse (A2a1=1)
+                    db.transaction(function (tx) {
+                        tx.executeSql("SELECT A2a1 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
+                            var A2a1 = val.rows.item(0).A2a1;
 
-                    }
+                            if (A2a1 == "1") {
+                                // Ücret ödüyoruz dediyse, 2,3,4,5,6,7 seçeneklerinden en az biri işaretli olmalı
+                                var ucretliSecenekler = ["2", "3", "4", "5", "6", "7"];
+                                var ucretliSecilenVar = false;
+
+                                var secilenler = aswer.split(",");
+                                for (var i = 0; i < secilenler.length; i++) {
+                                    if (ucretliSecenekler.indexOf(secilenler[i]) > -1) {
+                                        ucretliSecilenVar = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!ucretliSecilenVar) {
+                                    alert("Bir önceki soruda ücret ödüyoruz dediniz. 2,3,4,5,6,7 seçeneklerinden birisini işaretlemelisiniz");
+                                    return false;
+                                }
+                            }
+
+                            // Kontrol geçtiyse kaydet ve yönlendir
+                            if (toplamTV < 2) {
+                                myUpdateRedirect("INTERVIEWS", "A2a2a1='" + aswer + "',A2a2a1_O_97='" + document.getElementById("A2a2a1_O_97").value + "', A2a2a2 = null, A2a2a2_O_97=null, A2a2a3=null, A2a2a3_O_97=null, A2a2a4=null,A2a2a4_O_97=null, A2a2a5=null,A2a2a5_O_97=null", " InterviewID=" + window.localStorage["InterviewID"], "A23.html?id=" + window.localStorage["InterviewID"]);
+                            } else {
+                                myUpdateRedirect("INTERVIEWS", "A2a2a1='" + aswer + "',A2a2a1_O_97='" + document.getElementById("A2a2a1_O_97").value + "', A2a2a2 = null, A2a2a2_O_97=null, A2a2a3=null, A2a2a3_O_97=null, A2a2a4=null,A2a2a4_O_97=null, A2a2a5=null,A2a2a5_O_97=null", " InterviewID=" + window.localStorage["InterviewID"], "A2a2a2.html?id=" + window.localStorage["InterviewID"]);
+                            }
+                        });
+                    });
                 }
                 else {
                     alert("Boş Geçilemez!");
@@ -134,28 +153,44 @@
         }
     </script>
 </head>
+
 <body>
     <form id="form1">
-        <table border="0" id="QuestionText"><tbody><tr><td><span id="StepNameTD">A2a2a1.</span><span id="QuestionTextTD"><font face="Calibri" color="#000000" size="2">
-            Televizyon izlemek için kullandığınız sistemlerin ve aboneliklerinizin neler olduğunu söyler misiniz? 
-</font>
-<p>
-<font face="Calibri" class="bozuktvquestion" style="display: none;" color="red" size="2">
-    Şu anda bozuk ama 1 ay içinde tamir ettirmeyi planladığınız televizyonunuz için de cevap vermenizi rica ediyorum. 
-</font>
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td><span id="StepNameTD">A2a2a1.</span><span id="QuestionTextTD">
+                            <font face="Calibri" color="#000000" size="2">
+                                Televizyon izlemek için kullandığınız sistemlerin ve aboneliklerinizin neler olduğunu
+                                söyler misiniz?
+                            </font>
+                            <p>
+                                <font face="Calibri" class="bozuktvquestion" style="display: none;" color="red"
+                                    size="2">
+                                    Şu anda bozuk ama 3 ay içinde tamir ettirmeyi planladığınız televizyonunuz için de
+                                    cevap vermenizi rica ediyorum.
+                                </font>
 
-</p>
-<p>
-    <font face="Calibri" color="#000000" size="2">
-        Öncelikle lütfen evinizde EN ÇOK SEYRETTİĞİNİZ   TELEVİZYONDAN başlayın, en çok seyrettiğiniz televizyon, televizyon yayınları ne şekilde alıyor, televizyonda birden çok sistem var ise lütfen hepsini söyleyin. 
-        Şimdi lütfen <b>1. Televizyon</b>  için söyleyiniz? <br /><b>(ÇOK CEVAP OLABİLİR)</b>
-        <b>(ANKETÖR DİKKAT: EKRANI gösteriniz. HER TELEVİZYON ÇOK CEVAP OLABİLİR / NORMAL ANTEN seçeneği ESKİ TİP ÇATI ANTENLERİ</b> ve Televizyon üzerinde olan antenlerdir, UYDU   ANTENİ ile karışmamasına dikkat ediniz. 
-   
-        <br><b>1. TV</b>     
-    </font>
-    
-</p>
-</span></td></tr></tbody></table>
+                            </p>
+                            <p>
+                                <font face="Calibri" color="#000000" size="2">
+                                    Öncelikle lütfen evinizde EN ÇOK SEYRETTİĞİNİZ TELEVİZYONDAN başlayın, en çok
+                                    seyrettiğiniz televizyon, televizyon yayınları ne şekilde alıyor, televizyonda
+                                    birden çok sistem var ise lütfen hepsini söyleyin.
+                                    Şimdi lütfen <b>1. Televizyon</b> için söyleyiniz? 
+                                    <br/><b>(ÇOK CEVAP OLABİLİR)</b>
+                                    <b>(ANKETÖR DİKKAT: EKRANI gösteriniz. HER TELEVİZYON ÇOK CEVAP OLABİLİR</b> / NORMAL
+                                        ANTEN seçeneği ESKİ TİP ÇATI ANTENLERİ ve Televizyon üzerinde olan
+                                    antenlerdir, UYDU ANTENİ ile karışmamasına dikkat ediniz.
+
+                                    <br><b>1. TV</b>
+                                </font>
+
+                            </p>
+                        </span></td>
+                </tr>
+            </tbody>
+        </table>
         <div id="QuestionBuilderPanel">
             <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
@@ -165,22 +200,27 @@
                                 <tr class="AlternateTableRow ucretsiz">
                                     <td class="columnDivider"></td>
                                     <td align="right">1</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1" id="A2a2a1_1" value="1" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1"
+                                            id="A2a2a1_1" value="1" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="" deselectother="false" itemdisabled="false"><span></span></td>
                                     <td class="img-cell">
                                         <img src="/images/survey/A2a2a1_1.png" class="img-A2a">
-                                        <label for="A2a2a1_1">ÜCRET ÖDENMEYEN UYDU ANTENİ / ÇANAK ANTEN (Üyelik Gerektirmeyen)</label>
-                                     
+                                        <label for="A2a2a1_1">ÜCRET ÖDENMEYEN UYDU ANTENİ / ÇANAK ANTEN (Üyelik
+                                            Gerektirmeyen)</label>
+
                                     </td>
                                 </tr>
 
                                 <tr class="ucretli">
                                     <td class="columnDivider"></td>
                                     <td align="right">2</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1" id="A2a2a1_2" value="2" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td  class="img-cell">
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1"
+                                            id="A2a2a1_2" value="2" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td class="img-cell">
                                         <img src="/images/survey/A2a2a1_2.png" class="img-A2a">
                                         <label for="A2a2a1_2">DIGITURK / BEIN</label>
-                                       
+
 
                                     </td>
                                 </tr>
@@ -188,116 +228,147 @@
                                 <tr class="AlternateTableRow ucretli">
                                     <td class="columnDivider"></td>
                                     <td align="right">3</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1" id="A2a2a1_3" value="3" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td   class="img-cell">
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1"
+                                            id="A2a2a1_3" value="3" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td class="img-cell">
                                         <img src="/images/survey/A2a2a1_3.png" class="img-A2a">
-                                        <label for="A2a2a1_3">D-SMART  </label>
-                                        
+                                        <label for="A2a2a1_3">D-SMART </label>
+
                                     </td>
                                 </tr>
 
                                 <tr class="ucretli">
                                     <td class="columnDivider"></td>
                                     <td align="right">4</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1" id="A2a2a1_4" value="4" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td  class="img-cell">
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1"
+                                            id="A2a2a1_4" value="4" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td class="img-cell">
                                         <img src="/images/survey/A2a2a1_4.png" class="img-A2a">
-                                        <label for="A2a2a1_4">                                       
-                                        KABLO TV (TURKSAT KABLO / TELEDÜNYA) </label>
-                                        
+                                        <label for="A2a2a1_4">
+                                            KABLO TV (TURKSAT KABLO / TELEDÜNYA) </label>
+
                                     </td>
                                 </tr>
-                              
-                                
+
+
                                 <tr class="AlternateTableRow ucretli">
                                     <td class="columnDivider"></td>
                                     <td align="right">5</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1" id="A2a2a1_5" value="5" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td  class="img-cell">
-                                        
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1"
+                                            id="A2a2a1_5" value="5" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td class="img-cell">
+
                                         <img src="/images/survey/A2a2a1_5.png" class="img-A2a">
-                                        <label for="A2a2a1_5">TİVİBU – UYDU ANTENİ ÜZERİNDEN <b>(Türk Telekom)</b> </label>
-                                    
+                                        <label for="A2a2a1_5">TİVİBU – UYDU ANTENİ ÜZERİNDEN <b>(Türk Telekom)</b>
+                                        </label>
+
                                     </td>
                                 </tr>
-                              
+
 
                                 <tr class="ucretli">
                                     <td class="columnDivider"></td>
                                     <td align="right">6</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1" id="A2a2a1_6" value="6" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td  class="img-cell">
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1"
+                                            id="A2a2a1_6" value="6" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td class="img-cell">
                                         <img src="/images/survey/A2a2a1_6.png" class="img-A2a">
                                         <label for="A2a2a1_6">TİVİBU - INTERNET ÜZERİNDEN <b>(Türk Telekom)</b> </label>
-                                      
+
                                     </td>
                                 </tr>
 
                                 <tr class="AlternateTableRow ucretli">
                                     <td class="columnDivider"></td>
                                     <td align="right">7</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1" id="A2a2a1_7" value="7" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td  class="img-cell">
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1"
+                                            id="A2a2a1_7" value="7" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td class="img-cell">
                                         <img src="/images/survey/A2a2a1_7.png" class="img-A2a">
                                         <label for="A2a2a1_7">TURKCELL TV + (PLUS) </label>
-                                      
+
                                     </td>
                                 </tr>
 
                                 <tr class="ucretsiz">
                                     <td class="columnDivider"></td>
                                     <td align="right">8</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1" id="A2a2a1_8" value="8" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td  class="img-cell">
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1"
+                                            id="A2a2a1_8" value="8" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td class="img-cell">
                                         <img src="/images/survey/A2a2a1_8.png" class="img-A2a">
-                                        <label for="A2a2a1_8">SMART TV / AKILLI TELEVİZYONDAKİ UYGULAMALAR ÜZERİNDEN  İnternete bağlanarak Kanalların İnternet Üzerinden İzlenmesi </label>
-                                        
+                                        <label for="A2a2a1_8">SMART TV / AKILLI TELEVİZYONDAKİ UYGULAMALAR ÜZERİNDEN
+                                            İnternete bağlanarak Kanalların İnternet Üzerinden İzlenmesi </label>
+
                                     </td>
                                 </tr>
 
                                 <tr class="AlternateTableRow ucretsiz">
                                     <td class="columnDivider"></td>
                                     <td align="right">9</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1" id="A2a2a1_9" value="9" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td  class="img-cell">
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1"
+                                            id="A2a2a1_9" value="9" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td class="img-cell">
                                         <img src="/images/survey/A2a2a1_9.png" class="img-A2a">
-                                        <label for="A2a2a1_9">APPLE TV, CHROMECAST, PLAYSTATION, NORMAL TV'Yİ AKILLI TV'YE ÇEVİREN CİHAZLAR, / VB. ÜZERİNDEN </label>
-                                       
+                                        <label for="A2a2a1_9">APPLE TV, CHROMECAST, PLAYSTATION, NORMAL TV'Yİ AKILLI
+                                            TV'YE ÇEVİREN CİHAZLAR, / VB. ÜZERİNDEN </label>
+
                                     </td>
                                 </tr>
 
                                 <tr class="ucretsiz">
                                     <td class="columnDivider"></td>
                                     <td align="right">10</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1" id="A2a2a1_10" value="10" openend="false" isnumeric="" size="" maxlength="" norotate="" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td  class="img-cell">
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1"
+                                            id="A2a2a1_10" value="10" openend="false" isnumeric="" size="" maxlength=""
+                                            norotate="" deselectother="false" itemdisabled="false"><span></span></td>
+                                    <td class="img-cell">
                                         <img src="/images/survey/A2a2a1_10.png" class="img-A2a">
-                                        <label for="A2a2a1_10">ESKİ TİP ÇATI ANTENİ YA DA TELEVİZYON ÜZERİNDEKİ ANTEN (Eski Tip Kafes Anten, Kılçık Anten)
+                                        <label for="A2a2a1_10">ESKİ TİP ÇATI ANTENİ YA DA TELEVİZYON ÜZERİNDEKİ ANTEN
+                                            (Eski Tip Kafes Anten, Kılçık Anten)
                                         </label>
-                                       
+
                                     </td>
                                 </tr>
 
                                 <tr class="AlternateTableRow">
                                     <td class="columnDivider"></td>
                                     <td align="right">97</td>
-                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1" id="A2a2a1_97" value="97" openend="true" isnumeric="" size="" maxlength="" norotate="true" deselectother="false" itemdisabled="false"><span></span></td>
-                                    <td><label for="A2a2a1_97">DİĞER (Yöntemi Yazınız)</label><label for="A2a2a1_O_97"><input type="text" class="textStyle" name="A2a2a1_O_97" id="A2a2a1_O_97" value="" datatype="varchar" stepname="A2a2a1" disabled=""></label></td>
+                                    <td align="right"><input type="checkbox" class="checkboxStyle" name="A2a2a1"
+                                            id="A2a2a1_97" value="97" openend="true" isnumeric="" size="" maxlength=""
+                                            norotate="true" deselectother="false" itemdisabled="false"><span></span>
+                                    </td>
+                                    <td><label for="A2a2a1_97">DİĞER (Yöntemi Yazınız)</label><label
+                                            for="A2a2a1_O_97"><input type="text" class="textStyle" name="A2a2a1_O_97"
+                                                id="A2a2a1_O_97" value="" datatype="varchar" stepname="A2a2a1"
+                                                disabled=""></label></td>
                                 </tr>
 
-                           
-                                <tr><td colspan="4">&nbsp;</td></tr>
+
                                 <tr>
-                                    <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
-                                    <td colspan="4" align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
+                                    <td colspan="4">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3"> <input type="button" value="Durum Kodla"
+                                            onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                                    <td colspan="4" align="right"> <input type="button" id="next" name="next"
+                                            value="İleri" onclick="gecisKontrol();" /></td>
                                 </tr>
                             </tbody>
                         </table>
                     </td>
                 </tr>
-              
+
             </table>
         </div>
     </form>
 </body>
+
 </html>

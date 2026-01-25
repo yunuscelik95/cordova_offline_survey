@@ -89,23 +89,40 @@
 
                                 axios.put(link, veri, config)
                                     .then((response) => {
-
-                                        var responseParse = JSON.parse(response.data);
+                                        console.log("API Response:", response);
+                                        console.log("Response data:", response.data);
+                                        console.log("Response data type:", typeof response.data);
+                                        
+                                        // response.data zaten obje olabilir, string ise parse et
+                                        var responseParse;
+                                        if (typeof response.data === 'string') {
+                                            responseParse = JSON.parse(response.data);
+                                        } else {
+                                            responseParse = response.data;
+                                        }
+                                        
+                                        console.log("Parsed response:", responseParse);
+                                        console.log("Sonuc değeri:", responseParse.Sonuc);
+                                        
                                         if (responseParse.Sonuc == "OK") {
+                                            console.log("Başarılı, InterviewID:", responseParse.InterviewID);
                                             myUpdate("INTERVIEWS", "gonderim=1", " InterviewID=" + responseParse.InterviewID);
                                             self.gonderilen = parseInt(self.gonderilen) + 1;
                                             if (toplamGonderilecek == self.gonderilen)
                                             {
                                                 alert("Datalar başarı ile sunucuya gönderildi");
                                             }
+                                        } else {
+                                            console.log("API Sonuc != OK, responseParse:", responseParse);
+                                            alert("API hatası: " + (responseParse.Mesaj || "Bilinmeyen hata"));
                                         }
 
                                     })
                                     .catch((error) => {
-                                        /*dispatch({
-                                            type: ERROR_FINDING_USER
-                                        })*/
-                                        alert("Hata:" + error);
+                                        console.error("API HATA:", error);
+                                        console.error("Error response:", error.response);
+                                        console.error("Error message:", error.message);
+                                        alert("Hata: " + error.message);
                                     })
 
 

@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
@@ -12,7 +13,7 @@
     <script type="text/javascript" src="cordova.js"></script>
 
     <!-- <script src="scripts/app.js"></script> -->
-    <script src="scripts/database.js"></script> 
+    <script src="scripts/database.js"></script>
     <script src="scripts/Gps.js"></script>
 
     <script type="text/javascript">
@@ -31,7 +32,7 @@
 
         window.onload = function () {
             id = getUrlVars()["id"];
-         //   SetStartUp();
+            //   SetStartUp();
             //   db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
         };
 
@@ -55,9 +56,9 @@
 
         function gecisKontrol() {
 
-         
-                    window.location.href = "T1.html?id=" + window.localStorage["InterviewID"];
-         
+
+            window.location.href = "T1.html?id=" + window.localStorage["InterviewID"];
+
         }
     </script>
     <style>
@@ -66,11 +67,13 @@
             border-style: solid;
             border-width: 0px;
         }
+
         #QuestionTable td {
-        border-width:0px;
+            border-width: 0px;
         }
     </style>
 </head>
+
 <body>
 
     <form id="form1" class="skinned-form-controls skinned-form-controls-mac">
@@ -78,37 +81,76 @@
             <tbody>
                 <tr>
                     <td>
-                        <span id="QuestionTextTD">                            <div id="gpsStatus" style="background-color: #FFF3CD; border: 2px solid #FFC107; padding: 15px; margin-bottom: 10px; border-radius: 5px; text-align: center; font-weight: bold; font-size: 16px;">
+                        <span id="QuestionTextTD">
+                            <div id="gpsStatus"
+                                style="background-color: #FFF3CD; border: 2px solid #FFC107; padding: 15px; margin-bottom: 10px; border-radius: 5px; text-align: center; font-weight: bold; font-size: 16px;">
                                 📍 Konum alınıyor, lütfen bekleyin... Sinyal zayıfsa pencere kenarına geçin.
-                            </div>                            <font color="#000000" face="Calibri" size="2">
-                                <p> İyi günler efendim, ismim ............... DİYALOG ARAŞTIRMA Şirketi’nde görev yapıyorum. </p>
-                        
-                                <p align="left">   Türkiye’deki tüm haneler arasından tesadüfi olarak seçilmiş adreslerde, Türk toplumunun televizyon izleme alışkanlıklarını saptamaya yönelik bir anket çalışması gerçekleştiriyoruz. Bu kapsamda sizinle de görüşmek istiyoruz. Bu araştırma <b>TİAK Televizyon İzleme Araştırmaları Şirketi</b> adına gerçekleştiriliyor. Araştırma kapsamında cevaplarınız diğer tüm görüşmelerdeki cevaplarla birlikte genel olarak değerlendirilecek, verdiğiniz cevaplar ve kişisel bilgileriniz <b>kesinlikle gizli tutulacaktır. </b></p>
-                                <p align="left">   Kişisel Verilerin Korunması Kanunu’nun 10. ve 11. maddeleri uyarınca, onayınız doğrultusunda, görüşmemiz sırasında verdiğiniz her türlü bilgi kanuna uygun olarak ve gizlilik politikası çerçevesinde muhafaza edilecek ve yasal düzenlemelerin izin verdiği ölçüde iş birliği yapılan taraflar ile paylaşılacaktır. Araştırmanın devamlılığına istinaden, kalite kontrol süreçleri kapsamında sizinle tekrar irtibata geçilebilecektir.</p>
-                                
-                                <p align="left">  Görüşmemiz yaklaşık 10 dakika sürecektir.  Zaman ayırarak yardımcı olduğunuz için şimdiden çok teşekkür ederim.   </p>
-                                <p align="left"> <b>ANKETÖR DİKKAT: </b>Kişi “NEDEN ÖZELLİKLE BİZİMLE ANKET YAPILIYOR” sorusunu sorarsa, görüşme yapılacak hanelerin “Türkiye’deki tüm haneler içinden tesadüfi olarak seçilen 150,000 haneden biri olduklarını” belirtin.</p>
-                              
-                            </font><p align="left">
-                                <font color="#000000" face="Calibri" size="2"></font><font color="#000000" face="arial" size="2">
-                                </font>
-                            <p align="left">
-                                <font color="#000000" face="arial" size="2">
-                                </font>
-                            </p>
+                            </div>
+                            <font face="Arial" color="#000000" size="2">İyi günler efendim, ismim xxxxxxxxx DİYALOG
+                                ARAŞTIRMA Şirketi’nde görev yapıyorum.
+                                <p align="left">
+                                </p>
+                                <p align="left">Türkiye’deki tüm haneler içinden tesadüfi olarak seçilmiş adreslerde,
+                                    Türk toplumunun televizyon izleme alışkanlıklarını saptamaya yönelik bir anket
+                                    çalışmas gerçekleştiriyoruz. Bu kapsamda sizinle de görüşmek istiyoruz. Bu araştırma
+                                    <b>TİAK Televizyon İzleme Araştırmaları Şirketi</b> adına gerçekleştiriliyor. TİAK
+                                    ile ilgili bilgilere www.tiak.com.tr adresinden ulaşabilirsiniz. Araştırma
+                                    kapsamında cevaplarınız genel olarak değerlendirilecek, verdiğiniz cevaplar ve
+                                    kişisel bilgileriniz <b>kesinlikle gizli tutulacaktır.</b>
+                                </p>
+                                <p align="left">
+                                </p>
+                                <p align="left">Kişisel Verilerin Korunması Kanunu’nun 10. ve 11. maddeleri uyarınca,
+                                    onayınız doğrultusunda, görüşmemiz sırasında verdiğiniz her türlü bilgi kanuna uygun
+                                    olarak ve gizlilik politikası çerçevesinde muhafaza edilecek ve yasal düzenlemelerin
+                                    izin verdiği ölçüde iş birliği yapılan taraflar ile paylaşılacaktır. Araştırmanın
+                                    devamlılığına istinaden, kalite kontrol süreçleri kapsamında sizinle tekrar irtibata
+                                    geçilebilecektir.
+                                </p>
+                                <p align="left">
+                                </p>
+                                <p align="left">Görüşmemiz yaklaşık 15 dakika sürecektir. Zaman ayırarak yardımcı
+                                    olduğunuz için şimdiden çok teşekkür ederim.
+                                </p>
+                                <p align="left">
+                                </p>
+                                <p align="left">
+                                    <font style="color: blue;">ANKETÖR DİKKAT: Kişi “<b>NEDEN ÖZELLİKLE BİZİMLE ANKET
+                                            YAPILIYOR</b>” sorusunu sorarsa, görüşme yapılacak hanelerin
+                                        “<b>Türkiye’deki tüm haneler içinden tesadüfi olarak seçilen 150,000 haneden
+                                            biri olduklarını</b>” belirtin.
+                                    </font>
+                                </p>
+                                <p align="left">
+                                    <font style="color: blue;">
+                                    </font>
+                                </p>
+                                <p align="left">
+                                    <font style="color: blue;">
+                                        <font style="color: red;"><b>ÖNEMLİ NOT: Bu araştırma TÜİK ya da RTÜK için ya da
+                                                bu kurumlarla bağlantılı olarak yapılmamaktadır. Görüştüğünüz kişilere
+                                                KESİNLİKLE araştırmayı TÜİK ya da RTÜK gibi bir kurum adına ya da bu
+                                                kurumlarla koordineli yaptığınızı söylemeyiniz. Bu tür bir durumla
+                                                karşılaşılması durumunda anketleriniz İPTAL EDİLECEKTİR. </b></font>
+                                    </font>
+                                </p>
+                            </font>
                         </span>
                     </td>
                 </tr>
             </tbody>
         </table>
         <div id="QuestionBuilderPanel">
-            <table id="QuestionTable" class="cssQuestionTable" >
+            <table id="QuestionTable" class="cssQuestionTable">
                 <tbody>
 
-                    <tr><td colspan="4">&nbsp;</td></tr>
+                    <tr>
+                        <td colspan="4">&nbsp;</td>
+                    </tr>
                     <tr>
                         <td colspan="3">
-                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                            <input type="button" value="Durum Kodla"
+                                onclick="javascript: window.location.href = 'ResponseKodu.html';" />
                             <!--                     <input type="button" value="Koordinat" id="btnKoordinat"  name="btnKoordinat"/>-->
                         </td>
                         <td align="right">
@@ -123,4 +165,5 @@
 
     </form>
 </body>
+
 </html>

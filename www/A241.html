@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/lightbox.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <script src="scripts/database.js"></script>
+    <script type="text/javascript">
+        var id = 0;
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+        }
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+            LoadData();
+        };
+
+        function LoadData() {
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT A241_1, A241_2, A241_3, A241_4, A241_5 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
+                    if (val.rows.length > 0) {
+                        var row = val.rows.item(0);
+                        
+                        if (row.A241_1) $("input[name='A241_1'][value='" + row.A241_1 + "']").prop('checked', true);
+                        if (row.A241_2) $("input[name='A241_2'][value='" + row.A241_2 + "']").prop('checked', true);
+                        if (row.A241_3) $("input[name='A241_3'][value='" + row.A241_3 + "']").prop('checked', true);
+                        if (row.A241_4) $("input[name='A241_4'][value='" + row.A241_4 + "']").prop('checked', true);
+                        if (row.A241_5) $("input[name='A241_5'][value='" + row.A241_5 + "']").prop('checked', true);
+                    }
+                });
+            });
+        }
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var kontrol = true;
+            var updateStr = "";
+            var evetVarMi = false;
+            
+            // Her cihaz için kontrol
+            var cihazlar = ['A241_1', 'A241_2', 'A241_3', 'A241_4', 'A241_5'];
+            var cihazIsimler = [
+                'MASAÜSTÜ BİLGİSAYAR / PC',
+                'DİZÜSTÜ BİLGİSAYAR / LAPTOP',
+                'TABLET BİLGİSAYAR',
+                'AKILLI TELEFON',
+                'AKILLI TELEVİZYON / SMART TELEVİZYON'
+            ];
+            
+            for (var i = 0; i < cihazlar.length; i++) {
+                var value = $("input[name='" + cihazlar[i] + "']:checked").val();
+                
+                if (!value) {
+                    alert(cihazIsimler[i] + " için seçim yapınız!");
+                    kontrol = false;
+                    return false;
+                }
+                
+                if (value == "1") {
+                    evetVarMi = true;
+                }
+                
+                if (updateStr != "") updateStr += ",";
+                updateStr += cihazlar[i] + "=" + value;
+            }
+            
+            // A2a2a1-5 sorularında 8 işaretli mi kontrol et
+            if (kontrol) {
+                db.transaction(function (tx) {
+                    tx.executeSql("SELECT A2a2a1, A2a2a2, A2a2a3, A2a2a4, A2a2a5 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
+                        if (val.rows.length > 0) {
+                            var row = val.rows.item(0);
+                            var smartTVVar = false;
+                            
+                            // A2a2a1-5 sorularında 8 (SMART TV) seçeneği işaretli mi kontrol et
+                            var sorular = [row.A2a2a1, row.A2a2a2, row.A2a2a3, row.A2a2a4, row.A2a2a5];
+                            for (var i = 0; i < sorular.length; i++) {
+                                if (sorular[i] && sorular[i].toString().indexOf('8') > -1) {
+                                    smartTVVar = true;
+                                    break;
+                                }
+                            }
+                            
+                            // Eğer SMART TV kullanımı varsa, A241_5'te HAYIR seçilemez
+                            if (smartTVVar) {
+                                var a241_5Value = $("input[name='A241_5']:checked").val();
+                                if (a241_5Value == "2") {
+                                    alert("Televizyon sorularında SMART TV / AKILLI TELEVİZYONDAKİ UYGULAMALAR kullandığınızı belirttiniz. Bu durumda AKILLI TELEVİZYON / SMART TELEVİZYON için 'HAYIR' seçemezsiniz!");
+                                    return false;
+                                }
+                            }
+                            
+                            // Kontrol geçtiyse devam et
+                            // Eğer hiç EVET yoksa A242'yi null'la ve B1'e git
+                            if (!evetVarMi) {
+                                myUpdateRedirect("INTERVIEWS", updateStr + ",A242_1_1=null,A242_2_1=null,A242_3_1=null,A242_4_1=null,A242_5_1=null", " InterviewID=" + window.localStorage["InterviewID"], "P1.html?id=" + window.localStorage["InterviewID"]);
+                            } else {
+                                // EVET varsa A242'ye git
+                                myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], "A242.html?id=" + window.localStorage["InterviewID"]);
+                            }
+                        }
+                    });
+                });
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+    <style>
+        .cihazRow {
+            border-bottom: 1px solid #ddd;
+        }
+        .cihazRow:hover {
+            background-color: #f5f5f5;
+        }
+        table#QuestionTable {
+            width: 100%;
+        }
+        table#QuestionTable td {
+            padding: 10px;
+            vertical-align: middle;
+        }
+        .cihazLabel {
+            font-weight: normal;
+            min-width: 300px;
+        }
+        .radioCell {
+            text-align: center;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">A241.</span>
+                        <span id="QuestionTextTD">
+                            <font face="Calibri" color="#000000" size="2">
+                                Evinizde size ait ya da evde yaşayan diğer bir kişiye ait aktif olarak kullanılan aşağıdaki cihazlar var mı? 
+                                <b>(HER BİR CİHAZ İÇİN TEK TEK SORULACAK)</b>
+                            </font>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable" cellpadding="0" cellspacing="0">
+                <thead>
+                    <tr style="background-color: #e0e0e0; font-weight: bold;">
+                        <td class="columnDivider" style="width: 30px;"></td>
+                        <td style="padding: 10px;"></td>
+                        <td class="radioCell">EVET VAR</td>
+                        <td class="radioCell">HAYIR YOK</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- A241_1 -->
+                    <tr class="AlternateTableRow cihazRow">
+                        <td class="columnDivider"></td>
+                        <td class="cihazLabel">
+                            <label>MASAÜSTÜ BİLGİSAYAR / PC</label>
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A241_1" id="A241_1_1" value="1">
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A241_1" id="A241_1_2" value="2">
+                        </td>
+                    </tr>
+                    
+                    <!-- A241_2 -->
+                    <tr class="cihazRow">
+                        <td class="columnDivider"></td>
+                        <td class="cihazLabel">
+                            <label>DİZÜSTÜ BİLGİSAYAR / LAPTOP</label>
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A241_2" id="A241_2_1" value="1">
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A241_2" id="A241_2_2" value="2">
+                        </td>
+                    </tr>
+                    
+                    <!-- A241_3 -->
+                    <tr class="AlternateTableRow cihazRow">
+                        <td class="columnDivider"></td>
+                        <td class="cihazLabel">
+                            <label>TABLET BİLGİSAYAR</label>
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A241_3" id="A241_3_1" value="1">
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A241_3" id="A241_3_2" value="2">
+                        </td>
+                    </tr>
+                    
+                    <!-- A241_4 -->
+                    <tr class="cihazRow">
+                        <td class="columnDivider"></td>
+                        <td class="cihazLabel">
+                            <label>AKILLI TELEFON</label>
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A241_4" id="A241_4_1" value="1">
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A241_4" id="A241_4_2" value="2">
+                        </td>
+                    </tr>
+                    
+                    <!-- A241_5 -->
+                    <tr class="AlternateTableRow cihazRow">
+                        <td class="columnDivider"></td>
+                        <td class="cihazLabel">
+                            <label>AKILLI TELEVİZYON / SMART TELEVİZYON olarak adlandırılan internete bağlanabilen bir televizyon</label>
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A241_5" id="A241_5_1" value="1">
+                        </td>
+                        <td class="radioCell">
+                            <input type="radio" class="radioStyle" name="A241_5" id="A241_5_2" value="2">
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                        </td>
+                        <td colspan="2" align="right">
+                            <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</body>
+</html>

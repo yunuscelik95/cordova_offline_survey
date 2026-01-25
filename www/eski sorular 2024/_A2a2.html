@@ -26,10 +26,10 @@
           id = getUrlVars()["id"];
            // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
             db.transaction(function (tx) {
-                tx.executeSql("SELECT COALESCE(A1a2, 0) AS A1a2, COALESCE(A1b_O, 0) AS A1b_O FROM INTERVIEWS WHERE InterviewID =" + id, [], function (tx, val) {
-                    if (val.rows.item(0).A1a2 != "null" && val.rows.item(0).A1a2 != "")
+                tx.executeSql("SELECT COALESCE(A1a, 0) AS A1a, COALESCE(A1b_O, 0) AS A1b_O FROM INTERVIEWS WHERE InterviewID =" + id, [], function (tx, val) {
+                    if (val.rows.item(0).A1a != "null" && val.rows.item(0).A1a != "")
                     {
-                      tvSay = parseInt(val.rows.item(0).A1a2);
+                      tvSay = parseInt(val.rows.item(0).A1a);
                     }
 
                     if (val.rows.item(0).A1b_O != "null" && val.rows.item(0).A1b_O != "")

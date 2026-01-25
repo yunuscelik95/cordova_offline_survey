@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="scripts/database.js"></script>
+    <script src="scripts/index.js"></script>
+    
+    <script type="text/javascript">
+        var id = 0;
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+            console.log("Device ready! InterviewID:", window.localStorage["InterviewID"]);
+            
+            var checkDB = setInterval(function() {
+                if (typeof db !== 'undefined' && db !== null) {
+                    clearInterval(checkDB);
+                    LoadData();
+                }
+            }, 100);
+        }
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+        };
+
+        function LoadData() {
+            console.log("LoadData çağrıldı");
+            db.transaction(function (tx) {
+                var sqlQuery = "SELECT SES25EK2 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
+                console.log("SQL sorgusu:", sqlQuery);
+                
+                tx.executeSql(sqlQuery, [], 
+                    function (tx, val) {
+                        console.log("SQL başarılı, satır sayısı:", val.rows.length);
+                        if (val.rows.length > 0) {
+                            var row = val.rows.item(0);
+                            console.log("Row data:", row);
+                            
+                            // Daha önce kaydedilmiş değerleri seç (virgülle ayrılmış)
+                            if (row.SES25EK2) {
+                                var selectedValues = row.SES25EK2.split(',');
+                                selectedValues.forEach(function(value) {
+                                    $('input[name="SES25EK2"][value="' + value.trim() + '"]').prop('checked', true);
+                                });
+                            }
+                        } else {
+                            console.log("Hiç satır bulunamadı");
+                        }
+                    },
+                    function(tx, error) {
+                        console.error("SQL hatası:", error.message);
+                    });
+            });
+        }
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var secilenDegerler = [];
+            $('input[name="SES25EK2"]:checked').each(function() {
+                secilenDegerler.push($(this).val());
+            });
+            
+            if (secilenDegerler.length === 0) {
+                alert("Lütfen en az bir seçenek seçiniz!");
+                return;
+            }
+            
+            var updateStr = "SES25EK2='" + secilenDegerler.join(',') + "'";
+            
+            // Ek2=4 ise EK2A'ya git, değilse EK3'e git
+            var nextPage = "";
+            if (secilenDegerler.indexOf("4") !== -1) {
+                nextPage = "SES25EK2A.html?id=" + window.localStorage["InterviewID"];
+            } else {
+                nextPage = "SES25EK3.html?id=" + window.localStorage["InterviewID"];
+            }
+            
+            myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], nextPage);
+        }
+
+        function goBack() {
+            window.location.href = "SES25EK1.html?id=" + window.localStorage["InterviewID"];
+        }
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">SES25EK2.</span>
+                        <span id="QuestionTextTD">
+                            <font face="calibri" color="#000000" size="2">
+                                <b>Hanede otomobil kullanımı için aşağıdakilerden hangileri sizin için geçerlidir? / Çoklu cevap</b>
+                            </font>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable" class="cssQuestionTable">
+                <tbody>
+                    <!-- Seçenek 1 -->
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">1</td>
+                        <td align="right">
+                            <input type="checkbox" class="checkboxStyle" name="SES25EK2" id="SES25EK2_1" value="1">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25EK2_1">Otomobilimiz yok, toplu taşıma, kiralık araç ya da taksi kullanıyoruz.</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 2 -->
+                    <tr>
+                        <td class="columnDivider"></td>
+                        <td align="right">2</td>
+                        <td align="right">
+                            <input type="checkbox" class="checkboxStyle" name="SES25EK2" id="SES25EK2_2" value="2">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25EK2_2">Hanede şirkete ya da bir tanıdığa ait bir otomobili kullanıyoruz.</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 3 -->
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">3</td>
+                        <td align="right">
+                            <input type="checkbox" class="checkboxStyle" name="SES25EK2" id="SES25EK2_3" value="3">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25EK2_3">Otomobil almayı düşünüyoruz, fiyat ve model araştırması yapıyoruz.</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 4 -->
+                    <tr>
+                        <td class="columnDivider"></td>
+                        <td align="right">4</td>
+                        <td align="right">
+                            <input type="checkbox" class="checkboxStyle" name="SES25EK2" id="SES25EK2_4" value="4">
+                            <span></span>
+                        </td>
+                        <td><label for="SES25EK2_4">Haneye ait en az bir otomobilimiz var.</label></td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" value="Geri" onclick="goBack();" />
+                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                        </td>
+                        <td colspan="2" align="right">
+                            <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</body>
+</html>
