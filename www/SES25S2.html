@@ -38,7 +38,7 @@
         function LoadData() {
             console.log("LoadData çağrıldı");
             db.transaction(function (tx) {
-                var sqlQuery = "SELECT SES25S2 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
+                var sqlQuery = "SELECT SES25S2, B9, B3_1_1, B3_2_1, B3_3_1, B3_4_1, B3_5_1, B3_6_1, B3_7_1, B3_8_1, B3_9_1, B3_10_1, B3_11_1, B3_12_1, B3_13_1, B3_14_1, B3_15_1, B3_16_1, B3_17_1, B3_18_1, B3_19_1, B3_20_1 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
                 console.log("SQL sorgusu:", sqlQuery);
                 
                 tx.executeSql(sqlQuery, [], 
@@ -47,6 +47,18 @@
                         if (val.rows.length > 0) {
                             var row = val.rows.item(0);
                             console.log("Row data:", row);
+                            
+                            // Hane reisinin yaşını bul
+                            var haneReisiSirasi = row.B9;
+                            var yasFieldName = "B3_" + haneReisiSirasi + "_1";
+                            var yas = parseInt(row[yasFieldName]);
+                            console.log("Hane reisi yaşı:", yas);
+                            
+                            // Yaş 40'ın altındaysa 2. ve 4. seçenekleri gizle
+                            if (yas < 40) {
+                                $('#SES25S2_2').closest('tr').hide();
+                                $('#SES25S2_4').closest('tr').hide();
+                            }
                             
                             if (row.SES25S2) {
                                 $('input[name="SES25S2"][value="' + row.SES25S2 + '"]').prop('checked', true);
@@ -155,7 +167,6 @@
                     
                     <tr>
                         <td colspan="2">
-                            <input type="button" value="Geri" onclick="goBack();" />
                             <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
                         </td>
                         <td colspan="2" align="right">

@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
@@ -21,7 +22,7 @@
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
             id = getUrlVars()["id"];
-           // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+            // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
             db.transaction(function (tx) {
                 // tx.executeSql("SELECT F1 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
                 //     haneSayi = parseInt(val.rows.item(0).F1);
@@ -64,11 +65,11 @@
                 // }
                 // else
                 // {
-                    myUpdateRedirect("INTERVIEWS", "A1a=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "A1b.html?id=" + window.localStorage["InterviewID"]);    
-//                }
+                myUpdateRedirect("INTERVIEWS", "A1a=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"], "A1b.html?id=" + window.localStorage["InterviewID"]);
+                //                }
 
-                
-           //     window.location.href = "R3.html?id=" + id;
+
+                //     window.location.href = "R3.html?id=" + id;
                 /* db = openDatabase({ name: 'my.db', location: 'default' });
                  db.transaction(function (tx) {
 
@@ -89,6 +90,7 @@
         }
     </script>
 </head>
+
 <body>
 
     <form id="form1">
@@ -97,8 +99,14 @@
                 <tr>
                     <td>
                         <span id="StepNameTD">A1a.</span><span id="QuestionTextTD">
-                        <font face="calibri" color="#000000" >Evinizde televizyon yayınlarını seyretmek için kullandığınız <b>Çalışır Durumda</b> KAÇ TANE televizyon var? <b>(TEK CEVAP) </b><br><br><b>ANKETÖR DİKKAT: Çeyiz Olarak Alınmış, Daha Sonra Kullanmak Üzere Alınmış Şu Anda kurulu olmayan Televizyonlar   Sayılmayacaktır/Ayrıca televizyon izlenmeyen oyun konsololuna bağlı monitor olarak kullanılan TV ler sayılmayacaktır.</b>
-                        </font>                                                            
+                            <font face="calibri" color="#000000">Evinizde özellikle televizyon programlarını izlemek
+                                için kullandığınız <b>Çalışır Durumda</b> KAÇ TANE televizyon var?<br>
+                                <font face="calibri" color="blue">
+                                    <b>ANKETÖR DİKKAT: Çeyiz Olarak Alınmış, Daha Sonra Kullanmak Üzere Alınmış Şu Anda
+                                        kurulu olmayan Televizyonlar Sayılmayacaktır/Ayrıca televizyon izlenmeyen oyun
+                                        konsololuna bağlı monitor olarak kullanılan TV ler sayılmayacaktır.</b>
+                                </font>
+                            </font>
                         </span>
                     </td>
                 </tr>
@@ -111,31 +119,36 @@
                     <tr class="AlternateTableRow">
                         <td class="columnDivider"></td>
                         <td align="right">1</td>
-                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_1" value="1"><span></span></td>
+                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_1"
+                                value="1"><span></span></td>
                         <td><label for="A1_1">1 TELEVİZYON</label></td>
                     </tr>
                     <tr>
                         <td class="columnDivider"></td>
                         <td align="right">2</td>
-                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_2" value="2"><span></span></td>
+                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_2"
+                                value="2"><span></span></td>
                         <td><label for="A1_2">2 TELEVİZYON</label></td>
                     </tr>
                     <tr class="AlternateTableRow">
                         <td class="columnDivider"></td>
                         <td align="right">3</td>
-                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_3" value="3"><span></span></td>
+                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_3"
+                                value="3"><span></span></td>
                         <td><label for="A1_3">3 TELEVİZYON</label></td>
                     </tr>
                     <tr>
                         <td class="columnDivider"></td>
                         <td align="right">4</td>
-                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_4" value="4"><span></span></td>
+                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_4"
+                                value="4"><span></span></td>
                         <td><label for="A1_4">4 TELEVİZYON</label></td>
                     </tr>
                     <tr class="AlternateTableRow">
                         <td class="columnDivider"></td>
                         <td align="right">5</td>
-                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_5" value="5"><span></span></td>
+                        <td align="right"><input type="radio" class="radioStyle" name="A1" id="A1_5"
+                                value="5"><span></span></td>
                         <td><label for="A1_5">5 VEYA DAHA FAZLA TELEVİZYON </label></td>
                     </tr>
                     <!-- <tr>
@@ -145,10 +158,14 @@
                         <td><label for="A1_6">TV YOK</label></td>
                     </tr> -->
 
-                    <tr><td colspan="4">&nbsp;</td></tr>
                     <tr>
-                        <td colspan="3">    <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
-                        <td align="right">        <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" /></td>
+                        <td colspan="4">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"> <input type="button" value="Durum Kodla"
+                                onclick="javascript: window.location.href = 'ResponseKodu.html';" /></td>
+                        <td align="right"> <input type="button" id="next" name="next" value="İleri"
+                                onclick="gecisKontrol();" /></td>
                     </tr>
                 </tbody>
             </table>
@@ -156,4 +173,5 @@
 
     </form>
 </body>
+
 </html>

@@ -21,43 +21,43 @@
         function onDeviceReady() {
             id = getUrlVars()["id"];
             db.transaction(function (tx) {
-                tx.executeSql("SELECT B1_O,B2a_1_1,B2a_2_1,B2a_3_1,B2a_4_1,B2a_5_1,B2a_6_1,B2a_7_1,B2a_8_1,B2a_9_1,B2a_10_1,B2a_11_1,B2a_12_1,B2a_13_1,B2a_14_1,B2a_15_1,B2a_16_1,B2a_17_1,B2a_18_1,B2a_19_1,B2a_20_1,B3_1_1,B3_2_1,B3_3_1,B3_4_1,B3_5_1,B3_6_1,B3_7_1,B3_8_1,B3_9_1,B3_10_1,B3_11_1,B3_12_1,B3_13_1,B3_14_1,B3_15_1,B3_16_1,B3_17_1,B3_18_1,B3_19_1,B3_20_1 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
-                    sayi = parseInt(val.rows.item(0).B1_O);
+                tx.executeSql("SELECT B1_O,B8b,B2a_1_1,B2a_2_1,B2a_3_1,B2a_4_1,B2a_5_1,B2a_6_1,B2a_7_1,B2a_8_1,B2a_9_1,B2a_10_1,B2a_11_1,B2a_12_1,B2a_13_1,B2a_14_1,B2a_15_1,B2a_16_1,B2a_17_1,B2a_18_1,B2a_19_1,B2a_20_1 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
+                    var row = val.rows.item(0);
+                    var sayi = parseInt(row.B1_O);
+                    var b8bDegerleri = row.B8b ? row.B8b.split(',') : [];
          
-                    if (sayi > 0) {
-                        var yas15BuyukSay = 0;
-                        var yas15BuyukFirstIndex = 0;
-                        for (var i = 1; i < sayi + 1; i++) {
-                            var fieldName = "B3_" + i + "_1";
-    
-                            if (parseInt(val.rows.item(0)[fieldName]) > 14) {
-                                if (yas15BuyukSay == 0)
-                                {
-                                    yas15BuyukFirstIndex = i;
+                    if (b8bDegerleri.length > 0) {
+                        var firstAdded = false;
+                        
+                        for (var j = 0; j < b8bDegerleri.length; j++) {
+                            var i = parseInt(b8bDegerleri[j]);
+                            var isimFieldName = "B2a_" + i + "_1";
+                            var isim = row[isimFieldName];
+                            
+                            if (!firstAdded) {
+                                // İlk satırı güncelle
+                                var firstRow = $("#QuestionTable tbody>tr:first");
+                                firstRow.find('input[type=radio]').attr('id', 'B9_' + i).attr('value', i);
+                                firstRow.find('label').attr('for', 'B9_' + i).text(isim);
+                                firstRow.find('td:eq(1)').text(i);
+                                firstAdded = true;
+                            } else {
+                                // Yeni satır ekle
+                                var newRow = $("#QuestionTable tbody>tr:first").clone(true);
+                                newRow.find('input[type=radio]').attr('id', 'B9_' + i).attr('value', i);
+                                newRow.find('label').attr('for', 'B9_' + i).text(isim);
+                                newRow.find('td:eq(1)').text(i);
+                                
+                                if (j % 2 === 0) {
+                                    newRow.removeClass('AlternateTableRow');
+                                } else {
+                                    newRow.addClass('AlternateTableRow');
                                 }
-                                else
-                                {
-                                    var row = $("#QuestionTable tbody>tr:first").clone(true);
-                                    var isimFieldName = "B2a_" + i + "_1";
-                                    var newRowHtml = row.html().replace("lblisim",val.rows.item(0)[isimFieldName]).replace(/\#/g, i);
-                                    if (i % 2 === 0) {
-                                       newRowHtml = "<tr>" + newRowHtml + "</tr>";
-                                    }
-                                    else
-                                    {
-                                        newRowHtml = "<tr class=\"AlternateTableRow\">" + newRowHtml + "</tr>";
-                                    }
-
-                                    $("#QuestionTable tbody tr:last").before(newRowHtml);
-                                }
-                                yas15BuyukSay++;
+                                
+                                $("#QuestionTable tbody tr:last").before(newRow);
                             }
                         }
                         
-                        var row = $("#QuestionTable tbody>tr:first").clone(true);
-                        var isimFieldName = "B2a_" + yas15BuyukFirstIndex + "_1";
-                        var firstRow ="<tr class=\"AlternateTableRow\">" +  row.html().replace("lblisim", val.rows.item(0)[isimFieldName]).replace(/\#/g, yas15BuyukFirstIndex) + "</tr>";
-                        $("#QuestionTable tbody>tr:first").replaceWith(firstRow);
                         SetStartUp();
                      }
                 });

@@ -34,18 +34,21 @@
                                 var firstRow = $("#QuestionTable tbody>tr:first");
                                 firstRow.find('input[type=checkbox]').attr('id', 'B8b_' + i).attr('value', i);
                                 firstRow.find('label').attr('for', 'B8b_' + i).text(isim);
+                                firstRow.find('td:eq(1)').text(i);
                             } else {
                                 // Yeni satır ekle
                                 var row = $("#QuestionTable tbody>tr:first").clone(true);
-                                var newRowHtml = row.html().replace(/B8b_1/g, 'B8b_' + i).replace(/value="1"/g, 'value="' + i + '"').replace('lblisim', isim);
+                                row.find('input[type=checkbox]').attr('id', 'B8b_' + i).attr('value', i);
+                                row.find('label').attr('for', 'B8b_' + i).text(isim);
+                                row.find('td:eq(1)').text(i);
                                 
                                 if (i % 2 === 0) {
-                                    newRowHtml = "<tr>" + newRowHtml + "</tr>";
+                                    row.removeClass('AlternateTableRow');
                                 } else {
-                                    newRowHtml = "<tr class=\"AlternateTableRow\">" + newRowHtml + "</tr>";
+                                    row.addClass('AlternateTableRow');
                                 }
                                 
-                                $("#QuestionTable tbody tr:last").before(newRowHtml);
+                                $("#QuestionTable tbody tr:last").before(row);
                             }
                         }
                         SetStartUp();
