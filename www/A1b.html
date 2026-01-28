@@ -72,9 +72,20 @@
         function gecisKontrol() {
             var kontrol = CheckValues();
             if (kontrol) {
+                var a1bValue = currentValue;
+                var a1bOValue = $("#A1b_O").val();
+                
+                // A1b=1 seçiliyse (Bozuk TV var) A1b_O en az 1 olmalı
+                if (a1bValue == 1) {
+                    if (!a1bOValue || a1bOValue.trim() == "" || parseInt(a1bOValue) < 1) {
+                        alert("Tamir ettirilecek televizyon sayısı en az 1 olmalıdır!");
+                        $("#A1b_O").focus();
+                        return;
+                    }
+                }
                 
                 myUpdateRedirect("INTERVIEWS", "A1b=" + currentValue + ",A1b_O='" + $("#A1b_O").val() + "'", " InterviewID=" + window.localStorage["InterviewID"], "A1c.html?id=" + window.localStorage["InterviewID"]);
-                }
+            }
                 
                 //window.location.href = "Response.html?id=" + window.localStorage["InterviewID"] + "&statu=6";
                 /* db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
@@ -141,7 +152,7 @@
                                     <td align="right">1</td>
                                     <td align="right"><input type="radio" class="radioStyle" name="A1b" id="A1b_1" value="1" ><span></span></td>
                                     <td><label for="A1b_1">EVİMİZDE TAMİR ETTİRİLECEK BOZUK TELEVİZYON VAR</label>
-                                        <input type="number" class="textStyle" rows="6" style="width:400px" name="A1b_O" id="A1b_O" value="" datatype="varchar" stepname="A1b" ></input></td>
+                                        <input type="number" class="textStyle" rows="6" style="width:400px" name="A1b_O" id="A1b_O" value="" datatype="varchar" stepname="A1b" min="1"></input></td>
                                 </tr>
                               
                                 <tr>

@@ -65,7 +65,7 @@
             var kontrol = CheckValues();
             if (kontrol) {
                 //&& (a1c.indexOf(1) > -1 || a1c.indexOf(2) > -1 || a1c.indexOf(3) > -1)
-            if ((bozukTVSay==1 || tvSay < 5) )
+            if ((bozukTVSay==1 || tvSay < 50) ) //buradaki  50 çok önemli değil yapıyı bozmasın diye öylesine sayı verdim 
             {
                 myUpdateRedirect("INTERVIEWS", "A2a1=" + currentValue, " InterviewID=" + window.localStorage["InterviewID"],"A2a2a1.html?id=" + window.localStorage["InterviewID"]);
             }

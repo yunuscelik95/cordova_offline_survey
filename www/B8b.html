@@ -21,34 +21,43 @@
         function onDeviceReady() {
             id = getUrlVars()["id"];
             db.transaction(function (tx) {
-                tx.executeSql("SELECT B1_O,B2a_1_1,B2a_2_1,B2a_3_1,B2a_4_1,B2a_5_1,B2a_6_1,B2a_7_1,B2a_8_1,B2a_9_1,B2a_10_1,B2a_11_1,B2a_12_1,B2a_13_1,B2a_14_1,B2a_15_1,B2a_16_1,B2a_17_1,B2a_18_1,B2a_19_1,B2a_20_1 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
-                    var sayi = parseInt(val.rows.item(0).B1_O);
+                tx.executeSql("SELECT B1_O,B2a_1_1,B2a_2_1,B2a_3_1,B2a_4_1,B2a_5_1,B2a_6_1,B2a_7_1,B2a_8_1,B2a_9_1,B2a_10_1,B2a_11_1,B2a_12_1,B2a_13_1,B2a_14_1,B2a_15_1,B2a_16_1,B2a_17_1,B2a_18_1,B2a_19_1,B2a_20_1,B3_1_1,B3_2_1,B3_3_1,B3_4_1,B3_5_1,B3_6_1,B3_7_1,B3_8_1,B3_9_1,B3_10_1,B3_11_1,B3_12_1,B3_13_1,B3_14_1,B3_15_1,B3_16_1,B3_17_1,B3_18_1,B3_19_1,B3_20_1 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
+                    var row = val.rows.item(0);
+                    var sayi = parseInt(row.B1_O);
+                    var firstAdded = false;
          
                     if (sayi > 0) {
                         for (var i = 1; i < sayi + 1; i++) {
-                            var isimFieldName = "B2a_" + i + "_1";
-                            var isim = val.rows.item(0)[isimFieldName];
+                            var yasFieldName = "B3_" + i + "_1";
+                            var yas = parseInt(row[yasFieldName]);
                             
-                            if (i === 1) {
-                                // İlk satırı güncelle
-                                var firstRow = $("#QuestionTable tbody>tr:first");
-                                firstRow.find('input[type=checkbox]').attr('id', 'B8b_' + i).attr('value', i);
-                                firstRow.find('label').attr('for', 'B8b_' + i).text(isim);
-                                firstRow.find('td:eq(1)').text(i);
-                            } else {
-                                // Yeni satır ekle
-                                var row = $("#QuestionTable tbody>tr:first").clone(true);
-                                row.find('input[type=checkbox]').attr('id', 'B8b_' + i).attr('value', i);
-                                row.find('label').attr('for', 'B8b_' + i).text(isim);
-                                row.find('td:eq(1)').text(i);
+                            // Sadece 15 yaş ve üstü kişileri listele
+                            if (yas >= 15) {
+                                var isimFieldName = "B2a_" + i + "_1";
+                                var isim = row[isimFieldName];
                                 
-                                if (i % 2 === 0) {
-                                    row.removeClass('AlternateTableRow');
+                                if (!firstAdded) {
+                                    // İlk satırı güncelle
+                                    var firstRow = $("#QuestionTable tbody>tr:first");
+                                    firstRow.find('input[type=checkbox]').attr('id', 'B8b_' + i).attr('value', i);
+                                    firstRow.find('label').attr('for', 'B8b_' + i).text(isim);
+                                    firstRow.find('td:eq(1)').text(i);
+                                    firstAdded = true;
                                 } else {
-                                    row.addClass('AlternateTableRow');
+                                    // Yeni satır ekle
+                                    var newRow = $("#QuestionTable tbody>tr:first").clone(true);
+                                    newRow.find('input[type=checkbox]').attr('id', 'B8b_' + i).attr('value', i);
+                                    newRow.find('label').attr('for', 'B8b_' + i).text(isim);
+                                    newRow.find('td:eq(1)').text(i);
+                                    
+                                    if (i % 2 === 0) {
+                                        newRow.removeClass('AlternateTableRow');
+                                    } else {
+                                        newRow.addClass('AlternateTableRow');
+                                    }
+                                    
+                                    $("#QuestionTable tbody tr:last").before(newRow);
                                 }
-                                
-                                $("#QuestionTable tbody tr:last").before(row);
                             }
                         }
                         SetStartUp();

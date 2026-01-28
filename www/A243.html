@@ -37,10 +37,21 @@
 
         function LoadData() {
             db.transaction(function (tx) {
-                tx.executeSql("SELECT A241_1, A241_2, A241_3, A241_4, A241_5, A242_1_1, A242_2_1, A242_3_1, A242_4_1, A242_5_1, A243_1, A243_2, A243_3, A243_4, A243_5 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
+                tx.executeSql("SELECT A241_1, A241_2, A241_3, A241_4, A241_5, A242_1_1, A242_2_1, A242_3_1, A242_4_1, A242_5_1, A243_1, A243_2, A243_3, A243_4, A243_5, A2a2a1, A2a2a2, A2a2a3, A2a2a4, A2a2a5 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
                     if (val.rows.length > 0) {
                         var row = val.rows.item(0);
                         console.log("DB Row:", row);
+                        
+                        // A2a2a1-5 sorularında 8 (SMART TV) seçeneği işaretli mi kontrol et
+                        var smartTVVar = false;
+                        var sorular = [row.A2a2a1, row.A2a2a2, row.A2a2a3, row.A2a2a4, row.A2a2a5];
+                        for (var i = 0; i < sorular.length; i++) {
+                            if (sorular[i] && sorular[i].toString().indexOf('8') > -1) {
+                                smartTVVar = true;
+                                break;
+                            }
+                        }
+                        console.log("Smart TV kullanımı var mı:", smartTVVar);
                         
                         // A242'de değer olanları göster
                         cihazDurumlari = {
@@ -67,6 +78,13 @@
                                 var kayitliDeger = row[radioName];
                                 if (kayitliDeger) {
                                     $('#' + radioName + '_' + kayitliDeger).prop('checked', true);
+                                }
+                                
+                                // A243_5 için SMART TV koşulu
+                                if (radioName === 'A243_5' && smartTVVar) {
+                                    $('#A243_5_2').prop('disabled', true);
+                                    $('#A243_5_2').closest('td').css('opacity', '0.5');
+                                    console.log("A243_5 HAYIR seçeneği devre dışı bırakıldı (SMART TV kullanımı var)");
                                 }
                             } else {
                                 $(this).hide();
@@ -104,25 +122,52 @@
             var kontrol = true;
             var updateStr = "";
             
-            // Sadece görünür olan cihazları kontrol et
-            $('.cihazRow:visible').each(function() {
-                var radioName = $(this).find('input[type="radio"]').attr('name');
-                var radioValue = $(this).find('input[type="radio"]:checked').val();
-                var cihazLabel = $(this).find('label').text();
-                
-                if (!radioValue) {
-                    alert(cihazLabel + " için bir seçenek işaretleyiniz!");
-                    kontrol = false;
-                    return false;
-                }
-                
-                if (updateStr != "") updateStr += ",";
-                updateStr += radioName + "='" + radioValue + "'";
+            // A2a2a1-5 kontrolü için veritabanından veri çek
+            db.transaction(function (tx) {
+                tx.executeSql("SELECT A2a2a1, A2a2a2, A2a2a3, A2a2a4, A2a2a5 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
+                    if (val.rows.length > 0) {
+                        var row = val.rows.item(0);
+                        var smartTVVar = false;
+                        
+                        // A2a2a1-5 sorularında 8 (SMART TV) seçeneği işaretli mi kontrol et
+                        var sorular = [row.A2a2a1, row.A2a2a2, row.A2a2a3, row.A2a2a4, row.A2a2a5];
+                        for (var i = 0; i < sorular.length; i++) {
+                            if (sorular[i] && sorular[i].toString().indexOf('8') > -1) {
+                                smartTVVar = true;
+                                break;
+                            }
+                        }
+                        
+                        // Sadece görünür olan cihazları kontrol et
+                        var valid = true;
+                        $('.cihazRow:visible').each(function() {
+                            var radioName = $(this).find('input[type="radio"]').attr('name');
+                            var radioValue = $(this).find('input[type="radio"]:checked').val();
+                            var cihazLabel = $(this).find('label').text();
+                            
+                            if (!radioValue) {
+                                alert(cihazLabel + " için bir seçenek işaretleyiniz!");
+                                valid = false;
+                                return false;
+                            }
+                            
+                            // A243_5 için SMART TV kontrolü
+                            if (radioName === 'A243_5' && smartTVVar && radioValue == "2") {
+                                alert("Televizyon sorularında SMART TV / AKILLI TELEVİZYONDAKİ UYGULAMALAR kullandığınızı belirttiniz. Bu durumda AKILLI TELEVİZYON için 'HAYIR' seçemezsiniz!");
+                                valid = false;
+                                return false;
+                            }
+                            
+                            if (updateStr != "") updateStr += ",";
+                            updateStr += radioName + "='" + radioValue + "'";
+                        });
+                        
+                        if (valid) {
+                            myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], "P1.html?id=" + window.localStorage["InterviewID"]);
+                        }
+                    }
+                });
             });
-            
-            if (kontrol) {
-                myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], "P1.html?id=" + window.localStorage["InterviewID"]);
-            }
         }
 
         function goBack() {

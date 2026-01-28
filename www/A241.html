@@ -29,7 +29,7 @@
 
         function LoadData() {
             db.transaction(function (tx) {
-                tx.executeSql("SELECT A241_1, A241_2, A241_3, A241_4, A241_5 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
+                tx.executeSql("SELECT A241_1, A241_2, A241_3, A241_4, A241_5, A1, A1b FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
                     if (val.rows.length > 0) {
                         var row = val.rows.item(0);
                         
@@ -38,6 +38,12 @@
                         if (row.A241_3) $("input[name='A241_3'][value='" + row.A241_3 + "']").prop('checked', true);
                         if (row.A241_4) $("input[name='A241_4'][value='" + row.A241_4 + "']").prop('checked', true);
                         if (row.A241_5) $("input[name='A241_5'][value='" + row.A241_5 + "']").prop('checked', true);
+                        
+                        // A1=2 ve A1b=2 ise A241_5 için EVET seçeneğini devre dışı bırak
+                        if (row.A1 == 2 && row.A1b == 2) {
+                            $('#A241_5_1').prop('disabled', true);
+                            $('#A241_5_1').closest('td').css('opacity', '0.5');
+                        }
                     }
                 });
             });
@@ -95,7 +101,7 @@
             // A2a2a1-5 sorularında 8 işaretli mi kontrol et
             if (kontrol) {
                 db.transaction(function (tx) {
-                    tx.executeSql("SELECT A2a2a1, A2a2a2, A2a2a3, A2a2a4, A2a2a5 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
+                    tx.executeSql("SELECT A2a2a1, A2a2a2, A2a2a3, A2a2a4, A2a2a5, A1, A1b FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
                         if (val.rows.length > 0) {
                             var row = val.rows.item(0);
                             var smartTVVar = false;
@@ -114,6 +120,15 @@
                                 var a241_5Value = $("input[name='A241_5']:checked").val();
                                 if (a241_5Value == "2") {
                                     alert("Televizyon sorularında SMART TV / AKILLI TELEVİZYONDAKİ UYGULAMALAR kullandığınızı belirttiniz. Bu durumda AKILLI TELEVİZYON / SMART TELEVİZYON için 'HAYIR' seçemezsiniz!");
+                                    return false;
+                                }
+                            }
+                            
+                            // A1=2 ve A1b=2 ise A241_5'te EVET seçilemez
+                            if (row.A1 == 2 && row.A1b == 2) {
+                                var a241_5Value = $("input[name='A241_5']:checked").val();
+                                if (a241_5Value == "1") {
+                                    alert("A1 ve A1b sorularına verdiğiniz cevaplara göre AKILLI TELEVİZYON / SMART TELEVİZYON için 'EVET' seçemezsiniz!");
                                     return false;
                                 }
                             }

@@ -14,6 +14,7 @@
 
     <script type="text/javascript">
         var id = 0;
+        var maxSaat = 24; // Varsayılan max değer
 
         document.addEventListener("deviceready", onDeviceReady, false);
         
@@ -29,9 +30,22 @@
 
         function LoadData() {
             db.transaction(function (tx) {
-                tx.executeSql("SELECT A23_1_1, A23_2_1 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
+                tx.executeSql("SELECT A23_1_1, A23_2_1, A1a, A1b_O FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [], function (tx, val) {
                     if (val.rows.length > 0) {
                         var row = val.rows.item(0);
+                        
+                        // Max değeri hesapla: (A1a + A1b_O) x 24
+                        var a1a = parseInt(row.A1a) || 0;
+                        var a1b_O = parseInt(row.A1b_O) || 0;
+                        maxSaat = (a1a + a1b_O) * 24;
+                        
+                        console.log("A1a:", a1a, "A1b_O:", a1b_O, "Max Saat:", maxSaat);
+                        
+                        // Input alanlarının max değerini güncelle
+                        $('#A23_1_1').attr('max', maxSaat);
+                        $('#A23_2_1').attr('max', maxSaat);
+                        
+                        // Kayıtlı değerleri yükle
                         if (row.A23_1_1) $('#A23_1_1').val(row.A23_1_1);
                         if (row.A23_2_1) $('#A23_2_1').val(row.A23_2_1);
                     }
@@ -73,7 +87,7 @@
                 return false;
             }
 
-            // Sayısal kontrol (0-24 arası)
+            // Sayısal kontrol (0 - maxSaat arası)
             var hafta_ici = parseInt(A23_1_1);
             var hafta_sonu = parseInt(A23_2_1);
 
@@ -83,8 +97,8 @@
                 return false;
             }
 
-            if (hafta_ici > 24) {
-                alert("HAFTAİÇI ORTALAMA 24 saatten fazla olamaz!");
+            if (hafta_ici > maxSaat) {
+                alert("HAFTAİÇI ORTALAMA " + maxSaat + " saatten fazla olamaz!");
                 $('#A23_1_1').focus();
                 return false;
             }
@@ -95,8 +109,8 @@
                 return false;
             }
 
-            if (hafta_sonu > 24) {
-                alert("HAFTASONU ORTALAMA 24 saatten fazla olamaz!");
+            if (hafta_sonu > maxSaat) {
+                alert("HAFTASONU ORTALAMA " + maxSaat + " saatten fazla olamaz!");
                 $('#A23_2_1').focus();
                 return false;
             }
