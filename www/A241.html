@@ -74,7 +74,7 @@
             // Her cihaz için kontrol
             var cihazlar = ['A241_1', 'A241_2', 'A241_3', 'A241_4', 'A241_5'];
             var cihazIsimler = [
-                'MASAÜSTÜ BİLGİSAYAR / PC',
+                'MASAÜSTÜ BİLGİSAYAR / PC (EKRAN VE BİLGİSAYARIN AYRI OLDUĞU)',
                 'DİZÜSTÜ BİLGİSAYAR / LAPTOP',
                 'TABLET BİLGİSAYAR',
                 'AKILLI TELEFON',
@@ -173,6 +173,11 @@
             text-align: center;
             width: 100px;
         }
+        .img-cell .img-A2a {
+            max-height: 60px;
+            width: auto;
+            object-fit: contain;
+        }
     </style>
 </head>
 <body>
@@ -184,7 +189,7 @@
                         <span id="StepNameTD">A241.</span>
                         <span id="QuestionTextTD">
                             <font face="Calibri" color="#000000" size="2">
-                                Evinizde size ait ya da evde yaşayan diğer bir kişiye ait aktif olarak kullanılan aşağıdaki cihazlar var mı? 
+                                Evinizde size ait ya da evde yaşayan diğer bir kişiye ait  aktif olarak kullanılan aşağıdaki cihazlar var mı?  
                                 <b>(HER BİR CİHAZ İÇİN TEK TEK SORULACAK)</b>
                             </font>
                         </span>
@@ -207,8 +212,10 @@
                     <!-- A241_1 -->
                     <tr class="AlternateTableRow cihazRow">
                         <td class="columnDivider"></td>
-                        <td class="cihazLabel">
-                            <label>MASAÜSTÜ BİLGİSAYAR / PC</label>
+                        <td class="img-cell">
+                            <img src="images/survey/A241_1_1.png" class="img-A2a">
+                            <img src="images/survey/A241_1_2.png" class="img-A2a">
+                            <label>MASAÜSTÜ BİLGİSAYAR / PC (EKRAN VE BİLGİSAYARIN AYRI OLDUĞU)</label>
                         </td>
                         <td class="radioCell">
                             <input type="radio" class="radioStyle" name="A241_1" id="A241_1_1" value="1">
@@ -221,7 +228,9 @@
                     <!-- A241_2 -->
                     <tr class="cihazRow">
                         <td class="columnDivider"></td>
-                        <td class="cihazLabel">
+                        <td class="img-cell">
+                            <img src="images/survey/A241_2_1.png" class="img-A2a">
+                            <img src="images/survey/A241_2_2.png" class="img-A2a">
                             <label>DİZÜSTÜ BİLGİSAYAR / LAPTOP</label>
                         </td>
                         <td class="radioCell">
@@ -235,7 +244,9 @@
                     <!-- A241_3 -->
                     <tr class="AlternateTableRow cihazRow">
                         <td class="columnDivider"></td>
-                        <td class="cihazLabel">
+                        <td class="img-cell">
+                            <img src="images/survey/A241_3_1.png" class="img-A2a">
+                            <img src="images/survey/A241_3_2.png" class="img-A2a">
                             <label>TABLET BİLGİSAYAR</label>
                         </td>
                         <td class="radioCell">
@@ -249,7 +260,10 @@
                     <!-- A241_4 -->
                     <tr class="cihazRow">
                         <td class="columnDivider"></td>
-                        <td class="cihazLabel">
+                        <td class="img-cell">
+                            <img src="images/survey/A241_4_1.png" class="img-A2a">
+                            <img src="images/survey/A241_4_2.png" class="img-A2a">
+                            <img src="images/survey/A241_4_3.png" class="img-A2a">
                             <label>AKILLI TELEFON</label>
                         </td>
                         <td class="radioCell">
@@ -263,7 +277,9 @@
                     <!-- A241_5 -->
                     <tr class="AlternateTableRow cihazRow">
                         <td class="columnDivider"></td>
-                        <td class="cihazLabel">
+                        <td class="img-cell">
+                            <img src="images/survey/A241_5_1.png" class="img-A2a">
+                            <img src="images/survey/A241_5_2.png" class="img-A2a">
                             <label>AKILLI TELEVİZYON / SMART TELEVİZYON olarak adlandırılan internete bağlanabilen bir televizyon</label>
                         </td>
                         <td class="radioCell">

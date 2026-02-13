@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="scripts/database.js"></script>
+    <script src="scripts/index.js"></script>
+    
+    <script type="text/javascript">
+        var id = 0;
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+            console.log("Device ready! InterviewID:", window.localStorage["InterviewID"]);
+            
+            var checkDB = setInterval(function() {
+                if (typeof db !== 'undefined' && db !== null) {
+                    clearInterval(checkDB);
+                    LoadData();
+                }
+            }, 100);
+        }
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+        };
+
+        function LoadData() {
+            console.log("LoadData çağrıldı");
+            db.transaction(function (tx) {
+                var sqlQuery = "SELECT Ek2 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
+                console.log("SQL sorgusu:", sqlQuery);
+                
+                tx.executeSql(sqlQuery, [], 
+                    function (tx, val) {
+                        console.log("SQL başarılı, satır sayısı:", val.rows.length);
+                        if (val.rows.length > 0) {
+                            var row = val.rows.item(0);
+                            console.log("Row data:", row);
+                            
+                            if (row.Ek2) {
+                                $('input[name="Ek2"][value="' + row.Ek2 + '"]').prop('checked', true);
+                            }
+                        } else {
+                            console.log("Hiç satır bulunamadı");
+                        }
+                    },
+                    function(tx, error) {
+                        console.error("SQL hatası:", error.message);
+                    });
+            });
+        }
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var secilenDeger = $('input[name="Ek2"]:checked').val();
+            
+            if (!secilenDeger) {
+                alert("Lütfen bir seçenek seçiniz!");
+                return;
+            }
+            
+            var updateStr = "Ek2='" + secilenDeger + "'";
+            
+            myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], "Ek3.html?id=" + window.localStorage["InterviewID"]);
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">Ek2.</span>
+                        <span id="QuestionTextTD">
+                            <font face="calibri" color="#000000" size="2">
+                                <b>Son 6 ayı düşündüğünüzde haneniz gelirleriyle kira, mutfak, eğitim gibi giderlerinizi karşılama şeklinizi ekrandaki ifadelerden hangisi en iyi şekilde tarif eder? (TEK CEVAP)</b>
+                            </font>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable" class="cssQuestionTable">
+                <tbody>
+                    <!-- Seçenek 1 -->
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">1</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek2" id="Ek2_1" value="1">
+                            <span></span>
+                        </td>
+                        <td><label for="Ek2_1">Ay sonunu getirmekte çok zorlanıyoruz </label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 2 -->
+                    <tr>
+                        <td class="columnDivider"></td>
+                        <td align="right">2</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek2" id="Ek2_2" value="2">
+                            <span></span>
+                        </td>
+                        <td><label for="Ek2_2">Ay sonunu getirmekte biraz zorlanıyoruz </label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 3 -->
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">3</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek2" id="Ek2_3" value="3">
+                            <span></span>
+                        </td>
+                        <td><label for="Ek2_3">Ay sonunu ancak getirebiliyoruz </label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 4 -->
+                    <tr>
+                        <td class="columnDivider"></td>
+                        <td align="right">4</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek2" id="Ek2_4" value="4">
+                            <span></span>
+                        </td>
+                        <td><label for="Ek2_4">Kolaylıkla geçiniyoruz / pek zorlanmıyoruz</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 5 -->
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">5</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek2" id="Ek2_5" value="5">
+                            <span></span>
+                        </td>
+                        <td><label for="Ek2_5">Aylık gelirimiz yeterli hiç zorlanmıyoruz </label></td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                        </td>
+                        <td colspan="2" align="right">
+                            <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</body>
+</html>

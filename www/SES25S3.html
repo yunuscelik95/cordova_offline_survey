@@ -125,7 +125,14 @@
             
             var updateStr = "SES25S3='" + secilenDeger + "'";
             
-            myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], "SES25S4.html?id=" + window.localStorage["InterviewID"]);
+            var nextPage = "";
+            if (secilenDeger == "1" || secilenDeger == "2") {
+                nextPage = "SES25EK1.html?id=" + window.localStorage["InterviewID"];
+            } else {
+                nextPage = "SES25S4.html?id=" + window.localStorage["InterviewID"];
+            }
+            
+            myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], nextPage);
         }
 
         function goBack() {

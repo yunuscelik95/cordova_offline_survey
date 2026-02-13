@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="scripts/database.js"></script>
+    <script src="scripts/index.js"></script>
+    
+    <script type="text/javascript">
+        var id = 0;
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+
+        function onDeviceReady() {
+            id = getUrlVars()["id"];
+            console.log("Device ready! InterviewID:", window.localStorage["InterviewID"]);
+            
+            var checkDB = setInterval(function() {
+                if (typeof db !== 'undefined' && db !== null) {
+                    clearInterval(checkDB);
+                    LoadData();
+                }
+            }, 100);
+        }
+
+        window.onload = function () {
+            id = getUrlVars()["id"];
+        };
+
+        function LoadData() {
+            console.log("LoadData çağrıldı");
+            db.transaction(function (tx) {
+                var sqlQuery = "SELECT Ek3, Ek3_O FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
+                console.log("SQL sorgusu:", sqlQuery);
+                
+                tx.executeSql(sqlQuery, [], 
+                    function (tx, val) {
+                        console.log("SQL başarılı, satır sayısı:", val.rows.length);
+                        if (val.rows.length > 0) {
+                            var row = val.rows.item(0);
+                            console.log("Row data:", row);
+                            
+                            if (row.Ek3) {
+                                $('input[name="Ek3"][value="' + row.Ek3 + '"]').prop('checked', true);
+                                if (row.Ek3 == 7) {
+                                    $("#Ek3_O").show();
+                                }
+                            }
+                            if (row.Ek3_O) {
+                                $("#Ek3_O").val(row.Ek3_O);
+                            }
+                        } else {
+                            console.log("Hiç satır bulunamadı");
+                        }
+                    },
+                    function(tx, error) {
+                        console.error("SQL hatası:", error.message);
+                    });
+            });
+
+            // Diğer seçildiğinde text alanını göster/gizle
+            $('input[name="Ek3"]').change(function() {
+                if ($(this).val() == "7") {
+                    $("#Ek3_O").show();
+                } else {
+                    $("#Ek3_O").hide().val('');
+                }
+            });
+        }
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var secilenDeger = $('input[name="Ek3"]:checked').val();
+            
+            if (!secilenDeger) {
+                alert("Lütfen bir seçenek seçiniz!");
+                return;
+            }
+
+            if (secilenDeger == "7" && $("#Ek3_O").val().trim() == "") {
+                alert("Lütfen 'Diğer' seçeneği için açıklama yazınız!");
+                return;
+            }
+            
+            var digerText = $("#Ek3_O").val().trim().replace(/'/g, "''");
+            var updateStr = "Ek3='" + secilenDeger + "', Ek3_O='" + digerText + "'";
+            
+            myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], "C2.html?id=" + window.localStorage["InterviewID"]);
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+    <form id="form1">
+        <table border="0" id="QuestionText">
+            <tbody>
+                <tr>
+                    <td>
+                        <span id="StepNameTD">Ek3.</span>
+                        <span id="QuestionTextTD">
+                            <font face="calibri" color="#000000" size="2">
+                                <b>Oturulan ev tipi (Anketör işaretleyecek)</b>
+                            </font>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="QuestionBuilderPanel">
+            <table id="QuestionTable" class="cssQuestionTable">
+                <tbody>
+                    <!-- Seçenek 1 -->
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">1</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek3" id="Ek3_1" value="1">
+                            <span></span>
+                        </td>
+                        <td><label for="Ek3_1">Apartman (site içinde değil)</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 2 -->
+                    <tr>
+                        <td class="columnDivider"></td>
+                        <td align="right">2</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek3" id="Ek3_2" value="2">
+                            <span></span>
+                        </td>
+                        <td><label for="Ek3_2">Site / Toplu Konut (güvenlikli ya da güvenliksiz)</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 3 -->
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">3</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek3" id="Ek3_3" value="3">
+                            <span></span>
+                        </td>
+                        <td><label for="Ek3_3">Müstakil Ev (Bağımsız / Tek hane)</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 4 -->
+                    <tr>
+                        <td class="columnDivider"></td>
+                        <td align="right">4</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek3" id="Ek3_4" value="4">
+                            <span></span>
+                        </td>
+                        <td><label for="Ek3_4">Gecekondu / Tek Katlı Yapı</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 5 -->
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">5</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek3" id="Ek3_5" value="5">
+                            <span></span>
+                        </td>
+                        <td><label for="Ek3_5">Villa (Dubleks/Tripleks/Apartman dairesi dışında)</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 6 -->
+                    <tr>
+                        <td class="columnDivider"></td>
+                        <td align="right">6</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek3" id="Ek3_6" value="6">
+                            <span></span>
+                        </td>
+                        <td><label for="Ek3_6">Konteyner/Çadır</label></td>
+                    </tr>
+                    
+                    <!-- Seçenek 7 - Diğer -->
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">7</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek3" id="Ek3_7" value="7">
+                            <span></span>
+                        </td>
+                        <td>
+                            <label for="Ek3_7">Diğer (Yazınız)</label>
+                            <input type="text" id="Ek3_O" style="display:none; margin-left:10px; width:200px;" placeholder="Belirtiniz..." />
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="2">
+                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                        </td>
+                        <td colspan="2" align="right">
+                            <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</body>
+</html>

@@ -401,6 +401,60 @@
 
                 });
                 return items1.join("");
+            },
+
+            autoSendData() {
+                // Otomatik gönderim: internet varsa gönderilmemiş anketleri gönder
+                updateConnectionProperties();
+                if (!state.isOnline) {
+                    console.log("Otomatik gönderim: İnternet yok, atlanıyor.");
+                    return;
+                }
+                var self = this;
+                db.transaction(function (tx) {
+                    tx.executeSql('SELECT * FROM INTERVIEWS WHERE (gonderim is null or gonderim=0) and InterviewStatu is not null and InterviewStatu<>0', [], function (tx, res) {
+                        if (res.rows.length > 0) {
+                            console.log("Otomatik gönderim: " + res.rows.length + " anket gönderilecek.");
+                            self.gonderimsayisi = res.rows.length;
+                            self.gonderilen = 0;
+                            var toplamGonderilecek = res.rows.length;
+                            for (var i = 0; i < res.rows.length; i++) {
+                                var link = "https://vta.diyalog.com.tr/api/veri/" + window.localStorage["userGuid"];
+                                var veri = JSON.stringify(res.rows.item(i), function(key, value) {
+                                    if (typeof value === 'string') {
+                                        value = value.replace(/[^\x20-\x7EİıŞşĞğÜüÇçÖö]/g, function(match) {
+                                            return match;
+                                        });
+                                        return value;
+                                    }
+                                    return value;
+                                });
+                                axios.put(link, veri, config)
+                                    .then((response) => {
+                                        var responseParse;
+                                        if (typeof response.data === 'string') {
+                                            responseParse = JSON.parse(response.data);
+                                        } else {
+                                            responseParse = response.data;
+                                        }
+                                        if (responseParse.Sonuc == "OK") {
+                                            myUpdate("INTERVIEWS", "gonderim=1", " InterviewID=" + responseParse.InterviewID);
+                                            self.gonderilen = parseInt(self.gonderilen) + 1;
+                                            console.log("Otomatik gönderim başarılı: InterviewID=" + responseParse.InterviewID);
+                                            if (toplamGonderilecek == self.gonderilen) {
+                                                console.log("Otomatik gönderim tamamlandı: " + self.gonderilen + " anket gönderildi.");
+                                            }
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        console.error("Otomatik gönderim hatası:", error.message);
+                                    });
+                            }
+                        } else {
+                            console.log("Otomatik gönderim: Gönderilecek anket yok.");
+                        }
+                    });
+                });
             }
         },
         beforeMount() {
@@ -409,6 +463,11 @@
         },
         mounted() {
             console.log("Vue mounted - instance hazır");
+            // Sayfa yüklendiğinde otomatik gönderim dene
+            var self = this;
+            setTimeout(function() {
+                self.autoSendData();
+            }, 2000);
         }
 
     })

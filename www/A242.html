@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
@@ -18,12 +19,12 @@
         var cihazDurumlari = {};
 
         document.addEventListener("deviceready", onDeviceReady, false);
-        
+
         function onDeviceReady() {
             id = getUrlVars()["id"];
             console.log("Device ready! InterviewID:", window.localStorage["InterviewID"]);
             // Database açılana kadar bekle
-            var checkDB = setInterval(function() {
+            var checkDB = setInterval(function () {
                 if (typeof db !== 'undefined' && db !== null) {
                     clearInterval(checkDB);
                     LoadData();
@@ -42,25 +43,25 @@
                         console.log("A241_3:", row.A241_3);
                         console.log("A241_4:", row.A241_4);
                         console.log("A241_5:", row.A241_5);
-                        
+
                         var gosterilecekCihaz = false;
-                        
+
                         // Her cihazı kontrol et ve göster
                         for (var i = 1; i <= 5; i++) {
                             var a241Kolon = 'A241_' + i;
                             var a242Kolon = 'A242_' + i + '_1';
-                            
+
                             console.log(a241Kolon + " değeri:", row[a241Kolon], "tip:", typeof row[a241Kolon]);
-                            
+
                             // A241'de EVET (1) seçilmişse göster
                             if (row[a241Kolon] == 1) {
                                 console.log(a242Kolon + " gösterilecek!");
-                                $('.cihazRow').each(function() {
+                                $('.cihazRow').each(function () {
                                     var inputName = $(this).find('input').attr('name');
                                     if (inputName == a242Kolon) {
                                         $(this).show();
                                         gosterilecekCihaz = true;
-                                        
+
                                         // Kayıtlı değeri yükle
                                         if (row[a242Kolon]) {
                                             $('#' + a242Kolon).val(row[a242Kolon]);
@@ -69,7 +70,7 @@
                                 });
                             }
                         }
-                        
+
                         // Hiç cihaz yoksa uyarı göster ve geri dön
                         if (!gosterilecekCihaz) {
                             alert("Önceki soruda hiçbir cihaz için EVET seçmediniz. Geri dönüyorsunuz.");
@@ -100,21 +101,21 @@
         function gecisKontrol() {
             var kontrol = true;
             var updateStr = "";
-            
+
             // Sadece görünür olan cihazları kontrol et
-            $('.cihazRow:visible').each(function() {
+            $('.cihazRow:visible').each(function () {
                 var input = $(this).find('input');
                 var inputName = input.attr('name');
                 var inputValue = input.val();
                 var cihazLabel = $(this).find('label').text();
-                
+
                 if (!inputValue || inputValue == "" || inputValue == "0") {
                     alert(cihazLabel + " için adet giriniz!");
                     input.focus();
                     kontrol = false;
                     return false;
                 }
-                
+
                 var adet = parseInt(inputValue);
                 if (isNaN(adet) || adet < 1 || adet > 99) {
                     alert(cihazLabel + " için geçerli bir adet giriniz (1-99 arası)!");
@@ -122,11 +123,11 @@
                     kontrol = false;
                     return false;
                 }
-                
+
                 if (updateStr != "") updateStr += ",";
                 updateStr += inputName + "='" + inputValue + "'";
             });
-            
+
             if (kontrol) {
                 myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], "A243.html?id=" + window.localStorage["InterviewID"]);
             }
@@ -139,26 +140,33 @@
     <style>
         .cihazRow {
             border-bottom: 1px solid #ddd;
-            display: none; /* Başlangıçta gizli */
+            display: none;
+            /* Başlangıçta gizli */
         }
+
         .cihazRow:hover {
             background-color: #f5f5f5;
         }
+
         table#QuestionTable {
             width: 100%;
         }
+
         table#QuestionTable td {
             padding: 10px;
             vertical-align: middle;
         }
+
         .cihazLabel {
             font-weight: normal;
             min-width: 300px;
         }
+
         .adetCell {
             text-align: center;
             width: 150px;
         }
+
         .adetInput {
             width: 80px;
             height: 30px;
@@ -167,8 +175,15 @@
             border: 2px solid #333;
             border-radius: 4px;
         }
+
+        .img-cell .img-A2a {
+            max-height: 60px;
+            width: auto;
+            object-fit: contain;
+        }
     </style>
 </head>
+
 <body>
     <form id="form1">
         <table border="0" id="QuestionText">
@@ -178,14 +193,16 @@
                         <span id="StepNameTD">A242.</span>
                         <span id="QuestionTextTD">
                             <font face="Calibri" color="#000000" size="2">
-                                Cihaz Adetleri nelerdir? <b>(HER BİR CİHAZ İÇİN TEK TEK SORULACAK)</b>
+                                Sahip olduğunuzu söylediğiniz bu cihazlardan evinizde toplam kaçar adet olduğunu söyler
+                                misiniz, evdeki tüm kişilerin cihazlarını düşünerek cevap verin lütfen.
+                                <br>Evinizdek toplam Kaç Adet ….. olduğunu söyler misiniz? </b>
                             </font>
                         </span>
                     </td>
                 </tr>
             </tbody>
         </table>
-        
+
         <div id="QuestionBuilderPanel">
             <table id="QuestionTable" cellpadding="0" cellspacing="0">
                 <thead>
@@ -199,61 +216,79 @@
                     <!-- A242_1 - Sadece A241_1 = 1 ise görünür -->
                     <tr class="AlternateTableRow cihazRow">
                         <td class="columnDivider"></td>
-                        <td class="cihazLabel">
-                            <label>MASAÜSTÜ BİLGİSAYAR / PC</label>
+                        <td class="img-cell">
+                            <img src="images/survey/A241_1_1.png" class="img-A2a">
+                            <img src="images/survey/A241_1_2.png" class="img-A2a">
+                            <label>MASAÜSTÜ BİLGİSAYAR / PC (EKRAN VE BİLGİSAYARIN AYRI OLDUĞU)</label>
                         </td>
                         <td class="adetCell">
-                            <input type="number" class="adetInput" name="A242_1_1" id="A242_1_1" min="1" max="99" placeholder="Adet">
+                            <input type="number" class="adetInput" name="A242_1_1" id="A242_1_1" min="1" max="99"
+                                placeholder="Adet">
                         </td>
                     </tr>
-                    
+
                     <!-- A242_2 - Sadece A241_2 = 1 ise görünür -->
                     <tr class="cihazRow">
                         <td class="columnDivider"></td>
-                        <td class="cihazLabel">
+                        <td class="img-cell">
+                            <img src="images/survey/A241_2_1.png" class="img-A2a">
+                            <img src="images/survey/A241_2_2.png" class="img-A2a">
                             <label>DİZÜSTÜ BİLGİSAYAR / LAPTOP</label>
                         </td>
                         <td class="adetCell">
-                            <input type="number" class="adetInput" name="A242_2_1" id="A242_2_1" min="1" max="99" placeholder="Adet">
+                            <input type="number" class="adetInput" name="A242_2_1" id="A242_2_1" min="1" max="99"
+                                placeholder="Adet">
                         </td>
                     </tr>
-                    
+
                     <!-- A242_3 - Sadece A241_3 = 1 ise görünür -->
                     <tr class="AlternateTableRow cihazRow">
                         <td class="columnDivider"></td>
-                        <td class="cihazLabel">
+                        <td class="img-cell">
+                            <img src="images/survey/A241_3_1.png" class="img-A2a">
+                            <img src="images/survey/A241_3_2.png" class="img-A2a">
                             <label>TABLET BİLGİSAYAR</label>
                         </td>
                         <td class="adetCell">
-                            <input type="number" class="adetInput" name="A242_3_1" id="A242_3_1" min="1" max="99" placeholder="Adet">
+                            <input type="number" class="adetInput" name="A242_3_1" id="A242_3_1" min="1" max="99"
+                                placeholder="Adet">
                         </td>
                     </tr>
-                    
+
                     <!-- A242_4 - Sadece A241_4 = 1 ise görünür -->
                     <tr class="cihazRow">
                         <td class="columnDivider"></td>
-                        <td class="cihazLabel">
+                        <td class="img-cell">
+                            <img src="images/survey/A241_4_1.png" class="img-A2a">
+                            <img src="images/survey/A241_4_2.png" class="img-A2a">
+                            <img src="images/survey/A241_4_3.png" class="img-A2a">
                             <label>AKILLI TELEFON</label>
                         </td>
                         <td class="adetCell">
-                            <input type="number" class="adetInput" name="A242_4_1" id="A242_4_1" min="1" max="99" placeholder="Adet">
+                            <input type="number" class="adetInput" name="A242_4_1" id="A242_4_1" min="1" max="99"
+                                placeholder="Adet">
                         </td>
                     </tr>
-                    
+
                     <!-- A242_5 - Sadece A241_5 = 1 ise görünür -->
                     <tr class="AlternateTableRow cihazRow">
                         <td class="columnDivider"></td>
-                        <td class="cihazLabel">
-                            <label>AKILLI TELEVİZYON / SMART TELEVİZYON olarak adlandırılan internete bağlanabilen bir televizyon</label>
+                        <td class="img-cell">
+                            <img src="images/survey/A241_5_1.png" class="img-A2a">
+                            <img src="images/survey/A241_5_2.png" class="img-A2a">
+                            <label>AKILLI TELEVİZYON / SMART TELEVİZYON olarak adlandırılan internete bağlanabilen bir
+                                televizyon</label>
                         </td>
                         <td class="adetCell">
-                            <input type="number" class="adetInput" name="A242_5_1" id="A242_5_1" min="1" max="99" placeholder="Adet">
+                            <input type="number" class="adetInput" name="A242_5_1" id="A242_5_1" min="1" max="99"
+                                placeholder="Adet">
                         </td>
                     </tr>
-                    
+
                     <tr>
                         <td colspan="2">
-                            <input type="button" value="Durum Kodla" onclick="javascript: window.location.href = 'ResponseKodu.html';" />
+                            <input type="button" value="Durum Kodla"
+                                onclick="javascript: window.location.href = 'ResponseKodu.html';" />
                         </td>
                         <td align="right">
                             <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
@@ -264,4 +299,5 @@
         </div>
     </form>
 </body>
+
 </html>
