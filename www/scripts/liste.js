@@ -112,7 +112,7 @@ window.addEventListener('load', () => {
             Offline(request) {
                 var self = this;
                 db.transaction(function (tx) {
-                    tx.executeSql("SELECT id, ilId, iladi ,ilceadi ,koyadi,mahalleadi ,cad_sok_ad ,binasitead ,binablokad ,diskapi_no ,ickapi_no,ziyaretTarihi,case when ZiyaretSayi is null then 0 else ZiyaretSayi end as ZiyaretSayi,statu,ResponseText, ResponseType FROM LISTE LEFT join RESPONSES on LISTE.statu=RESPONSES.ResponseID  where guid='" + guid + "' order by cad_sok_ad,diskapi_no,ickapi_no", [], function (tx, val) {
+                    tx.executeSql("SELECT LISTE.id, ilId, iladi ,ilceadi ,koyadi,mahalleadi ,cad_sok_ad ,binasitead ,binablokad ,diskapi_no ,ickapi_no,ziyaretTarihi,case when ZiyaretSayi is null then 0 else ZiyaretSayi end as ZiyaretSayi,statu,ResponseText, ResponseType FROM LISTE LEFT join RESPONSES on LISTE.statu=RESPONSES.ResponseID  where guid='" + guid + "' group by LISTE.id order by cad_sok_ad,diskapi_no,ickapi_no", [], function (tx, val) {
                             var listeArray = [];
                         
                         if (val.rows.length <1 && state.isOnline && request == "start")

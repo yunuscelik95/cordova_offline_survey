@@ -69,10 +69,9 @@
                     <td>{{item.ZiyaretSayi}}</td>
                     <td>
                         <input v-if="(item.ResponseText == '') && item.ZiyaretSayi < ziyaretSayisi" type='button' class='btn btn-block btn-primary btn-xs' :value='item.statu + "- Başla"' @click="InterviewSelect(item.id)" />
-                        <input v-if="((item.statu == '0' || item.statu == '2' || item.statu == '999') || (item.statu > 10 && item.statu < 20)) && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi)" type='button' class='btn btn-block btn-primary btn-xs' :value='item.ResponseText' @click="InterviewSelect(item.id)" />
+                        <input v-if="(item.statu == 0 || item.statu == 999 || (item.statu >= 16 && item.statu <= 21)) && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi)" type='button' class='btn btn-block btn-primary btn-xs' :value='item.ResponseText' @click="InterviewSelect(item.id)" />
                         <span v-if="item.statu == 6" class='btn btn-block btn-success btn-xs'> {{item.ResponseText}} </span>
-                        <!-- <span v-if="(item.statu != 6 && item.statu != '0' && item.statu != '999' && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi) )" class='btn-block btn-success btn-xs'> {{item.ResponseText}} </span> -->
-                         <input v-if="((item.statu != '0' && item.statu != '2' && item.statu != '6' && item.statu != '999') && (item.statu < 11 || item.statu > 19)) && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi)" type='button' class='btn btn-block btn-danger btn-primary btn-xs' :value='item.ResponseText' @click="InterviewSelect(item.id)" />
+                        <input v-if="((item.statu >= 1 && item.statu <= 5) || (item.statu >= 7 && item.statu <= 15) || item.statu == 22) && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi)" type='button' class='btn btn-block btn-danger btn-xs' :value='item.ResponseText' @click="InterviewSelect(item.id)" />
                     </td>
 
                 </tr>
