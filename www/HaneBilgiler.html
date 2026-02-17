@@ -253,16 +253,6 @@
 
                 var arr =  $(this).attr("id").split('_');
               
-                yakinlikKosul(arr[arr.length - 1], $(this).attr("id").replace("E3b","B2b"));
-
-                if (eskigorusulenKisi != "0")
-                {
-                    $("#B2b_" + eskigorusulenKisi).val("").change();
-                    $("#B2b_" + eskigorusulenKisi).selectpicker('refresh');
-                    yakinlikKosul(eskigorusulenKisi, "B2b_" + eskigorusulenKisi);
-                }
-                
-                $("#" + $(this).attr("id").replace("E3b","B2b")).selectpicker('refresh');
                 eskigorusulenKisi =   $(this).val();
             }
 
@@ -845,18 +835,15 @@
                     var B4 = $("#tr" + sira).closest("table").find("[name^=B4] option:selected").val();
                     var B5 = $("#tr" + sira).closest("table").find("[name^=B5] option:selected").val();
                     var B7 = $("#tr" + sira).closest("table").find("[name^=B7] option:selected").val();
-                    var B2b = $("#tr" + sira).closest("table").find("[name^=B2b] option:selected").val();
                     if (B4 == "" || B4 == undefined) B4 = "0";
                     if (B5 == "" || B5 == undefined) B5 = "0";
                     if (B7 == "" || B7 == undefined) B7 = "0";
-                    if (B2b == "" || B2b == undefined) B2b = "0";
 
                     kosul = kosul = kosul.replace(/\E3b/g, E3b);
                     //  kosul = kosul = kosul.replace(/\B9/g, B9);
                     kosul = kosul = kosul.replace(/\_B4/g, B4);
                     kosul = kosul = kosul.replace(/\_B5/g, B5);
                     kosul = kosul = kosul.replace(/\_B7/g, B7);
-                    kosul = kosul = kosul.replace(/\_B2b/g, B2b);
                     //     kosul = kosul.replace("B9", $("input:radio[name=B9]").val()).replace("B9", $("input:radio[name=B9]").val()).replace("B9", $("input:radio[name=B9]").val());
                     kosul = kosul.replace(/\Index/g, sira); //kosul.replace("Index", sira).replace("Index", sira).replace("Index", sira).replace("Index", sira).replace("Index", sira);
 
@@ -1438,66 +1425,6 @@
                                                                 <!--REİS - B9 sorusu ayrı sayfaya taşındı (B9.html)-->
 
                                                             </tr>
-                                                            <tr id="tr#">
-
-                                                                <td class="col-lg-1" colspan="4">
-
-                                                                    <b> .……….…..…'nın size (görüşülen kişiye) yakınlığı
-                                                                        nedir?</b>
-                                                                    <select id="B2b_#" Soru="Yakınlık"
-                                                                        style="display:block" name="B2b_#"
-                                                                        kosul="(E3b==Index && item>1) || (E3b!=Index && item==1) || (parseInt(_B3)<15 && (item==2 || item==3)) || (parseInt(_B3)<18 && (item==1)) || (parseInt(_B3)<30 && (item==4 || item==5 || item==12)) || (parseInt(_B3)<45 && (item==10 || item==11))|| (_B4==2 && ( item==3 || item==5 || item==9 || item==11))  || (_B4==1 && ( item==2 || item==4 || item==8 || item==10))"
-                                                                        data-style="btn-white" data-live-search="true"
-                                                                        class="form-control yakinlik zorunlu">
-
-                                                                        <option value="">Seçiniz...</option>
-                                                                        <option value="1" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Ben</option>
-                                                                        <option value="2" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Eşim – beyim</option>
-                                                                        <option value="3" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Eşim – hanımım</option>
-                                                                        <option value="4" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Babam</option>
-                                                                        <option value="5" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Annem</option>
-                                                                        <option value="6" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Kardeşim / Ablam / Abim
-                                                                        </option>
-                                                                        <option value="7" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Çocuğum / Kızım / Oğlum
-                                                                        </option>
-                                                                        <option value="8" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Amcam / Dayım / Eniştem
-                                                                        </option>
-                                                                        <option value="9" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Teyzem / Halam / Yengem
-                                                                        </option>
-                                                                        <option value="10" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Büyükbabam / Dedem</option>
-                                                                        <option value="11" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Büyükannem / Anneannem /
-                                                                            Babaannem</option>
-                                                                        <option value="12" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Kayınpederim/Kayınvalidem
-                                                                        </option>
-                                                                        <option value="13" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Kuzenim / Yeğenim</option>
-                                                                        <option value="14" OtherState='false'
-                                                                            Other='B2b_O_#_97'>Akraba olmayan biri</option>
-                                                                        <option value="15" OtherState='true'
-                                                                            Other='B2b_O_#_97'>Diğer...</option>
-                                                                    
-
-                                                                    </select>
-
-                                                                    <input type="text" Soru="Yakınlık Diğer"
-                                                                        id="B2b_O_#_97" name="B2b_O_#_97" value=""
-                                                                        style="display:none" />
-
-                                                                </td>
-                                                        
-                                            </tr>
 
                                           
                                             <tr class="buyukYas18">
@@ -1507,7 +1434,6 @@
                                             <b>      .................'nın medeni durumu nedir? </b>
                                                 <select id="B6_#" Soru="Medeni Durum" name="B6_#"
                                                  data-style="btn-white" data-live-search="true" class="form-control zorunbuyukyas18"
-                                                 kosul="((_B2b==2 || _B2b ==3) && (item!=3))"
                                                  >
                                                     <option value="">Seçiniz...</option>
                                                     <option value="1">Bekar</option>
