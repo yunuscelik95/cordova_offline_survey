@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -143,6 +143,121 @@
             else {
                 //   $("#B2Span").text("B2. Lütfen bu evde yaşayan TÜM KİŞİLERİN isimlerini söyler misiniz?");
             }
+
+            // Veritabanı hazır olduğunda kaydedilmiş verileri yükle
+            var checkDBLoad = setInterval(function() {
+                if (typeof db !== 'undefined' && db !== null) {
+                    clearInterval(checkDBLoad);
+                    loadSavedData();
+                }
+            }, 100);
+
+            function loadSavedData() {
+                if (!InterviewID || InterviewID == "" || InterviewID == "undefined") return;
+                
+                // Sorgulanacak kolonları oluştur
+                var columns = ["E3b"];
+                for (var i = 1; i <= 20; i++) {
+                    columns.push("B2a_" + i + "_1");
+                    columns.push("B3_" + i + "_1");
+                    columns.push("B4_" + i);
+                    columns.push("B5_" + i);
+                    columns.push("B6_" + i);
+                    columns.push("B7_" + i);
+                }
+                
+                var sql = "SELECT " + columns.join(",") + " FROM INTERVIEWS WHERE InterviewID=" + InterviewID;
+                
+                db.transaction(function(tx) {
+                    tx.executeSql(sql, [], function(tx, val) {
+                        if (val.rows.length > 0) {
+                            var row = val.rows.item(0);
+                            var hasData = false;
+                            
+                            for (var i = 1; i <= sayi; i++) {
+                                // Ad Soyad
+                                var nameVal = row["B2a_" + i + "_1"];
+                                if (nameVal && nameVal != "" && nameVal != "null" && nameVal != "NULL") {
+                                    hasData = true;
+                                    $("#B2a_" + i + "_1").val(nameVal);
+                                }
+                                
+                                // Yaş
+                                var ageVal = row["B3_" + i + "_1"];
+                                if (ageVal && ageVal != "" && ageVal != "null" && ageVal != "NULL") {
+                                    hasData = true;
+                                    $("#B3_" + i + "_1").val(ageVal);
+                                }
+                                
+                                // Cinsiyet
+                                var genderVal = row["B4_" + i];
+                                if (genderVal && genderVal != "" && genderVal != "null" && genderVal != "NULL") {
+                                    $("#B4_" + i).val(genderVal);
+                                }
+                                
+                                // Eğitim
+                                var eduVal = row["B5_" + i];
+                                if (eduVal && eduVal != "" && eduVal != "null" && eduVal != "NULL") {
+                                    $("#B5_" + i).val(eduVal);
+                                }
+                                
+                                // Medeni Durum
+                                var maritalVal = row["B6_" + i];
+                                if (maritalVal && maritalVal != "" && maritalVal != "null" && maritalVal != "NULL") {
+                                    $("#B6_" + i).val(maritalVal);
+                                }
+                                
+                                // Çalışma Durumu
+                                var workVal = row["B7_" + i];
+                                if (workVal && workVal != "" && workVal != "null" && workVal != "NULL") {
+                                    $("#B7_" + i).val(workVal);
+                                }
+                            }
+                            
+                            if (!hasData) return; // Veri yoksa UI güncelleme yapma
+                            
+                            // Görüşülen Kişi radio
+                            var e3bVal = row["E3b"];
+                            if (e3bVal && e3bVal != "" && e3bVal != "null" && e3bVal != "NULL") {
+                                $("#E3b_" + e3bVal).prop("checked", true);
+                            }
+                            
+                            // UI güncellemeleri - her kişi için event tetikle
+                            for (var i = 1; i <= sayi; i++) {
+                                // İsim gösterimi güncelle
+                                $("#B2a_" + i + "_1").keyup();
+                                // Yaş blur tetikle (koşullu satırları göster/gizle)
+                                $("#B3_" + i + "_1").blur();
+                                // Cinsiyet değişim tetikle
+                                if ($("#B4_" + i).val()) {
+                                    $("#B4_" + i).trigger("change");
+                                }
+                                // Eğitim selectpicker refresh
+                                if ($("#B5_" + i).val()) {
+                                    if ($("#B5_" + i).hasClass("selectpicker")) {
+                                        $("#B5_" + i).selectpicker('refresh');
+                                    }
+                                    $("#B5_" + i).trigger("change");
+                                }
+                                // Medeni Durum
+                                if ($("#B6_" + i).val()) {
+                                    $("#B6_" + i).trigger("change");
+                                }
+                                // Çalışma Durumu
+                                if ($("#B7_" + i).val()) {
+                                    $("#B7_" + i).trigger("change");
+                                }
+                            }
+                            
+                            // Kosul koşullarını uygula
+                            onLoad(true, "", "tablolar");
+                        }
+                    }, function(tx, error) {
+                        console.log("Veri yükleme hatası: " + error.message);
+                    });
+                });
+            }
+
             function onDeviceReady() {
                 InterviewID = window.localStorage["InterviewID"];
                 //db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
@@ -424,6 +539,18 @@
                 else if ($(this).hasClass("cinsiyet")) {
                     var id = $(this).attr("id");
                     $(this).closest("tr").closest("table").closest("tr").prev().find("td").eq(2).text($("#" + id + " option:selected").text());
+                }
+
+                // B7 çalışma durumu - 40 yaş altı emekli kontrolü
+                if ($(this).attr("name") == "B7") {
+                    var b7Val = parseInt($(this).val());
+                    var yasVal = parseInt($(this).closest("table").find(".yas").val()) || 0;
+                    var kisiNo = $(this).attr("id").replace("B7_", "");
+                    if (yasVal < 40 && (b7Val == 1 || b7Val == 2)) {
+                        alert(kisiNo + ". Kişi 40 yaşından küçük olduğu için Emekli seçeneği seçilemez!");
+                        $(this).val("");
+                        return;
+                    }
                 }
 
                 onLoad(false, $(this).attr("id"), "tektablo");
@@ -1177,6 +1304,24 @@
                     return false;
                 }
 
+                // 40 yaş altı emekli kontrolü (kaydet güvenlik)
+                var emekliHata = false;
+                $("select[name='B7']").each(function() {
+                    var b7Val = parseInt($(this).val());
+                    var kisiYas = parseInt($(this).closest("table").find(".yas").val()) || 0;
+                    if (kisiYas > 0 && kisiYas < 40 && (b7Val == 1 || b7Val == 2)) {
+                        var kisiNo = $(this).attr("id").replace("B7_", "");
+                        alert(kisiNo + ". Kişi 40 yaşından küçük olduğu için Emekli seçeneği seçilemez!");
+                        $(this).val("");
+                        $(this).focus();
+                        emekliHata = true;
+                        return false;
+                    }
+                });
+                if (emekliHata) {
+                    return false;
+                }
+
                 if (sondeger > 99) {
                     alert("Yaş aralığı 0-99 arasında olmalı");
                     return false;
@@ -1453,13 +1598,13 @@
                                                     <b> …………….. çalışma durumu nedir? </b>
                                                     <select id="B7_#" Soru="Çalışma Durumu" name="B7_#"
                                                         data-header="Select a condiment" data-live-search="true"
-                                                        class="zorunbuyukyas"  kosul="(parseInt(_B3)<40 && (item==1)">
+                                                        class="zorunbuyukyas"  kosul="(parseInt(_B3)<40 && (item==1 || item==2))">
                                                         <option value="">Seçiniz...</option>
-                                                        <option value="1">Emekli</option>
-                                                        <option value="2">Çalışmıyor / Gelir Getiren Bir İşi Yok</option>
-                                                        <option value="3">Ücret / Maaş Karşılığı Çalışıyor
-                                                        </option>
-                                                        <option value="4">Kendi İşinde Çalışıyor</option>
+                                                        <option value="1">Emekli / Çalışıyor</option>
+                                                        <option value="2">Emekli / Çalışmıyor</option>
+                                                        <option value="3">Çalışmıyor / Gelir Getiren Bir İşi Yok</option>
+                                                        <option value="4">Ücret / Maaş Karşılığı Çalışıyor</option>
+                                                        <option value="5">Kendi İşinde Çalışıyor</option>
                                                         
 
                                                         <!-- <option value="1">Tam zamanlı Çalışan (Haftada
@@ -1476,6 +1621,7 @@
                                                     <!-- B101_O meslek açık sorusu ayrı sayfaya taşındı (B10.html) -->
                                                 </td>
                                             </tr>
+                                            <!-- B8 meslek sorusu B10.html sayfasına taşındı
                                             <tr id="tr#" class="trMeslek" style="display:none" >
 
                                                 <td class="tdMeslek col-lg-1" colspan="4">
@@ -1547,7 +1693,7 @@
                                                     </select>
 
 
-                                                    <!-- <div class="meslekKendiIsiCalisan" style="display:none">
+                                                    <div class="meslekKendiIsiCalisan" style="display:none">
                                                         Kendi İşi mi / Maaşlı Çalışan mı?:
                                                         <select id="B102_#" Soru="Kendi İşi mi / Maaşlı Çalışan mı?"
                                                             name="B102" style="display:none"
@@ -1557,11 +1703,13 @@
                                                             <option value="2">Çalışan</option>
 
                                                         </select>
-                                                    </div> -->
-                                                    <!--     <input type="text" id="B6_<%//=i+1 %>_O" name="B6_<%//=i+1 %>_O" value="<%//=dt.Rows[0]["B6_" + (i+1) + "_O"].ToString() %>" style="<%//=display%>"/> -->
+                                                    </div>
+                                                    <input type="text" id="B6_O" name="B6_O" value="" style="display:none"/>
                                                 </td>
                                             </tr>
-                                            <tr id="tr#">
+                                            B8 meslek sorusu sonu -->
+                                            <!-- B8e emekli meslek sorusu da B10.html sayfasina tasildi
+<tr id="tr#">
                                                 <td class="S10tdMeslek col-lg-4" colspan="4">
                                                     <b> <span class="name"></span><span id="B8eSpan">’nin
                                                             nasıl bir işten emekli olduğunu söyler
@@ -1657,6 +1805,7 @@ Gelir:
                                                 </td>
 
                                             </tr>
+                                            B8e emekli meslek sorusu sonu -->
 
 
 

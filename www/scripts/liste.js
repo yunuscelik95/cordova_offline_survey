@@ -65,6 +65,18 @@ window.addEventListener('load', () => {
             },
             
             startInterview(id) {
+                var self = this;
+                // Version kontrolü - localStorage'dan karşılaştır
+                var localVersion = window.localStorage["version"] || "0";
+                var serverVersion = window.localStorage["serverVersion"] || "0";
+                if (serverVersion != "0" && serverVersion != localVersion) {
+                    alert("Güncelleme yapmadan ankete giremezsiniz, lütfen tüm datayı gönder seçeneğine basıp sonra uygulamanızı güncelleyin.");
+                    return;
+                }
+                self.doStartInterview(id);
+            },
+
+            doStartInterview(id) {
                 window.localStorage["InterviewID"] = id;
                 db.transaction(function (tx) {
                     tx.executeSql("SELECT InterviewID FROM INTERVIEWS where InterviewID=" + id, [], function (tx, val) {

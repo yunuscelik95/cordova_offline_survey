@@ -137,7 +137,7 @@ window.addEventListener('load', () => {
                     return;
                 }
                 
-                window.localStorage["version"] = "2.0.1";
+                window.localStorage["version"] = "2.0.3";
 
                 if (state.isOnline) {
                     this.getVersion();
@@ -182,6 +182,8 @@ window.addEventListener('load', () => {
                         // responseParse = JSON.parse(response);
 
                         myUpdate("OPTIONS", "optionValue=" + responseParse.ziyaretsayisi, " optionID=2");
+
+                        window.localStorage["serverVersion"] = responseParse.version;
 
                         if (responseParse.version != window.localStorage["version"]) {
                             if (responseParse.sonuc == "Delete") {
