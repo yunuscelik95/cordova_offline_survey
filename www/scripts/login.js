@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.0.4",
+            appVersion: "2.0.5",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
@@ -314,7 +314,7 @@ window.addEventListener('load', () => {
                     return;
                 }
                 
-                window.localStorage["version"] = "2.0.4";
+                window.localStorage["version"] = "2.0.5";
 
                 if (state.isOnline) {
                     this.getVersion();
