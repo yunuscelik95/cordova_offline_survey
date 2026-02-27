@@ -24,6 +24,10 @@ window.addEventListener('load', () => {
             updateError: false
 
         },
+        created() {
+            // Uygulama açıldığında sürümü localStorage'a yaz
+            window.localStorage["version"] = this.appVersion;
+        },
         methods: {
             // =============================================
             // GÜNCELLEME FONKSİYONLARI
