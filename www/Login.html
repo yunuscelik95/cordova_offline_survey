@@ -42,8 +42,54 @@
             background-color: #ff6a00;
         }
 
+        #btnUpdate {
+            background-color: #2196F3;
+        }
+
         button:hover {
             opacity: 0.8;
+        }
+
+        /* Güncelleme Bölümü */
+        .update-section {
+            padding: 10px 16px;
+            display: none;
+        }
+        .update-section.active {
+            display: block;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 8px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 30px;
+            background-color: #4CAF50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: width 0.3s;
+        }
+        .update-status {
+            font-size: 14px;
+            color: #333;
+            margin-top: 5px;
+            text-align: center;
+        }
+        .update-success {
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .update-error {
+            color: #f44336;
+            font-weight: bold;
         }
 
         .cancelbtn {
@@ -101,9 +147,21 @@
         <div id="divLabel"></div>
         <form>
 
-            <!--    <button type="button" id="btnAPK" name="btnAPK">
-        Güncel Program Yükle
-    </button>-->
+            <button type="button" id="btnUpdate" name="btnUpdate" @click="checkForUpdate()">
+                Güncelleme Kontrol Et
+            </button>
+
+            <!-- Güncelleme Progress Bölümü -->
+            <div class="update-section" :class="{ active: updateVisible }">
+                <div class="progress-container">
+                    <div class="progress-bar" :style="{ width: updateProgress + '%' }">
+                        %{{ updateProgress }}
+                    </div>
+                </div>
+                <div class="update-status" :class="{ 'update-success': updateDone, 'update-error': updateError }">
+                    {{ updateMessage }}
+                </div>
+            </div>
 
             <button type="button" id="btnCreate" name="btnCreate" @click="KullaniciYukle()">
                 Kullanıcıları Yükle

@@ -573,3 +573,40 @@ var select = function () {
     });
 
 };
+
+// =============================================
+// VERİTABANI MİGRATİON SİSTEMİ
+// Her güncelleme yaptığınızda yeni kolon eklemeniz gerekirse,
+// aşağıya yeni bir if bloğu ekleyin.
+// ALTER TABLE ADD COLUMN mevcut veriyi SİLMEZ, sadece yeni kolon ekler.
+// Kolon zaten varsa hata yakalayıp sessizce geçer.
+// =============================================
+var migrateDatabase = function(currentDbVersion, newDbVersion) {
+    console.log("DB Migration başlatılıyor: v" + currentDbVersion + " -> v" + newDbVersion);
+    
+    db.transaction(function(tx) {
+
+        // ---- SÜRÜM 1: İlk sürüm, migration gerekmez ----
+        // if (currentDbVersion < 1) {
+        //     // Örnek: Yeni kolon ekleme
+        //     tx.executeSql("ALTER TABLE INTERVIEWS ADD COLUMN [YeniKolon1] INTEGER", [], function(){console.log("YeniKolon1 eklendi");}, function(tx,e){ console.log("YeniKolon1 zaten var"); return false; });
+        //     tx.executeSql("ALTER TABLE INTERVIEWS ADD COLUMN [YeniKolon2] TEXT", [], function(){console.log("YeniKolon2 eklendi");}, function(tx,e){ console.log("YeniKolon2 zaten var"); return false; });
+        // }
+
+        // ---- SÜRÜM 2: Buraya gelecek güncellemede eklenecek kolonları yazın ----
+        // if (currentDbVersion < 2) {
+        //     tx.executeSql("ALTER TABLE INTERVIEWS ADD COLUMN [OrnekSoru] INTEGER", [], function(){}, function(){ return false; });
+        // }
+
+        // ---- SÜRÜM 3: Bir sonraki güncelleme ----
+        // if (currentDbVersion < 3) {
+        //     tx.executeSql("ALTER TABLE INTERVIEWS ADD COLUMN [BaskaBirSoru] TEXT", [], function(){}, function(){ return false; });
+        // }
+
+    }, function(error) {
+        console.error("Migration hatası: " + error.message);
+    }, function() {
+        console.log("Migration tamamlandı. dbVersion: " + newDbVersion);
+        window.localStorage.setItem("dbVersion", newDbVersion);
+    });
+};

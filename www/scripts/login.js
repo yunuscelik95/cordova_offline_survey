@@ -2,16 +2,181 @@
 window.addEventListener('load', () => {
     //  const axios = require('axios');
 
+    // GitHub ayarları - BURAYA KENDİ REPO BİLGİLERİNİZİ YAZIN
+    var GITHUB_USER = "yunuscelik95";
+    var GITHUB_REPO = "cordova_offline_survey";
+    var GITHUB_BRANCH = "main";
+    var VERSION_URL = "https://raw.githubusercontent.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/" + GITHUB_BRANCH + "/www/version.json";
+
     window.vueLogin = new Vue({
         el: "#login",
         data: {
             isButtonDisable: true,
             uname: "",
             psw: "",
-            oran: 0
+            oran: 0,
+            // Güncelleme değişkenleri
+            updateVisible: false,
+            updateProgress: 0,
+            updateMessage: "",
+            updateDone: false,
+            updateError: false
 
         },
         methods: {
+            // =============================================
+            // GÜNCELLEME FONKSİYONLARI
+            // =============================================
+            checkForUpdate() {
+                var self = this;
+                self.updateVisible = true;
+                self.updateProgress = 0;
+                self.updateDone = false;
+                self.updateError = false;
+                self.updateMessage = "Güncelleme kontrol ediliyor...";
+
+                if (!state.isOnline) {
+                    self.updateMessage = "İnternet bağlantısı yok! Güncelleme kontrol edilemiyor.";
+                    self.updateError = true;
+                    return;
+                }
+
+                var localVersion = window.localStorage["version"] || "0.0.0";
+
+                // GitHub'dan version.json çek (cache önlemek için timestamp ekle)
+                var url = VERSION_URL + "?t=" + new Date().getTime();
+                
+                fetch(url)
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error("Sunucuya erişilemedi (HTTP " + response.status + ")");
+                        }
+                        return response.json();
+                    })
+                    .then(function(remoteVersion) {
+                        console.log("Yerel sürüm: " + localVersion + ", Uzak sürüm: " + remoteVersion.version);
+
+                        if (remoteVersion.version !== localVersion) {
+                            // Güncelleme mevcut
+                            self.updateMessage = "Güncelleme mevcut! Mevcut: v" + localVersion + " → Yeni: v" + remoteVersion.version;
+                            
+                            if (confirm("Yeni güncelleme mevcut (v" + remoteVersion.version + ").\n" + 
+                                       (remoteVersion.description || "") + "\n\n" +
+                                       "Güncellemek ister misiniz?")) {
+                                self.downloadUpdate(remoteVersion);
+                            } else {
+                                self.updateMessage = "Güncelleme iptal edildi.";
+                                setTimeout(function() { self.updateVisible = false; }, 3000);
+                            }
+                        } else {
+                            // DB Migration kontrolü - sürüm aynı ama dbVersion farklı olabilir
+                            var localDbVersion = parseInt(window.localStorage["dbVersion"] || "0");
+                            if (remoteVersion.dbVersion && remoteVersion.dbVersion > localDbVersion) {
+                                self.updateMessage = "Veritabanı güncelleniyor...";
+                                if (typeof migrateDatabase === 'function') {
+                                    migrateDatabase(localDbVersion, remoteVersion.dbVersion);
+                                }
+                                self.updateMessage = "Veritabanı güncellendi!";
+                                self.updateDone = true;
+                                setTimeout(function() { self.updateVisible = false; }, 3000);
+                            } else {
+                                self.updateMessage = "✓ Uygulamanız güncel! (v" + localVersion + ")";
+                                self.updateDone = true;
+                                setTimeout(function() { self.updateVisible = false; }, 3000);
+                            }
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error("Güncelleme kontrol hatası:", error);
+                        self.updateMessage = "Güncelleme kontrol edilemedi: " + error.message;
+                        self.updateError = true;
+                    });
+            },
+
+            downloadUpdate(remoteVersion) {
+                var self = this;
+                self.updateProgress = 0;
+                self.updateMessage = "İndirme başlatılıyor...";
+
+                var apkUrl = remoteVersion.apkUrl;
+                if (!apkUrl) {
+                    self.updateMessage = "APK indirme adresi bulunamadı!";
+                    self.updateError = true;
+                    return;
+                }
+
+                // İndirme hedef yolu
+                var targetDir = cordova.file.externalCacheDirectory || cordova.file.cacheDirectory;
+                var targetPath = targetDir + "update.apk";
+
+                var fileTransfer = new FileTransfer();
+
+                // Progress takibi
+                fileTransfer.onprogress = function(progressEvent) {
+                    if (progressEvent.lengthComputable) {
+                        var percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                        var loadedMB = (progressEvent.loaded / (1024 * 1024)).toFixed(1);
+                        var totalMB = (progressEvent.total / (1024 * 1024)).toFixed(1);
+                        
+                        self.updateProgress = percent;
+                        self.updateMessage = "İndiriliyor... " + loadedMB + " MB / " + totalMB + " MB";
+                    } else {
+                        var loadedMB2 = (progressEvent.loaded / (1024 * 1024)).toFixed(1);
+                        self.updateMessage = "İndiriliyor... " + loadedMB2 + " MB indirildi";
+                    }
+                };
+
+                // İndirme başlat
+                fileTransfer.download(
+                    encodeURI(apkUrl),
+                    targetPath,
+                    function(entry) {
+                        // İndirme başarılı
+                        self.updateProgress = 100;
+                        self.updateMessage = "✓ Güncelleme indirildi! Kurulum başlatılıyor...";
+                        self.updateDone = true;
+
+                        // DB Migration çalıştır
+                        var localDbVersion = parseInt(window.localStorage["dbVersion"] || "0");
+                        if (remoteVersion.dbVersion && remoteVersion.dbVersion > localDbVersion) {
+                            if (typeof migrateDatabase === 'function') {
+                                migrateDatabase(localDbVersion, remoteVersion.dbVersion);
+                            }
+                        }
+
+                        // APK kurulumunu başlat (cordova-plugin-file-opener2)
+                        setTimeout(function() {
+                            cordova.plugins.fileOpener2.open(
+                                entry.toURL(),
+                                'application/vnd.android.package-archive',
+                                {
+                                    error: function(e) {
+                                        console.error("APK açma hatası:", e);
+                                        self.updateMessage = "Kurulum başlatılamadı: " + (e.message || JSON.stringify(e));
+                                        self.updateError = true;
+                                        self.updateDone = false;
+                                    },
+                                    success: function() {
+                                        console.log("APK kurulum ekranı açıldı");
+                                    }
+                                }
+                            );
+                        }, 1000);
+                    },
+                    function(error) {
+                        // İndirme hatası
+                        console.error("İndirme hatası:", JSON.stringify(error));
+                        self.updateProgress = 0;
+                        self.updateMessage = "İndirme hatası: " + (error.body || error.code || "Bilinmeyen hata");
+                        self.updateError = true;
+                    },
+                    true // trustAllHosts
+                );
+            },
+
+            // =============================================
+            // MEVCUT FONKSİYONLAR
+            // =============================================
             onlineFunction() {
                 this.isButtonDisable = false; 
                 deleteTable("users", "");
