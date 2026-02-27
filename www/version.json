@@ -1,6 +1,6 @@
 {
-    "version": "2.0.5",
+    "version": "2.0.6",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.0.5/app-debug.apk",
-    "description": "Güncelleme sistemi testi"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.0.6/app-debug.apk",
+    "description": "Bozuk TV mesajı sadece son TV sayfasında gösterilir"
 }

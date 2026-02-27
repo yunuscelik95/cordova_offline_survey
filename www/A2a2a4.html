@@ -43,10 +43,13 @@
 
                     if (val.rows.item(0).A1b_O != "null" && val.rows.item(0).A1b_O != "") {
                         bozukTVSay = parseInt(val.rows.item(0).A1b_O);
-                        $(".bozuktvquestion").show();
                     }
 
                     toplamTV = tvSay + bozukTVSay;
+
+                    if (bozukTVSay > 0 && toplamTV == 4) {
+                        $(".bozuktvquestion").show();
+                    }
                     var A2a1 = val.rows.item(0).A2a1
                     if (A2a1 == 2) {
                         $('#QuestionTable tbody tr.ucretli').hide();
