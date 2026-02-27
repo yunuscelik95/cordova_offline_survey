@@ -1,6 +1,6 @@
 {
-    "version": "2.0.6",
+    "version": "2.0.7",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.0.6/app-debug.apk",
-    "description": "Bozuk TV mesajı sadece son TV sayfasında gösterilir"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.0.7/app-debug.apk",
+    "description": "Bozuk TV uyarisi tum bozuk TV sayfalarinda gosterilir"
 }
