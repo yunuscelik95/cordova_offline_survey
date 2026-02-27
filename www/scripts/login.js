@@ -109,6 +109,9 @@ window.addEventListener('load', () => {
                 var targetDir = cordova.file.externalCacheDirectory || cordova.file.cacheDirectory;
                 var targetPath = targetDir + "update.apk";
 
+                // Önce GitHub redirect URL'sini çöz, sonra FileTransfer ile indir
+                self.updateMessage = "Bağlantı hazırlanıyor...";
+
                 var fileTransfer = new FileTransfer();
 
                 // Progress takibi
@@ -126,9 +129,9 @@ window.addEventListener('load', () => {
                     }
                 };
 
-                // İndirme başlat
+                // FileTransfer ile indirme başlat
                 fileTransfer.download(
-                    encodeURI(apkUrl),
+                    apkUrl,
                     targetPath,
                     function(entry) {
                         // İndirme başarılı
@@ -144,15 +147,23 @@ window.addEventListener('load', () => {
                             }
                         }
 
-                        // APK kurulumunu başlat (cordova-plugin-file-opener2)
+                        // APK kurulumunu başlat
                         setTimeout(function() {
+                            // Native dosya yolunu al
+                            var filePath = entry.toURL();
+                            // cdvfile:// veya content:// yerine file:// yolunu kullan
+                            if (entry.nativeURL) {
+                                filePath = entry.nativeURL;
+                            }
+                            console.log("APK dosya yolu: " + filePath);
+                            
                             cordova.plugins.fileOpener2.open(
-                                entry.toURL(),
+                                filePath,
                                 'application/vnd.android.package-archive',
                                 {
                                     error: function(e) {
                                         console.error("APK açma hatası:", e);
-                                        self.updateMessage = "Kurulum başlatılamadı: " + (e.message || JSON.stringify(e));
+                                        self.updateMessage = "Kurulum başlatılamadı: " + (e.message || JSON.stringify(e)) + " Yol: " + filePath;
                                         self.updateError = true;
                                         self.updateDone = false;
                                     },
@@ -164,13 +175,13 @@ window.addEventListener('load', () => {
                         }, 1000);
                     },
                     function(error) {
-                        // İndirme hatası
                         console.error("İndirme hatası:", JSON.stringify(error));
                         self.updateProgress = 0;
-                        self.updateMessage = "İndirme hatası: " + (error.body || error.code || "Bilinmeyen hata");
+                        self.updateMessage = "İndirme hatası (kod:" + error.code + "): " + (error.body || error.exception || "Bilinmeyen hata") + " - URL: " + apkUrl;
                         self.updateError = true;
                     },
-                    true // trustAllHosts
+                    true, // trustAllHosts
+                    { headers: { "Accept": "application/octet-stream" } }
                 );
             },
 
@@ -302,7 +313,7 @@ window.addEventListener('load', () => {
                     return;
                 }
                 
-                window.localStorage["version"] = "2.0.3";
+                window.localStorage["version"] = "2.0.4";
 
                 if (state.isOnline) {
                     this.getVersion();

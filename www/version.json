@@ -1,6 +1,6 @@
 {
-    "version": "2.0.3",
+    "version": "2.0.4",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.0.3/app-debug.apk",
-    "description": "İlk sürüm"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.0.4/app-debug.apk",
+    "description": "SES25S4 koşul güncellemesi ve güncelleme sistemi düzeltmeleri"
 }

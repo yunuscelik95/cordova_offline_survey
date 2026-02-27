@@ -6,6 +6,8 @@
         TelevizyonIzleme
     </author>
     <content src="index.html" />
+    <access origin="*" />
+    <allow-navigation href="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <platform name="android"> 
