@@ -318,8 +318,7 @@ window.addEventListener('load', () => {
                     return;
                 }
                 
-                window.localStorage["version"] = "2.0.5";
-
+                
                 if (state.isOnline) {
                     this.getVersion();
                 }
@@ -354,37 +353,31 @@ window.addEventListener('load', () => {
             },
 
             getVersion() {
-                var request = new XMLHttpRequest();
-                var serviceUrl = 'https://vta.diyalog.com.tr/api/version';
-                axios.get(serviceUrl)
-                    .then(response => {
+                var self = this;
+                var url = VERSION_URL + "?t=" + new Date().getTime();
+                
+                fetch(url)
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error("HTTP " + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(function(remoteVersion) {
+                        window.localStorage["serverVersion"] = remoteVersion.version;
 
-                        var responseParse = JSON.parse(response.data);
-                        // responseParse = JSON.parse(response);
-
-                        myUpdate("OPTIONS", "optionValue=" + responseParse.ziyaretsayisi, " optionID=2");
-
-                        window.localStorage["serverVersion"] = responseParse.version;
-
-                        if (responseParse.version != window.localStorage["version"]) {
-                            if (responseParse.sonuc == "Delete") {
-                                alert("Lütfen uygulamanın güncellenmiş versiyonunu yükleyiniz. Sisteme girişiniz engellenmiştir.");
-                                //   deleteTable("users", "");
-                            }
-                            else {
-
-                                alert("Lütfen uygulamanın güncellenmiş versiyonunu yükleyiniz.");
-                                this.login();
-                            }
+                        if (remoteVersion.version != window.localStorage["version"]) {
+                            alert("Yeni güncelleme mevcut (v" + remoteVersion.version + "). Lütfen Güncelleme Kontrol Et butonunu kullanarak güncelleyiniz.");
+                            self.login();
                         }
                         else {
-                            this.login();
+                            self.login();
                         }
-
-                    }).catch(error => {
-                       // alert(error);
-                        this.login();
                     })
+                    .catch(function(error) {
+                        console.error("Version kontrol hatası:", error);
+                        self.login();
+                    });
             }
 
         }
