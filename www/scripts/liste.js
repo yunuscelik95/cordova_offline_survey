@@ -85,7 +85,7 @@ window.addEventListener('load', () => {
                         if (val.rows.length < 1) {
                             keys.push("InterviewID");
                             values.push(id);
-                            tx.executeSql("insert into [INTERVIEWS] (InterviewID) values(?)", values);
+                            tx.executeSql("insert into [INTERVIEWS] (InterviewID, guid) values(?, ?)", [id, window.localStorage["blokGuid"] || '']);
     
                         }
                     });
@@ -97,7 +97,7 @@ window.addEventListener('load', () => {
                     function () {
     
                         //myUpdateRedirect("INTERVIEWS", "userID=" + window.localStorage["userID"].split('.')[0] + ",[start]= datetime('now'),ziyaretTarihi='',ziyaretAciklama=''", " InterviewID=" + id, "p3.html?id=" + id);
-                        myUpdateRedirect("INTERVIEWS", "userID=" + window.localStorage["userID"].split('.')[0] + ",[start]= datetime('now', 'localtime'),ziyaretTarihi='',ziyaretAciklama=''", " InterviewID=" + id, "Giris.html?id=" + id);
+                        myUpdateRedirect("INTERVIEWS", "userID=" + window.localStorage["userID"].split('.')[0] + ",guid='" + (window.localStorage["blokGuid"] || '') + "',[start]= datetime('now', 'localtime'),ziyaretTarihi='',ziyaretAciklama=''", " InterviewID=" + id, "Giris.html?id=" + id);
                     }
                 );
             },

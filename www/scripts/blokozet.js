@@ -299,7 +299,7 @@
                             var keysStr = "";
                             var Parameters = "";
                             $.each(val, function (key1, val1) {
-                                if (key1 != "Yapilan" && key1 != "Kalan") {
+                                if (key1 != "Kalan") {
                                     if (key1 == "blokstatu") key1 = "statu";
                                     if (keysStr != "") { keysStr += ","; Parameters += ","; };
                                     keysStr += key1;
@@ -387,7 +387,7 @@
                 var self = this;
                 var say = 0;
                 db.transaction(function (tx) {
-                    tx.executeSql("SELECT guid,blokno,iladi,ilceadi,koyadi,mahalleadi,statu,blokAciklama FROM BLOKOZET where userID=? order by blokno", [window.localStorage["userID"]], function (tx, val) {
+                    tx.executeSql("SELECT guid, blokno, iladi, ilceadi, koyadi, mahalleadi, statu, blokAciklama, IFNULL(Yapilan, 0) as tamamlanan FROM BLOKOZET WHERE userID=? ORDER BY blokno", [window.localStorage["userID"]], function (tx, val) {
                     //self.liste = val.rows;
 					    var listeArray = [];
 

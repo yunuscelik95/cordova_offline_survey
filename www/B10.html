@@ -80,6 +80,8 @@
                             // B7 = 1 (Emekli/Çalışıyor) veya B7 = 2 (Emekli/Çalışmıyor) ise B8e, diğer durumlarda B8
                             if (b7Degeri == 1 || b7Degeri == 2) {
                                 console.log("Emekli - B8e gösteriliyor, B7=", b7Degeri);
+                                isEmekli = true;
+                                $('#QuestionTextTD').html('<font face="Calibri" color="#000000" size="2">Eve düzenli ve en yüksek geliri getiren kişinin <b><span id="secilenKisiIsim">' + secilenIsim + '</span></b> \'ın <b>emekli olmadan önce</b> yaptığı işi yani mesleğinin ne olduğunu detaylı olarak belirtir misiniz?<br><b></b>ANKETÖR DİKKAT: Yapılan İşin / Mesleğin Çok Ayrıntılı Olarak Yazılması Gerekiyor<br>ANKETÖR! KİŞİ EMEKLİ İSEDE , EMEKLİ OLMADAN ÖNCEKİ MESLEĞİNİ AÇIK OLARAK AŞAĞIDAKİ ÖRNEKLERDEKİ ŞEKİLDE DETAYLI YAZINIZ.<br>EMEKLİ ÖĞRETMEN İDİ YÖNETİCİ KONUMU YOKTU ŞU ANDA ÇALIŞMIYOR<br>EMEKLİ BANKA MÜDÜRÜYDÜ ALTINDA 14 KİŞİ ÇALIŞIYORDU<br>ÖZEL BİR ŞİRKETTE MAAŞLI ŞOFÖRDÜ<br>5 ÇALIŞANI OLAN MARKET SAHİBİYDİ</font>');
                                 $('#B8Row').hide();
                                 $('#B8eRow').show();
                                 applyB8eKosullar();
@@ -310,7 +312,9 @@
                         <span id="StepNameTD">B10.</span>
                         <span id="QuestionTextTD">
                             <font face="Calibri" color="#000000" size="2">
-                                <b><span id="secilenKisiIsim"></span></b> için meslek bilgileri
+                                Eve düzenli ve en yüksek geliri getiren kişinin 
+                                <b><span id="secilenKisiIsim"></span></b> 'ın yaptığı işi yani mesleğinin ne olduğunu detaylı olarak belirtir misiniz?
+                                <br><b></b>ANKETÖR DİKKAT: Yapılan İşin / Mesleğin Çok Ayrıntılı Olarak Yazılması Gerekiyor
                                 <br>ANKETÖR! KİŞİ EMEKLİ İSEDE , EMEKLİ OLMADAN ÖNCEKİ MESLEĞİNİ AÇIK OLARAK AŞAĞIDAKİ
                                 ÖRNEKLERDEKİ ŞEKİLDE DETAYLI YAZINIZ.
                                 <br>EMEKLİ ÖĞRETMEN İDİ YÖNETİCİ KONUMU YOKTU ŞU ANDA ÇALIŞMIYOR

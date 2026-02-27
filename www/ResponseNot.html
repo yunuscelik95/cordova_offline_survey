@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Response Açıklama</title>
+
+    <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <script src="scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="scripts/database.js"></script>
+    <style>
+        textarea {
+            width: 90%;
+            height: 150px;
+            margin: 10px;
+            padding: 10px;
+            border: 2px solid #333;
+            font-family: Arial;
+            font-size: 14px;
+        }
+        .container {
+            padding: 15px;
+        }
+        h3 {
+            margin: 10px;
+        }
+        .btn-row {
+            margin: 10px;
+        }
+    </style>
+    <script type="text/javascript">
+        var statu = "";
+
+        window.onload = function () {
+            statu = getUrlVars()["statu"];
+            if (!statu) {
+                window.location.href = "blokOzet.html";
+            }
+        };
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+        }
+
+        function getUrlVars() {
+            var vars = [], hash;
+            var indexofHash = window.location.href.indexOf('#');
+            var hashes;
+            if (indexofHash == -1) {
+                hashes = window.location.href.slice((window.location.href.indexOf('?')) + 1).split('&');
+            } else {
+                hashes = window.location.href.slice((window.location.href.indexOf('#')) + 1).split('&');
+            }
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+
+        function gecisKontrol() {
+            var aciklama = $("#ResponseNot_O").val().trim();
+            
+            if (aciklama == "") {
+                alert("Açıklama yazmanız zorunludur!");
+                return false;
+            }
+
+            var cleanAciklama = aciklama.replace(/'/g, "");
+            
+            myUpdateRedirect("INTERVIEWS", 
+                "ResponseNot=" + statu + ",ResponseNot_O='" + cleanAciklama + "'", 
+                " InterviewID=" + window.localStorage["InterviewID"], 
+                "Response.html?id=" + window.localStorage["InterviewID"] + "&statu=" + statu);
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h3>Açıklama Yazınız</h3>
+        <p style="margin:10px;">Seçtiğiniz response kodu için açıklama girmeniz zorunludur.</p>
+        
+        <textarea id="ResponseNot_O" name="ResponseNot_O" placeholder="Açıklamanızı buraya yazınız..."></textarea>
+
+        <table style="width:100%; border:none;">
+            <tr>
+                <td style="border:none;">
+                    <input type="button" value="Geri" onclick="goBack();" />
+                </td>
+                <td align="right" style="border:none;">
+                    <input type="button" id="next" name="next" value="İleri" onclick="gecisKontrol();" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

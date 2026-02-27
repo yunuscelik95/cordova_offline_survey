@@ -64,9 +64,17 @@
 
                           
                         }
-                        if (yas15BuyukFirstIndex == 0)
+                        if (yas15BuyukFirstIndex == 0 && yasBuyukSay == 0)
                         {
-                            window.location.href = "GK.html?id=" + id;
+                            // Tek kişi yaşıyor veya diğer kişiler 18 altı - template satırını DOM'dan kaldır
+                            var templateRow = $("#QuestionTable tbody>tr:first");
+                            templateRow.remove();
+                            $("input[type='number']").each(function () {
+                                otherValue.push($(this).attr("id").replace("C4_O_",""));
+                                otherObj.push(document.getElementById( $(this).attr("id")));
+                            })
+                            SetStartUp();
+                            return;
                         }
 
                         var row = $("#QuestionTable tbody>tr:first").clone(true);
@@ -180,8 +188,15 @@
             if ((kontrol && kontrol2) || aswer=="3") {
                 $("form").find(':input').each(function () {
                     if (($(this).prop("tagName") == "SELECT" || $(this).attr("type") == "text" || $(this).attr("type") == "radio" || $(this).attr("type") == "number") && $(this).attr("class") != "input-block-level form-control") {
+                        var inputName = $(this).attr("name");
+                        if (!inputName || inputName.indexOf("#") > -1) return;
+                        var val = $(this).val();
                         if (updateStr != "") updateStr += ",";
-                        updateStr += $(this).attr("name") + "='" + $(this).val() + "'";
+                        if (val === '' || val === null || val === undefined) {
+                            updateStr += inputName + "=NULL";
+                        } else {
+                            updateStr += inputName + "='" + val + "'";
+                        }
                     }
                 })
 

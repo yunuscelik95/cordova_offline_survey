@@ -66,6 +66,7 @@
                     <th scope="col">Köy</th>
                     <th scope="col">Mahalle</th>
                     <th scope="col">Durum</th>
+                    <th scope="col">Tamamlanan</th>
                     <th scope="col">&nbsp;</th>
 
                     <th scope="col">İşlem</th>
@@ -78,6 +79,7 @@
                     <td>{{item.koyadi}}</td>
                     <td>{{item.mahalleadi}}</td>
                     <td>{{item.blokAciklama}}</td>
+                    <td>{{item.tamamlanan || 0}}</td>
                     <td>
                         <input v-if="item.statu==2" type='button' class='btn btn-block btn-warning btn-xs' value='Blok Aç' @click="blokAc(item.guid)" />
                         <input v-if="item.statu!=2 && item.statu!=8 && item.statu!=9" type='button' class='btn btn-block btn-outline-secondary btn-xs' value='Blok Kapat' @click="blokKapat(item.guid)" />

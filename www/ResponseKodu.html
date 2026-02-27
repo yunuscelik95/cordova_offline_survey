@@ -131,46 +131,53 @@
         function gecisKontrol() {
             
             var kontrol = CheckValues();
-            var gun = $("#timeGun").val();
-            var ay = $("#timeAy").val();
-            var yil = $("#timeYil").val();
+            var tarihVal = $("#callbackDate").val();
             var saat = $("#CALLBACKTIME").val();
             var ziyaretTarihi = "";
             var ziyaretTarihiGecmis ="";
 
 
 
-            if (callback=="1" && gun != "" && ay != "" && parseInt(ay) < 9 && yil == "2024" && saat!="")
+            if (callback=="1" && tarihVal != "" && saat!="")
             {
+                var parcalar = tarihVal.split("-"); // yyyy-mm-dd
+                var gun = parcalar[2];
+                var ay = parcalar[1];
+                var yil = parcalar[0];
                 ziyaretTarihi = gun + "-" + ay + "-" + yil + " " + saat;
-                
                 ziyaretTarihiGecmis = yil + "-" + ay + "-" + gun + " " + saat;
             }
             else if (callback=="1")
             {
-                alert("Ziyaret tarihini işaretleyiniz! 2024 yılı 9. Ay öncesine randevu alınabilinir");
+                alert("Ziyaret tarihini işaretleyiniz!");
                 return false;
             }
             
             var bugun = new Date();
-            bugun.setDate(bugun.getDate() - 1);
             var ziyaretTarihDate = new Date(ziyaretTarihiGecmis);
 
-            if (ziyaretTarihDate < bugun) {
-                // Ziyaret tarihi bugünün tarihinden geride
-                alert("Ziyaret tarihi bugünün tarihinden geride olamaz.");
+            if (callback=="1" && ziyaretTarihDate <= bugun) {
+                var bugunStr = ("0" + bugun.getDate()).slice(-2) + "-" + ("0" + (bugun.getMonth()+1)).slice(-2) + "-" + bugun.getFullYear() + " " + ("0" + bugun.getHours()).slice(-2) + ":" + ("0" + bugun.getMinutes()).slice(-2);
+                alert("Randevu tarihi ve saati (" + ziyaretTarihi + ") şu andan (" + bugunStr + ") sonrası olmalıdır.");
                 return false;
-                // İlgili işlemleri gerçekleştirme veya kullanıcıya uygun bir geri bildirim verme
             }
           
             if (kontrol) {
              //   myUpdate("INTERVIEWS", "InterviewStatu=" + currentValue + ",[stop]=getdate()", " InterviewID=" + id);
             //    myUpdate("LISTE", "statu=" + currentValue, " id=" + id);
+                var aciklama = $("#COMMENT").val() ? $("#COMMENT").val().replace(/'/g, "") : "";
                 db.transaction(function (tx) {
-                    var aciklama = $("#COMMENT").val().replace("'", "").replace("'", "").replace("'", "");
-                    myUpdate("LISTE", "statu=" + currentValue + ",ziyaretTarihi='" + ziyaretTarihi + "',ziyaretAciklama='" + aciklama + "'", " id=" + window.localStorage["InterviewID"]);
-                    myUpdate("INTERVIEWS", "InterviewStatu= " + currentValue + ", [stop] = datetime('now', 'localtime'),gonderim=0,ziyaretTarihi='" + ziyaretTarihi + "',ziyaretAciklama='" + aciklama + "'", " InterviewID=" + window.localStorage["InterviewID"]);
-                    window.location.href = "Response.html?id=" + window.localStorage["InterviewID"] + "&statu=" + currentValue;
+                    tx.executeSql("UPDATE [LISTE] SET statu=" + currentValue + ",ziyaretTarihi='" + ziyaretTarihi + "',ziyaretAciklama='" + aciklama + "' WHERE id=" + window.localStorage["InterviewID"]);
+                    tx.executeSql("UPDATE [INTERVIEWS] SET InterviewStatu=" + currentValue + ", [stop]=datetime('now', 'localtime'), gonderim=0, ziyaretTarihi='" + ziyaretTarihi + "', ziyaretAciklama='" + aciklama + "' WHERE InterviewID=" + window.localStorage["InterviewID"]);
+                }, function(error) {
+                    alert("Kayıt hatası: " + error.message);
+                }, function() {
+                    // Transaction tamamlandıktan sonra yönlendir
+                    if (currentValue == "7" || currentValue == "8" || currentValue == "22") {
+                        window.location.href = "ResponseNot.html?id=" + window.localStorage["InterviewID"] + "&statu=" + currentValue;
+                    } else {
+                        window.location.href = "Response.html?id=" + window.localStorage["InterviewID"] + "&statu=" + currentValue;
+                    }
                 });
                 /* db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
                  db.transaction(function (tx) {
@@ -203,7 +210,17 @@
                 }
             }
 
-
+            // URL'den statu geldiyse checked radio'yu tetikle (Vue DOM güncellemesini bekle)
+            setTimeout(function() {
+                var checkedRadio = document.querySelector("input[type=radio]:checked");
+                if (checkedRadio) {
+                    currentValue = checkedRadio.value;
+                    callback = checkedRadio.getAttribute("callback");
+                    if (callback == "1") {
+                        $("#CALLBACKTR").show();
+                    }
+                }
+            }, 300);
         }
 
         function CheckValues() {
@@ -235,41 +252,12 @@
         }
 
         $(document).ready(function () {
-           
-            
-
-            $("input[type='number']").keydown(function (e) {
-                var max_chars = $(this).attr("maxlength");
-                var max_value = $(this).attr("maxValue");
-                
-                if ($(this).val().length >= max_chars ) {
-                    $(this).val($(this).val().substr(0, max_chars));
-                }
-                if (parseInt($(this).val()) > parseInt(max_value))
-                {
-                    $(this).val($(this).val().substr(0, $(this).val().length-1));
-                }
-            });
-            $("input[type='number']").blur(function (e) {
-                if ($(this).attr("id") == "timeAy" || $(this).attr("id") == "timeGun")
-                {
-                    if ($(this).val().length < 2)
-                    {
-                        $(this).val("0" + $(this).val());
-                    }
-                }
-            })
-            $("input[type='number']").keyup(function (e) {
-                var max_chars = $(this).attr("maxlength");
-                var max_value = $(this).attr("maxValue");
-                if ($(this).val().length >= max_chars) {
-                    $(this).val($(this).val().substr(0, max_chars));
-                }
-
-                if (parseInt($(this).val()) > parseInt(max_value)) {
-                    $(this).val($(this).val().substr(0, $(this).val().length - 1));
-                }
-            });
+            // Tarih inputunun min değerini bugüne ayarla
+            var bugun = new Date();
+            var yil = bugun.getFullYear();
+            var ay = ("0" + (bugun.getMonth() + 1)).slice(-2);
+            var gun = ("0" + bugun.getDate()).slice(-2);
+            $("#callbackDate").attr("min", yil + "-" + ay + "-" + gun);
         })
 
 
@@ -364,7 +352,7 @@
                             <TR>
                                 <TD>Call Back Date :</TD>
                                 <TD>
-                                    <input type="number" id="timeGun" name="timeGun" maxlength="2" maxValue="31" style="width:35px" placeholder="Gun" />-<input type="number" id="timeAy" name="timeAy" maxlength="2" maxValue="12" style="width:35px" placeholder="Ay" />-<input type="number" id="timeYil" name="timeYil" style="width:60px" maxlength="4" placeholder="2024" value="2024" />
+                                    <input type="date" id="callbackDate" name="callbackDate" min="2026-02-25" max="2026-12-31" style="width:160px;padding:5px" />
                                 </TD>
                                 <TD>
                                     Call Back Time :
@@ -559,7 +547,7 @@
                             </TR>
                             <TR>
                                 <TD>
-                                    Comment :
+                                    Açıklama :
                                 </TD>
                                 <TD COLSPAN=3>
 <TEXTAREA ID="COMMENT" NAME="COMMENT" STYLE="WIDTH:250PX;HEIGHT:100PX;FONT-FAMILY:ARIAL"></TEXTAREA>

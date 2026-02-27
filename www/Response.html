@@ -138,6 +138,11 @@
                     myUpdate("INTERVIEWS", "InterviewStatu= " + statu + ",updatedate = datetime('now', 'localtime'), [stop] = datetime('now', 'localtime'),gonderim=0,ZiyaretSayi=case when ZiyaretSayi is null then 0 else ZiyaretSayi end + 1", " InterviewID=" + window.localStorage["InterviewID"]);
                     myUpdate("LISTE", "statu=" + statu + ",ZiyaretSayi=case when ZiyaretSayi is null then 0 else ZiyaretSayi end + 1", " id=" + window.localStorage["InterviewID"]);
 
+                    // Anket tamamlandıysa (statu=6) BLOKOZET Yapilan sayısını artır
+                    if (statu == 6) {
+                        myUpdate("BLOKOZET", "Yapilan=case when Yapilan is null then 1 else Yapilan + 1 end", " guid='" + window.localStorage["blokGuid"] + "'");
+                    }
+
                 //});
                 var networkState = navigator.connection.type;
                 if (networkState != Connection.NONE) {

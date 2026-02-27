@@ -109,6 +109,27 @@
         function goBack() {
             window.location.href = "SES25EK1.html?id=" + window.localStorage["InterviewID"];
         }
+
+        $(document).ready(function() {
+            // 1 seçilince diğerleri kalksın
+            $('#SES25EK2_1').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $('#SES25EK2_2, #SES25EK2_3, #SES25EK2_4').prop('checked', false);
+                }
+            });
+            // 4 seçilince diğerleri kalksın
+            $('#SES25EK2_4').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $('#SES25EK2_1, #SES25EK2_2, #SES25EK2_3').prop('checked', false);
+                }
+            });
+            // 2 veya 3 seçilince 1 ve 4 kalksın
+            $('#SES25EK2_2, #SES25EK2_3').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $('#SES25EK2_1, #SES25EK2_4').prop('checked', false);
+                }
+            });
+        });
     </script>
 </head>
 <body>

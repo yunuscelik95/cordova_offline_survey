@@ -98,6 +98,19 @@ function controlOther(obj)
 
             DeselectOther(rObj);
         }
+        else if(attrResult=="false" && this.checked)
+        {
+            // Normal seçenek seçildiğinde, deselectother=true olanları kaldır
+            for(var d=0;d<document.forms[0].elements.length;d++)
+            {
+                var dObj = document.forms[0].elements[d];
+                if(dObj.type=="checkbox" && dObj!=this && dObj.getAttribute("DeselectOther")=="true" && dObj.checked)
+                {
+                    dObj.checked = false;
+                    removeItem(dObj);
+                }
+            }
+        }
     }
     //alert(this.checked);
     if(this.checked)
@@ -157,6 +170,7 @@ function DeselectOther(obj)
                         {
                      
                             otherObj[index].disabled = 'disabled';
+                            otherObj[index].value = '';
                          
                         }
                         _obj.disabled = 'disabled';

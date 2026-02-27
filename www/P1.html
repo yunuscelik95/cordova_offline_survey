@@ -8,6 +8,12 @@
     <link href="css/StyleDefult.css" rel="stylesheet" type="text/css" />
     <link href="css/bootstrap.min.css" rel="stylesheet" />
     <link href="css/lightbox.min.css" rel="stylesheet" />
+    <style>
+        .img-P1 { max-height: 50px; width: auto; object-fit: contain; }
+        .img-cell { white-space: nowrap; }
+        .img-cell div { display: inline-flex; align-items: center; gap: 3px; vertical-align: middle; }
+        .img-cell label { display: inline; vertical-align: middle; margin-left: 5px; }
+    </style>
 
     <script src="scripts/jquery-3.3.1.js"></script>
 
@@ -87,11 +93,11 @@
                 <tr>
                     <td>
                         <span id="StepNameTD">P1.</span><span id="QuestionTextTD">
-                            <font face="Calibri" color="#000000" size="2">Şimdi size okuyacağım internet üzerinden FİLM
+                            <font face="Calibri" color="#000000" size="2">İnternet üzerinden FİLM
                                 / DİZİ yayını yapan platformlardan izleme yapılıyor mu?
                                 <br />
                                 <b>(EKRANI GÖSTER - SEÇENEKLERİ OKUYUN – HER SEÇENEK TEK CEVAP) </b>
-
+                                Hangi FİLM/DİZİ yayını yapan platformlara üyesiniz?     
                             </font>
 
                         </span>
@@ -199,8 +205,7 @@
                                 <tr>
                                     <th align="right">6</th>
                                     <td class="img-cell">
-                                        <div><img src="/images/survey/P1_6.png" class="img-P1"><img src="/images/survey/P1_6_2.png" class="img-P1"></div><label>BLU
-                                            TV / HBO MAX</label>
+                                        <div><img src="/images/survey/P1_6_2.png" class="img-P1"><img src="/images/survey/P1_6.png" class="img-P1"></div><label>HBO MAX (BLU TV)</label>
                                     </td>
                                     <td style="text-align:center;">1<input type="radio" class="radioStyle" name="P1_6"
                                             id="P1_6_1" value="1" openend="false" isnumeric="" size="" maxlength=""

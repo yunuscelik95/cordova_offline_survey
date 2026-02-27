@@ -8,6 +8,7 @@
     <link href="css/lightbox.min.css" rel="stylesheet" />
 
     <script src="scripts/jquery-3.3.1.js"></script>
+    <script src="scripts/axiosjs.js"></script>
 
     <script type="text/javascript" src="cordova.js"></script>
 
@@ -129,10 +130,91 @@
             }
         }
 
+        function listeIndir(callback_fn) {
+            var serviceUrl = 'https://vta.diyalog.com.tr/api/getBlokListe/' + guid + '/' + window.localStorage["userGuid"];
+            var config = { headers: { 'Content-Type': 'application/json' } };
+            axios.get(serviceUrl, config)
+                .then(function(response) {
+                    var j = jQuery.parseJSON(response.data);
+                    if (j.length == 0) {
+                        callback_fn();
+                        return;
+                    }
+                    var say = 0;
+                    $.each(j, function(key, val) {
+                        var keys = [];
+                        var values = [];
+                        var keysStr = "";
+                        var Parameters = "";
+                        $.each(val, function(key1, val1) {
+                            keys.push(key1);
+                            values.push(val1);
+                            if (keysStr != "") { keysStr += ","; Parameters += ","; }
+                            keysStr += key1;
+                            Parameters += "?";
+                        });
+                        db.transaction(function(tx) {
+                            tx.executeSql("insert into [LISTE] (" + keysStr + ") values(" + Parameters + ")", values);
+                            say++;
+                            if (say == j.length) {
+                                callback_fn();
+                            }
+                        });
+                    });
+                })
+                .catch(function() {
+                    alert("Adres listesi sunucudan indirilemedi. İnternet bağlantınızı kontrol edin.");
+                });
+        }
+
+        function kodlanmamisKontrol() {
+            db.transaction(function(tx) {
+                tx.executeSql("SELECT COUNT(*) as toplam FROM LISTE WHERE guid=?", [guid], function(tx, val) {
+                    var toplam = val.rows.item(0).toplam;
+                    if (toplam == 0) {
+                        alert("Bloktaki adresler yüklenemedi.");
+                        return;
+                    }
+                    tx.executeSql("SELECT COUNT(*) as kodlanmamis FROM LISTE WHERE guid=? AND (statu IS NULL OR statu='' OR statu='0')", [guid], function(tx2, val2) {
+                        if (val2.rows.item(0).kodlanmamis > 0) {
+                            alert("Bloktaki tüm adresler en az 1 kez ziyaret edilip durum kodlanmadan blok kapatılamaz! Kodlanmamış " + val2.rows.item(0).kodlanmamis + " adres var.");
+                            return;
+                        } else {
+                            setServer();
+                        }
+                    });
+                });
+            });
+        }
+
         function gecisKontrol() {
             var kontrol = CheckValues();
             if (kontrol) {
-                setServer();
+                // Blok kapatma ise (statu==2), tüm adreslerin ziyaret edilmiş olmasını kontrol et
+                if (statu == "2") {
+                    db.transaction(function (tx) {
+                        tx.executeSql("SELECT COUNT(*) as toplam FROM LISTE WHERE guid=?", [guid], function (tx, val) {
+                            var toplam = val.rows.item(0).toplam;
+                            if (toplam == 0) {
+                                // LISTE boş, API'den indir sonra kontrol et
+                                listeIndir(function() {
+                                    kodlanmamisKontrol();
+                                });
+                                return;
+                            }
+                            tx.executeSql("SELECT COUNT(*) as kodlanmamis FROM LISTE WHERE guid=? AND (statu IS NULL OR statu='' OR statu='0')", [guid], function (tx2, val2) {
+                                if (val2.rows.item(0).kodlanmamis > 0) {
+                                    alert("Bloktaki tüm adresler en az 1 kez ziyaret edilip durum kodlanmadan blok kapatılamaz! Kodlanmamış " + val2.rows.item(0).kodlanmamis + " adres var.");
+                                    return;
+                                } else {
+                                    setServer();
+                                }
+                            });
+                        });
+                    });
+                } else {
+                    setServer();
+                }
                 }
                 
                 //window.location.href = "Response.html?id=" + window.localStorage["InterviewID"] + "&statu=6";

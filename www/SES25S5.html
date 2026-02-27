@@ -127,9 +127,12 @@
                     $('#option-13').show();
                     $('#option-14').show();
                 }
-                // Seçenek 15,16: SES25S1>=7
-                if (ses25s1Value >= 7) {
+                // Seçenek 15: SES25S4=17 && SES25S1>=6
+                if (ses25s1Value >= 6) {
                     $('#option-15').show();
+                }
+                // Seçenek 16: SES25S4=17 && SES25S1>=4
+                if (ses25s1Value >= 4) {
                     $('#option-16').show();
                 }
             } else if (ses25s4Value == 18) {
@@ -536,7 +539,7 @@
                             <input type="radio" class="radioStyle" name="SES25S5" id="SES25S5_19" value="19">
                             <span></span>
                         </td>
-                        <td><label for="SES25S5_19">Teknik personel / teknisyen / tıbbi mümessil / hostes/ laborant / hemşire</label></td>
+                        <td><label for="SES25S5_19">Teknik personel / teknisyen / tıbbi mümessil / laborant / hemşire</label></td>
                     </tr>
                     
                     <!-- Seçenek 20 -->
