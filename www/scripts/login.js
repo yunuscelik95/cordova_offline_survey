@@ -318,13 +318,8 @@ window.addEventListener('load', () => {
                     return;
                 }
                 
-                
-                if (state.isOnline) {
-                    this.getVersion();
-                }
-                else {
-                    this.login();
-                }
+                // Her zaman version kontrolü dene
+                this.getVersion();
             },
 
             login() {

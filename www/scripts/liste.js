@@ -66,44 +66,34 @@ window.addEventListener('load', () => {
             
             startInterview(id) {
                 var self = this;
-                // Online ise GitHub'dan version kontrolü yap
-                if (state.isOnline) {
-                    var VERSION_URL = "https://raw.githubusercontent.com/yunuscelik95/cordova_offline_survey/main/www/version.json?t=" + new Date().getTime();
-                    fetch(VERSION_URL)
-                        .then(function(response) {
-                            if (!response.ok) throw new Error("HTTP " + response.status);
-                            return response.json();
-                        })
-                        .then(function(remoteVersion) {
-                            window.localStorage["serverVersion"] = remoteVersion.version;
-                            var localVersion = window.localStorage["version"] || "0";
-                            if (remoteVersion.version != localVersion) {
-                                alert("Güncelleme yapmadan ankete başlayamazsınız! Mevcut: v" + localVersion + " → Yeni: v" + remoteVersion.version + "\nLütfen giriş ekranından güncelleme yapınız.");
-                                return;
-                            }
-                            self.doStartInterview(id);
-                        })
-                        .catch(function(error) {
-                            console.error("Version kontrol hatası:", error);
-                            // Fetch başarısız olursa localStorage ile kontrol et
-                            var localVersion = window.localStorage["version"] || "0";
-                            var serverVersion = window.localStorage["serverVersion"] || "0";
-                            if (serverVersion != "0" && serverVersion != localVersion) {
-                                alert("Güncelleme yapmadan ankete başlayamazsınız! Lütfen giriş ekranından güncelleme yapınız.");
-                                return;
-                            }
-                            self.doStartInterview(id);
-                        });
-                } else {
-                    // Offline ise localStorage ile kontrol et
-                    var localVersion = window.localStorage["version"] || "0";
-                    var serverVersion = window.localStorage["serverVersion"] || "0";
-                    if (serverVersion != "0" && serverVersion != localVersion) {
-                        alert("Güncelleme yapmadan ankete başlayamazsınız! Lütfen internete bağlanıp güncelleme yapınız.");
-                        return;
-                    }
-                    self.doStartInterview(id);
-                }
+                // Her zaman GitHub'dan version kontrolü dene
+                var VERSION_URL = "https://raw.githubusercontent.com/yunuscelik95/cordova_offline_survey/main/www/version.json?t=" + new Date().getTime();
+                fetch(VERSION_URL)
+                    .then(function(response) {
+                        if (!response.ok) throw new Error("HTTP " + response.status);
+                        return response.json();
+                    })
+                    .then(function(remoteVersion) {
+                        window.localStorage["serverVersion"] = remoteVersion.version;
+                        var localVersion = window.localStorage["version"] || "0";
+                        if (remoteVersion.version != localVersion) {
+                            alert("Güncelleme yapmadan ankete başlayamazsınız! Mevcut: v" + localVersion + " → Yeni: v" + remoteVersion.version + "\nLütfen giriş ekranından güncelleme yapınız.");
+                            return;
+                        }
+                        self.doStartInterview(id);
+                    })
+                    .catch(function(error) {
+                        console.error("Version kontrol hatası:", error);
+                        // Fetch başarısız olursa localStorage ile kontrol et
+                        var localVersion = window.localStorage["version"] || "0";
+                        var serverVersion = window.localStorage["serverVersion"] || "0";
+                        if (serverVersion != "0" && serverVersion != localVersion) {
+                            alert("Güncelleme yapmadan ankete başlayamazsınız! Lütfen giriş ekranından güncelleme yapınız.");
+                            return;
+                        }
+                        self.doStartInterview(id);
+                    });
+            },
             },
 
             doStartInterview(id) {
