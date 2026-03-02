@@ -94,7 +94,6 @@ window.addEventListener('load', () => {
                         self.doStartInterview(id);
                     });
             },
-            },
 
             doStartInterview(id) {
                 window.localStorage["InterviewID"] = id;
