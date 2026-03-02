@@ -1,6 +1,6 @@
 {
-    "version": "2.0.8",
+    "version": "2.0.9",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.0.8/app-debug.apk",
-    "description": "Duzeltmeler"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.0.9/app-debug.apk",
+    "description": "Ankete basla version kontrolu eklendi"
 }
