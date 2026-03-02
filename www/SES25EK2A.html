@@ -89,10 +89,10 @@
             
             var updateStr = "SES25EK2A='" + secilenDeger + "'";
             
-            // Ek2A=2 ise B12'ye git, değilse EK2B'ye git
+            // Ek2A=1 ise SES25EK3'ye git, değilse SES25EK2B'ye git
             var nextPage = "";
-            if (secilenDeger == "2") {
-                nextPage = "B12.html?id=" + window.localStorage["InterviewID"];
+            if (secilenDeger == "1") {
+                nextPage = "SES25EK3.html?id=" + window.localStorage["InterviewID"];
             } else {
                 nextPage = "SES25EK2B.html?id=" + window.localStorage["InterviewID"];
             }

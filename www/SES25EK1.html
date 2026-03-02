@@ -92,9 +92,9 @@
             // Ek1 = 1, 3 veya 4 ise SES25EK2'ye git
             // Ek1 = 2 ise B12'ye git
             var nextPage = "";
-            if (secilenDeger == "1" || secilenDeger == "3" || secilenDeger == "4") {
+            if (secilenDeger == "1" || secilenDeger == "2" || secilenDeger == "4") {
                 nextPage = "SES25EK2.html?id=" + window.localStorage["InterviewID"];
-            } else if (secilenDeger == "2") {
+            } else if (secilenDeger == "3") {
                 nextPage = "B12.html?id=" + window.localStorage["InterviewID"];
             }
             

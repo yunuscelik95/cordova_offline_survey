@@ -4,9 +4,9 @@ window.addEventListener('load', () => {
 
     // GitHub ayarları - BURAYA KENDİ REPO BİLGİLERİNİZİ YAZIN
     var GITHUB_USER = "yunuscelik95";
-    var GITHUB_REPO = "cordova_survey_releases";
+    var GITHUB_REPO = "cordova_offline_survey";
     var GITHUB_BRANCH = "main";
-    var VERSION_URL = "https://raw.githubusercontent.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/" + GITHUB_BRANCH + "/version.json";
+    var VERSION_URL = "https://raw.githubusercontent.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/" + GITHUB_BRANCH + "/www/version.json";
 
     window.vueLogin = new Vue({
         el: "#login",
@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.0.7",
+            appVersion: "2.0.8",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
