@@ -1,6 +1,6 @@
 {
-    "version": "2.10.3",
+    "version": "2.10.4",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.3/app-debug.apk",
-    "description": "Kiosk modu eklendi"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.4/app-debug.apk",
+    "description": "Guncelleme testi"
 }
