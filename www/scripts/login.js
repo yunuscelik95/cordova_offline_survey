@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.10.7",
+            appVersion: "2.10.8",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
@@ -414,14 +414,6 @@ window.addEventListener('load', () => {
                         function(err) { alert("Kiosk açma hatası: " + err); }
                     );
                 }
-            },
-
-            enableData() {
-                if (!window.KioskMode) { alert("KioskMode plugin yüklü değil!"); return; }
-                window.KioskMode.enableMobileData(
-                    function(msg) { alert("Mobil veri açıldı!"); },
-                    function(err) { alert("Mobil veri açılamadı: " + err); }
-                );
             },
 
             getVersion() {
