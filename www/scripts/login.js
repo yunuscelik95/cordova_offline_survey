@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.10.9",
+            appVersion: "2.10.10",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
@@ -381,7 +381,7 @@ window.addEventListener('load', () => {
             },
 
             adminLogin() {
-                if (this.adminPass === "diyalog2026") {
+                if (this.adminPass === "9821") {
                     this.adminAuth = true;
                     this.kioskActive = true;
                 } else {
