@@ -1,6 +1,6 @@
 {
-    "version": "2.10.2",
+    "version": "2.10.3",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.2/app-debug.apk",
-    "description": "Version kontrol testi"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.3/app-debug.apk",
+    "description": "Kiosk modu eklendi"
 }

@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.10.2",
+            appVersion: "2.10.3",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
@@ -27,6 +27,16 @@ window.addEventListener('load', () => {
         created() {
             // Uygulama açıldığında sürümü localStorage'a yaz
             window.localStorage["version"] = this.appVersion;
+            
+            // Kiosk modunu aktif et
+            document.addEventListener('deviceready', function() {
+                if (window.KioskMode) {
+                    window.KioskMode.enableKiosk(
+                        function(msg) { console.log("Kiosk: " + msg); },
+                        function(err) { console.log("Kiosk hata: " + err); }
+                    );
+                }
+            }, false);
         },
         methods: {
             // =============================================
