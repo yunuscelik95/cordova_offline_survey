@@ -15,13 +15,20 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.10.5",
+            appVersion: "2.10.6",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
             updateMessage: "",
             updateDone: false,
-            updateError: false
+            updateError: false,
+            // Yönetici panel değişkenleri
+            adminVisible: false,
+            adminAuth: false,
+            adminPass: "",
+            tapCount: 0,
+            tapTimer: null,
+            kioskActive: true
 
         },
         created() {
@@ -355,6 +362,70 @@ window.addEventListener('load', () => {
                         }
                     );
                 })
+            },
+
+            // =============================================
+            // YÖNETİCİ PANELİ FONKSİYONLARI
+            // =============================================
+            adminTap() {
+                var self = this;
+                self.tapCount++;
+                if (self.tapTimer) clearTimeout(self.tapTimer);
+                self.tapTimer = setTimeout(function() { self.tapCount = 0; }, 2000);
+                if (self.tapCount >= 7) {
+                    self.tapCount = 0;
+                    self.adminVisible = true;
+                    self.adminAuth = false;
+                    self.adminPass = "";
+                }
+            },
+
+            adminLogin() {
+                if (this.adminPass === "diyalog2026") {
+                    this.adminAuth = true;
+                    // Kiosk durumunu kontrol et
+                    var self = this;
+                    if (window.KioskMode) {
+                        window.KioskMode.isDeviceOwner(
+                            function(result) { self.kioskActive = (result == 1); },
+                            function() { self.kioskActive = false; }
+                        );
+                    }
+                } else {
+                    alert("Şifre hatalı!");
+                    this.adminPass = "";
+                }
+            },
+
+            toggleKiosk() {
+                var self = this;
+                if (!window.KioskMode) { alert("KioskMode plugin yüklü değil!"); return; }
+                
+                if (self.kioskActive) {
+                    window.KioskMode.disableKiosk(
+                        function(msg) {
+                            self.kioskActive = false;
+                            alert("Kiosk modu kapatıldı. Artık normal kullanım yapabilirsiniz.");
+                        },
+                        function(err) { alert("Hata: " + err); }
+                    );
+                } else {
+                    window.KioskMode.enableKiosk(
+                        function(msg) {
+                            self.kioskActive = true;
+                            alert("Kiosk modu açıldı.");
+                        },
+                        function(err) { alert("Hata: " + err); }
+                    );
+                }
+            },
+
+            enableData() {
+                if (!window.KioskMode) { alert("KioskMode plugin yüklü değil!"); return; }
+                window.KioskMode.enableMobileData(
+                    function(msg) { alert("Mobil veri açıldı!"); },
+                    function(err) { alert("Mobil veri açılamadı: " + err); }
+                );
             },
 
             getVersion() {

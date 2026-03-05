@@ -179,10 +179,52 @@
 
             <div class="container" style="background-color:#f1f1f1">
                 <span style="font-size:8PX" id="version"> </span>
-                <span style="float:right; font-size:10px; color:#888;">v{{ appVersion }}</span>
+                <span @click="adminTap()" style="float:right; font-size:10px; color:#888; cursor:pointer; user-select:none;">v{{ appVersion }}</span>
             </div>
            Yüklenme: <span style="font-size:38PX;color:red" id="spanOran">%{{oran}} </span>
         </form>
+
+        <!-- Gizli Yönetici Paneli -->
+        <div v-if="adminVisible" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:flex; align-items:center; justify-content:center;">
+            <div style="background:white; border-radius:12px; padding:25px; width:85%; max-width:400px; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+                <h3 style="margin:0 0 15px 0; color:#333; text-align:center;">🔒 Yönetici Paneli</h3>
+                
+                <div v-if="!adminAuth" style="text-align:center;">
+                    <input type="password" v-model="adminPass" placeholder="Yönetici Şifresi" 
+                        style="width:90%; padding:10px; margin:10px 0; border:2px solid #ddd; border-radius:6px; font-size:16px;">
+                    <br>
+                    <button @click="adminLogin()" type="button" 
+                        style="background:#2196F3; color:white; border:none; padding:12px 30px; border-radius:6px; font-size:14px; margin:5px;">
+                        Giriş
+                    </button>
+                    <button @click="adminVisible=false; adminPass=''" type="button" 
+                        style="background:#999; color:white; border:none; padding:12px 30px; border-radius:6px; font-size:14px; margin:5px;">
+                        İptal
+                    </button>
+                </div>
+
+                <div v-if="adminAuth">
+                    <div style="margin:10px 0; padding:10px; background:#f5f5f5; border-radius:6px; font-size:13px;">
+                        <b>Kiosk Durumu:</b> <span :style="{color: kioskActive ? '#4CAF50' : '#f44336'}">{{ kioskActive ? 'AKTİF' : 'KAPALI' }}</span>
+                    </div>
+
+                    <button @click="toggleKiosk()" type="button" 
+                        :style="{background: kioskActive ? '#f44336' : '#4CAF50', color:'white', border:'none', padding:'12px', borderRadius:'6px', width:'100%', fontSize:'14px', margin:'5px 0', fontWeight:'bold'}">
+                        {{ kioskActive ? '🔓 Kiosk Modunu KAPAT' : '🔒 Kiosk Modunu AÇ' }}
+                    </button>
+
+                    <button @click="enableData()" type="button" 
+                        style="background:#FF9800; color:white; border:none; padding:12px; border-radius:6px; width:100%; font-size:14px; margin:5px 0; font-weight:bold;">
+                        📶 Mobil Veriyi Aç
+                    </button>
+
+                    <button @click="adminVisible=false; adminAuth=false; adminPass=''; tapCount=0;" type="button" 
+                        style="background:#999; color:white; border:none; padding:12px; border-radius:6px; width:100%; font-size:14px; margin:10px 0 0 0;">
+                        Kapat
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 

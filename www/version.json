@@ -1,6 +1,6 @@
 {
-    "version": "2.10.5",
+    "version": "2.10.6",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.5/app-debug.apk",
-    "description": "Kiosk: auto-start, power kilit, launcher modu"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.6/app-debug.apk",
+    "description": "Yonetici paneli + mobil veri"
 }
