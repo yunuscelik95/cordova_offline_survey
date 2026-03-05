@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.10.6",
+            appVersion: "2.10.7",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
@@ -35,9 +35,9 @@ window.addEventListener('load', () => {
             // Uygulama açıldığında sürümü localStorage'a yaz
             window.localStorage["version"] = this.appVersion;
             
-            // Kiosk modunu aktif et
+            // Kiosk modunu aktif et (sadece kapatılmamışsa)
             document.addEventListener('deviceready', function() {
-                if (window.KioskMode) {
+                if (window.KioskMode && window.localStorage["kioskActive"] !== "false") {
                     window.KioskMode.enableKiosk(
                         function(msg) { console.log("Kiosk: " + msg); },
                         function(err) { console.log("Kiosk hata: " + err); }
@@ -383,14 +383,8 @@ window.addEventListener('load', () => {
             adminLogin() {
                 if (this.adminPass === "diyalog2026") {
                     this.adminAuth = true;
-                    // Kiosk durumunu kontrol et
-                    var self = this;
-                    if (window.KioskMode) {
-                        window.KioskMode.isDeviceOwner(
-                            function(result) { self.kioskActive = (result == 1); },
-                            function() { self.kioskActive = false; }
-                        );
-                    }
+                    // Kiosk durumunu localStorage'dan oku
+                    this.kioskActive = (window.localStorage["kioskActive"] !== "false");
                 } else {
                     alert("Şifre hatalı!");
                     this.adminPass = "";
@@ -405,17 +399,19 @@ window.addEventListener('load', () => {
                     window.KioskMode.disableKiosk(
                         function(msg) {
                             self.kioskActive = false;
-                            alert("Kiosk modu kapatıldı. Artık normal kullanım yapabilirsiniz.");
+                            window.localStorage["kioskActive"] = "false";
+                            alert("Kiosk modu kapatıldı.");
                         },
-                        function(err) { alert("Hata: " + err); }
+                        function(err) { alert("Kiosk kapatma hatası: " + err); }
                     );
                 } else {
                     window.KioskMode.enableKiosk(
                         function(msg) {
                             self.kioskActive = true;
+                            window.localStorage["kioskActive"] = "true";
                             alert("Kiosk modu açıldı.");
                         },
-                        function(err) { alert("Hata: " + err); }
+                        function(err) { alert("Kiosk açma hatası: " + err); }
                     );
                 }
             },
