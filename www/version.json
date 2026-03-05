@@ -1,6 +1,6 @@
 {
-    "version": "2.10.10",
+    "version": "2.10.11",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.10/app-debug.apk",
-    "description": "Admin şifre değişikliği"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.11/app-debug.apk",
+    "description": "Kısıtlama testi"
 }
