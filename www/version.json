@@ -1,6 +1,6 @@
 {
-    "version": "2.10.16",
+    "version": "2.10.17",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.16/app-debug.apk",
-    "description": "Guncelleme dialog testi"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.17/app-debug.apk",
+    "description": "BlokOzet cikis butonu"
 }
