@@ -17,13 +17,16 @@
     <script type="text/javascript">
 
         var id;
+        var b8a_o_value = 0;
+        
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
             id = getUrlVars()["id"];
             db.transaction(function (tx) {
-                tx.executeSql("SELECT B1_O,B2a_1_1,B2a_2_1,B2a_3_1,B2a_4_1,B2a_5_1,B2a_6_1,B2a_7_1,B2a_8_1,B2a_9_1,B2a_10_1,B2a_11_1,B2a_12_1,B2a_13_1,B2a_14_1,B2a_15_1,B2a_16_1,B2a_17_1,B2a_18_1,B2a_19_1,B2a_20_1,B3_1_1,B3_2_1,B3_3_1,B3_4_1,B3_5_1,B3_6_1,B3_7_1,B3_8_1,B3_9_1,B3_10_1,B3_11_1,B3_12_1,B3_13_1,B3_14_1,B3_15_1,B3_16_1,B3_17_1,B3_18_1,B3_19_1,B3_20_1 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
+                tx.executeSql("SELECT B1_O,B8a_O,B2a_1_1,B2a_2_1,B2a_3_1,B2a_4_1,B2a_5_1,B2a_6_1,B2a_7_1,B2a_8_1,B2a_9_1,B2a_10_1,B2a_11_1,B2a_12_1,B2a_13_1,B2a_14_1,B2a_15_1,B2a_16_1,B2a_17_1,B2a_18_1,B2a_19_1,B2a_20_1,B3_1_1,B3_2_1,B3_3_1,B3_4_1,B3_5_1,B3_6_1,B3_7_1,B3_8_1,B3_9_1,B3_10_1,B3_11_1,B3_12_1,B3_13_1,B3_14_1,B3_15_1,B3_16_1,B3_17_1,B3_18_1,B3_19_1,B3_20_1 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
                     var row = val.rows.item(0);
                     var sayi = parseInt(row.B1_O);
+                    b8a_o_value = parseInt(row.B8a_O) || 0;
                     var firstAdded = false;
          
                     if (sayi > 0) {
@@ -62,6 +65,16 @@
                         }
                         SetStartUp();
                     }
+                    
+                    // Checkbox limit kontrolü - B8a_O kadar seçilince diğerlerini devre dışı bırak
+                    $(document).on('change', "input[name='B8b']", function() {
+                        var checkedCount = $("input[name='B8b']:checked").length;
+                        if (b8a_o_value > 0 && checkedCount >= b8a_o_value) {
+                            $("input[name='B8b']:not(:checked)").prop('disabled', true);
+                        } else {
+                            $("input[name='B8b']").prop('disabled', false);
+                        }
+                    });
                 });
             });
         }
@@ -90,20 +103,25 @@
         }
 
         function gecisKontrol() {
-            var kontrol = CheckValues();
-            if (kontrol) {
-                var answer = "";
-                $.each($("input[name='B8b']:checked"), function () {
-                    if (answer != "") answer += ",";
-                    answer += $(this).val();
-                });
-
-                if (answer != "") {
-                    myUpdateRedirect("INTERVIEWS", "B8b='" + answer + "'", " InterviewID=" + window.localStorage["InterviewID"], "B9.html?id=" + window.localStorage["InterviewID"]);
-                } else {
-                    alert("Boş Geçilemez!");
-                }
+            var checkedCount = $("input[name='B8b']:checked").length;
+            
+            if (b8a_o_value > 0 && checkedCount != b8a_o_value) {
+                alert("Tam olarak " + b8a_o_value + " kişi seçmelisiniz! Şu an " + checkedCount + " kişi seçili.");
+                return;
             }
+            
+            if (checkedCount == 0) {
+                alert("Boş Geçilemez!");
+                return;
+            }
+            
+            var answer = "";
+            $.each($("input[name='B8b']:checked"), function () {
+                if (answer != "") answer += ",";
+                answer += $(this).val();
+            });
+
+            myUpdateRedirect("INTERVIEWS", "B8b='" + answer + "'", " InterviewID=" + window.localStorage["InterviewID"], "B9.html?id=" + window.localStorage["InterviewID"]);
         }
 
         function goBack() {

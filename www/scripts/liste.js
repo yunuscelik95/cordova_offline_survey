@@ -77,7 +77,10 @@ window.addEventListener('load', () => {
                         window.localStorage["serverVersion"] = remoteVersion.version;
                         var localVersion = window.localStorage["version"] || "0";
                         if (remoteVersion.version != localVersion) {
-                            alert("Güncelleme yapmadan ankete başlayamazsınız! Mevcut: v" + localVersion + " → Yeni: v" + remoteVersion.version + "\nLütfen giriş ekranından güncelleme yapınız.");
+                            var sonuc = confirm("Güncelleme var. Güncelleme için giriş sayfasına yönlendirileceksiniz.");
+                            if (sonuc) {
+                                window.location.href = "Login.html";
+                            }
                             return;
                         }
                         self.doStartInterview(id);
@@ -88,7 +91,10 @@ window.addEventListener('load', () => {
                         var localVersion = window.localStorage["version"] || "0";
                         var serverVersion = window.localStorage["serverVersion"] || "0";
                         if (serverVersion != "0" && serverVersion != localVersion) {
-                            alert("Güncelleme yapmadan ankete başlayamazsınız! Lütfen giriş ekranından güncelleme yapınız.");
+                            var sonuc = confirm("Güncelleme var. Güncelleme için giriş sayfasına yönlendirileceksiniz.");
+                            if (sonuc) {
+                                window.location.href = "Login.html";
+                            }
                             return;
                         }
                         self.doStartInterview(id);

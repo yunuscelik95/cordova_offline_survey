@@ -1,6 +1,6 @@
 {
-    "version": "2.10.14",
+    "version": "2.10.15",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.14/app-debug.apk",
-    "description": "Power tusu aktif, kiosk geri butonu"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.15/app-debug.apk",
+    "description": "B8b fix, P1 A1c=5 skip, guncelleme uyari dialoga"
 }

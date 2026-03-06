@@ -31,9 +31,16 @@
         document.addEventListener("deviceready", onDeviceReady, false);
         function onDeviceReady() {
             id = getUrlVars()["id"];
-            // var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
             db.transaction(function (tx) {
-
+                tx.executeSql("SELECT A1c FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
+                    var a1c = val.rows.item(0).A1c;
+                    if (a1c == '5') {
+                        // İnternet erişimi yok - P1 sorularını null yap ve atla
+                        tx.executeSql("UPDATE INTERVIEWS SET P1_1=null,P1_2=null,P1_3=null,P1_4=null,P1_5=null,P1_6=null,P1_7=null,P1_8=null,P1_9=null,P1_10=null WHERE InterviewID=" + id, [], function () {
+                            window.location.href = "B1.html?id=" + window.localStorage["InterviewID"];
+                        });
+                    }
+                });
             });
         }
 

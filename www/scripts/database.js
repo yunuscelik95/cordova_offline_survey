@@ -612,23 +612,38 @@ var migrateDatabase = function(currentDbVersion, newDbVersion) {
 };
 
 // =============================================
-// GLOBAL ADMİN PANELİ - HER SAYFADA 7 KERE BASINCA AÇILIR
+// GLOBAL ADMİN PANELİ - HER SAYFADA 7 KERE HIZLI BASINCA AÇILIR
 // =============================================
 (function() {
     var globalTapCount = 0;
     var globalTapTimer = null;
     var adminPanelOpen = false;
+    var lastTapTime = 0;
 
-    document.addEventListener('click', function() {
+    document.addEventListener('click', function(e) {
         if (adminPanelOpen) return;
-        globalTapCount++;
-        if (globalTapTimer) clearTimeout(globalTapTimer);
-        globalTapTimer = setTimeout(function() { globalTapCount = 0; }, 2000);
+        
+        // Buton, input, label, select, a gibi interaktif elemanlar için sayma
+        var tag = e.target.tagName.toLowerCase();
+        var isInteractive = (tag === 'button' || tag === 'input' || tag === 'label' || 
+                            tag === 'select' || tag === 'a' || tag === 'textarea' ||
+                            e.target.closest('button') || e.target.closest('a'));
+        
+        var now = Date.now();
+        // Ardışık tıklamalar arası max 200ms (hızlı seri tıklama)
+        if (now - lastTapTime > 200) {
+            globalTapCount = 1;
+        } else {
+            globalTapCount++;
+        }
+        lastTapTime = now;
+        
         if (globalTapCount >= 7) {
             globalTapCount = 0;
+            lastTapTime = 0;
             showGlobalAdminPanel();
         }
-    });
+    }, true);
 
     function showGlobalAdminPanel() {
         if (adminPanelOpen) return;
