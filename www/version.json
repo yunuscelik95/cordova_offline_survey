@@ -1,6 +1,6 @@
 {
-    "version": "2.10.15",
+    "version": "2.10.16",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.15/app-debug.apk",
-    "description": "B8b fix, P1 A1c=5 skip, guncelleme uyari dialoga"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.16/app-debug.apk",
+    "description": "Guncelleme dialog testi"
 }
