@@ -63,6 +63,32 @@
                             if (row.SES25S2) {
                                 $('input[name="SES25S2"][value="' + row.SES25S2 + '"]').prop('checked', true);
                             }
+                            
+                            // Hane reisinin B7 çalışma durumu bilgisini getir
+                            if (haneReisiSirasi) {
+                                var b7Kolon = "B7_" + haneReisiSirasi;
+                                tx.executeSql("SELECT " + b7Kolon + " FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [],
+                                    function(tx2, val2) {
+                                        if (val2.rows.length > 0) {
+                                            var b7Val = val2.rows.item(0)[b7Kolon];
+                                            if (b7Val) {
+                                                var b7Metin = {
+                                                    "1": "Emekli / Çalışıyor",
+                                                    "2": "Emekli / Çalışmıyor",
+                                                    "3": "Çalışmıyor / Gelir Getiren Bir İşi Yok",
+                                                    "4": "Ücret / Maaş Karşılığı Çalışıyor",
+                                                    "5": "Kendi İşinde Çalışıyor"
+                                                };
+                                                var calismaDurumuText = b7Metin[b7Val] || b7Val;
+                                                $("#b7BilgiAlani").html("<b>Hane Reisinin (B7) Çalışma Durumu: </b><span style='color:blue; font-size:14px;'>" + calismaDurumuText + "</span>");
+                                            }
+                                        }
+                                    },
+                                    function(tx2, err) {
+                                        console.error("B7 sorgu hatası:", err.message);
+                                    }
+                                );
+                            }
                         } else {
                             console.log("Hiç satır bulunamadı");
                         }
@@ -125,6 +151,8 @@
             </tbody>
         </table>
         
+        <div id="b7BilgiAlani" style="padding: 8px 12px; margin: 5px 0; background-color: #f0f8ff; border: 1px solid #b0d4f1; border-radius: 5px; font-size: 13px;"></div>
+
         <div id="QuestionBuilderPanel">
             <table id="QuestionTable" class="cssQuestionTable">
                 <tbody>

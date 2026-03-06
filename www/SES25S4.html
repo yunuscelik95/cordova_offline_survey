@@ -40,7 +40,7 @@
         function LoadData() {
             console.log("LoadData çağrıldı");
             db.transaction(function (tx) {
-                var sqlQuery = "SELECT SES25S1, SES25S3, SES25S4 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
+                var sqlQuery = "SELECT SES25S1, SES25S3, SES25S4, B9, B8, B8e, B101_O FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
                 console.log("SQL sorgusu:", sqlQuery);
                 
                 tx.executeSql(sqlQuery, [], 
@@ -59,6 +59,52 @@
                             // Daha önce kaydedilmiş değeri seç
                             if (row.SES25S4) {
                                 $('input[name="SES25S4"][value="' + row.SES25S4 + '"]').prop('checked', true);
+                            }
+                            
+                            // B10 meslek bilgisini göster
+                            var b8Metin = {
+                                "1": "Emekli çalışıyor",
+                                "2": "Emekli Çalışmıyor",
+                                "3": "İşsiz şuan çalışmıyor-ek geliri yok",
+                                "4": "İşsiz şuan çalışmıyor-düzenli ek geliri var",
+                                "5": "Ev kadını-ek geliri yok",
+                                "6": "Ev kadını-düzenli ek geliri var",
+                                "7": "Öğrenci",
+                                "8": "İşçi/hizmetli-parça başı",
+                                "9": "İşçi/hizmetli-düzenli",
+                                "10": "Ustabaşı/kalfa",
+                                "11": "Yönetici olmayan memur/teknik eleman",
+                                "12": "Yönetici (1-5 çalışan)",
+                                "13": "Yönetici (6-10 çalışan)",
+                                "14": "Yönetici (11-20 çalışan)",
+                                "15": "Yönetici (20+ çalışan)",
+                                "16": "Ordu mensubu",
+                                "17": "Ücretli nitelikli uzman",
+                                "18": "Çiftçi",
+                                "19": "Seyyar-kendi işi",
+                                "20": "Tek başına çalışan/dükkan sahibi/esnaf",
+                                "21": "İşyeri sahibi 1-5 çalışanlı",
+                                "22": "İşyeri sahibi 6-10 çalışanlı",
+                                "23": "İşyeri sahibi 11-20 çalışanlı",
+                                "24": "İşyeri sahibi 20+ çalışanlı",
+                                "25": "Serbest nitelikli uzman"
+                            };
+                            var meslekSecim = "";
+                            if (row.B8) {
+                                meslekSecim = b8Metin[row.B8] || row.B8;
+                            } else if (row.B8e) {
+                                meslekSecim = b8Metin[row.B8e] || row.B8e;
+                            }
+                            var b101Text = row.B101_O || "";
+                            var bilgiHtml = "";
+                            if (meslekSecim) {
+                                bilgiHtml += "<b>Hane Reisinin (B10) Mesleği: </b><span style='color:blue; font-size:14px;'>" + meslekSecim + "</span>";
+                            }
+                            if (b101Text) {
+                                bilgiHtml += "<br><b>Açıklama: </b><span style='color:blue; font-size:14px;'>" + b101Text + "</span>";
+                            }
+                            if (bilgiHtml) {
+                                $("#b10BilgiAlani").html(bilgiHtml);
                             }
                         } else {
                             console.log("Hiç satır bulunamadı");
@@ -260,6 +306,8 @@
             </tbody>
         </table>
         
+        <div id="b10BilgiAlani" style="padding: 8px 12px; margin: 5px 0; background-color: #f0f8ff; border: 1px solid #b0d4f1; border-radius: 5px; font-size: 13px;"></div>
+
         <div id="QuestionBuilderPanel">
             <table id="QuestionTable" class="cssQuestionTable">
                 <tbody>

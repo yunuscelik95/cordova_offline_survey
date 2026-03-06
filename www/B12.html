@@ -25,6 +25,14 @@
             db.transaction(function (tx) {
                 tx.executeSql("SELECT B1_O,B2a_1_1,B2a_2_1,B2a_3_1,B2a_4_1,B2a_5_1,B2a_6_1,B2a_7_1,B2a_8_1,B2a_9_1,B2a_10_1,B2a_11_1,B2a_12_1,B2a_13_1,B2a_14_1,B2a_15_1,B2a_16_1,B2a_17_1,B2a_18_1,B2a_19_1,B2a_20_1,B3_1_1,B3_2_1,B3_3_1,B3_4_1,B3_5_1,B3_6_1,B3_7_1,B3_8_1,B3_9_1,B3_10_1,B3_11_1,B3_12_1,B3_13_1,B3_14_1,B3_15_1,B3_16_1,B3_17_1,B3_18_1,B3_19_1,B3_20_1 FROM INTERVIEWS WHERE InterviewID=" + id, [], function (tx, val) {
                     sayi = parseInt(val.rows.item(0).B1_O);
+                    
+                    // Tek kişilik hane ise B12 ve B13'ü otomatik işaretle ve atla
+                    if (sayi == 1) {
+                        tx.executeSql("UPDATE INTERVIEWS SET B12=1, B13=1 WHERE InterviewID=" + window.localStorage["InterviewID"], [], function() {
+                            window.location.href = "Ek1.html?id=" + window.localStorage["InterviewID"];
+                        });
+                        return;
+                    }
          
                     if (sayi > 0) {
                         var yas15BuyukSay = 0;

@@ -38,7 +38,7 @@
         function LoadData() {
             console.log("LoadData çağrıldı");
             db.transaction(function (tx) {
-                var sqlQuery = "SELECT SES25S1 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
+                var sqlQuery = "SELECT SES25S1, B9 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
                 console.log("SQL sorgusu:", sqlQuery);
                 
                 tx.executeSql(sqlQuery, [], 
@@ -50,6 +50,39 @@
                             
                             if (row.SES25S1) {
                                 $('input[name="SES25S1"][value="' + row.SES25S1 + '"]').prop('checked', true);
+                            }
+                            
+                            // Hane reisinin B5 eğitim bilgisini getir
+                            if (row.B9) {
+                                var b5Kolon = "B5_" + row.B9;
+                                tx.executeSql("SELECT " + b5Kolon + " FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"], [],
+                                    function(tx2, val2) {
+                                        if (val2.rows.length > 0) {
+                                            var b5Val = val2.rows.item(0)[b5Kolon];
+                                            if (b5Val) {
+                                                var b5Metin = {
+                                                    "1": "Yüksek lisans-doktora Mezunu",
+                                                    "2": "Üniversite Mezunu (4 Yıl Normal)",
+                                                    "3": "Üniversite Mezunu / 4 Yıllık Açık öğretim",
+                                                    "4": "Yüksekokul / 2 Yıllık Açık öğretim Mezunu",
+                                                    "5": "Normal Lise Mezunu",
+                                                    "6": "Meslek Lisesi Mezunu",
+                                                    "7": "Ortaokul / 8 Yıllık İlköğretim Mezunu",
+                                                    "8": "İlkokul Mezunu",
+                                                    "9": "İlköğretim Öğrencisi",
+                                                    "10": "Eğitimsiz/okuryazar",
+                                                    "11": "Eğitimsiz/okuryazar değil",
+                                                    "12": "Okula başlamamış"
+                                                };
+                                                var egitimText = b5Metin[b5Val] || b5Val;
+                                                $("#b5BilgiAlani").html("<b>Hane Reisinin (B5) Eğitimi: </b><span style='color:blue; font-size:14px;'>" + egitimText + "</span>");
+                                            }
+                                        }
+                                    },
+                                    function(tx2, err) {
+                                        console.error("B5 sorgu hatası:", err.message);
+                                    }
+                                );
                             }
                         } else {
                             console.log("Hiç satır bulunamadı");
@@ -118,6 +151,8 @@
             </tbody>
         </table>
         
+        <div id="b5BilgiAlani" style="padding: 8px 12px; margin: 5px 0; background-color: #f0f8ff; border: 1px solid #b0d4f1; border-radius: 5px; font-size: 13px;"></div>
+
         <div id="QuestionBuilderPanel">
             <table id="QuestionTable" class="cssQuestionTable">
                 <tbody>
