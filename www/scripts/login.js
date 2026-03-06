@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.10.13",
+            appVersion: "2.10.14",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,

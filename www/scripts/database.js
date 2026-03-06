@@ -610,3 +610,130 @@ var migrateDatabase = function(currentDbVersion, newDbVersion) {
         window.localStorage.setItem("dbVersion", newDbVersion);
     });
 };
+
+// =============================================
+// GLOBAL ADMİN PANELİ - HER SAYFADA 7 KERE BASINCA AÇILIR
+// =============================================
+(function() {
+    var globalTapCount = 0;
+    var globalTapTimer = null;
+    var adminPanelOpen = false;
+
+    document.addEventListener('click', function() {
+        if (adminPanelOpen) return;
+        globalTapCount++;
+        if (globalTapTimer) clearTimeout(globalTapTimer);
+        globalTapTimer = setTimeout(function() { globalTapCount = 0; }, 2000);
+        if (globalTapCount >= 7) {
+            globalTapCount = 0;
+            showGlobalAdminPanel();
+        }
+    });
+
+    function showGlobalAdminPanel() {
+        if (adminPanelOpen) return;
+        adminPanelOpen = true;
+
+        var overlay = document.createElement('div');
+        overlay.id = 'globalAdminOverlay';
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:99999;display:flex;align-items:center;justify-content:center;';
+
+        overlay.innerHTML = 
+            '<div style="background:white;border-radius:12px;padding:25px;width:85%;max-width:400px;box-shadow:0 4px 20px rgba(0,0,0,0.3);">' +
+                '<h3 style="margin:0 0 15px 0;color:#333;text-align:center;">Yönetici Paneli</h3>' +
+                '<div id="adminLoginDiv" style="text-align:center;">' +
+                    '<input type="password" id="globalAdminPass" placeholder="Yönetici Şifresi" style="width:90%;padding:10px;margin:10px 0;border:2px solid #ddd;border-radius:6px;font-size:16px;">' +
+                    '<br>' +
+                    '<button id="btnAdminLogin" type="button" style="background:#2196F3;color:white;border:none;padding:12px 30px;border-radius:6px;font-size:14px;margin:5px;">Giriş</button>' +
+                    '<button id="btnAdminCancel" type="button" style="background:#999;color:white;border:none;padding:12px 30px;border-radius:6px;font-size:14px;margin:5px;">İptal</button>' +
+                '</div>' +
+                '<div id="adminControlDiv" style="display:none;">' +
+                    '<div id="kioskStatusDiv" style="margin:10px 0;padding:10px;background:#f5f5f5;border-radius:6px;font-size:13px;"></div>' +
+                    '<button id="btnToggleKiosk" type="button" style="color:white;border:none;padding:12px;border-radius:6px;width:100%;font-size:14px;margin:5px 0;font-weight:bold;"></button>' +
+                    '<button id="btnAdminClose" type="button" style="background:#999;color:white;border:none;padding:12px;border-radius:6px;width:100%;font-size:14px;margin:10px 0 0 0;">Kapat</button>' +
+                '</div>' +
+            '</div>';
+
+        document.body.appendChild(overlay);
+
+        // Kiosk durumunu kontrol et
+        var kioskActive = (window.localStorage.getItem('kioskActive') === 'true');
+
+        document.getElementById('btnAdminCancel').addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeAdminPanel();
+        });
+
+        document.getElementById('btnAdminLogin').addEventListener('click', function(e) {
+            e.stopPropagation();
+            var pass = document.getElementById('globalAdminPass').value;
+            if (pass === '9821') {
+                document.getElementById('adminLoginDiv').style.display = 'none';
+                document.getElementById('adminControlDiv').style.display = 'block';
+                updateKioskUI();
+            } else {
+                alert('Şifre hatalı!');
+                document.getElementById('globalAdminPass').value = '';
+            }
+        });
+
+        document.getElementById('btnToggleKiosk').addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleGlobalKiosk();
+        });
+
+        document.getElementById('btnAdminClose').addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeAdminPanel();
+        });
+
+        overlay.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        function updateKioskUI() {
+            kioskActive = (window.localStorage.getItem('kioskActive') === 'true');
+            var statusDiv = document.getElementById('kioskStatusDiv');
+            var toggleBtn = document.getElementById('btnToggleKiosk');
+            if (kioskActive) {
+                statusDiv.innerHTML = '<b>Kiosk Durumu:</b> <span style="color:#4CAF50;">AKTİF</span>';
+                toggleBtn.style.background = '#f44336';
+                toggleBtn.textContent = 'Kiosk Modunu KAPAT';
+            } else {
+                statusDiv.innerHTML = '<b>Kiosk Durumu:</b> <span style="color:#f44336;">KAPALI</span>';
+                toggleBtn.style.background = '#4CAF50';
+                toggleBtn.textContent = 'Kiosk Modunu AÇ';
+            }
+        }
+
+        function toggleGlobalKiosk() {
+            if (!window.KioskMode) { alert('KioskMode plugin yüklü değil!'); return; }
+            kioskActive = (window.localStorage.getItem('kioskActive') === 'true');
+            if (kioskActive) {
+                window.KioskMode.disableKiosk(
+                    function(msg) {
+                        window.localStorage.setItem('kioskActive', 'false');
+                        updateKioskUI();
+                        alert('Kiosk modu kapatıldı');
+                    },
+                    function(err) { alert('Hata: ' + err); }
+                );
+            } else {
+                window.KioskMode.enableKiosk(
+                    function(msg) {
+                        window.localStorage.setItem('kioskActive', 'true');
+                        updateKioskUI();
+                        alert('Kiosk modu açıldı');
+                    },
+                    function(err) { alert('Hata: ' + err); }
+                );
+            }
+        }
+    }
+
+    function closeAdminPanel() {
+        var overlay = document.getElementById('globalAdminOverlay');
+        if (overlay) overlay.remove();
+        adminPanelOpen = false;
+    }
+})();

@@ -1,6 +1,6 @@
 {
-    "version": "2.10.13",
+    "version": "2.10.14",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.13/app-debug.apk",
-    "description": "Kiosk geri butonu, SES bilgi gosterimi, B12-B13 tek kisi atlama"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.14/app-debug.apk",
+    "description": "Power tusu aktif, kiosk geri butonu"
 }
