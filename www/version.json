@@ -1,6 +1,6 @@
 {
-    "version": "2.10.18",
+    "version": "2.10.19",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.18/app-debug.apk",
-    "description": "Internet baglanti durumu yeniden kontrol"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.19/app-debug.apk",
+    "description": "Indirme hatasi duzeltmesi - redirect URL cozme"
 }

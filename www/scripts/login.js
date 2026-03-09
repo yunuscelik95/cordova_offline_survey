@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.10.18",
+            appVersion: "2.10.19",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
@@ -137,6 +137,23 @@ window.addEventListener('load', () => {
                 // Önce GitHub redirect URL'sini çöz, sonra FileTransfer ile indir
                 self.updateMessage = "Bağlantı hazırlanıyor...";
 
+                // GitHub redirect'i çözmek için fetch ile gerçek URL'yi al
+                fetch(apkUrl, { method: 'HEAD', redirect: 'follow' })
+                    .then(function(response) {
+                        var resolvedUrl = response.url || apkUrl;
+                        console.log("Çözülen URL: " + resolvedUrl);
+                        self.doDownload(resolvedUrl, targetPath, remoteVersion);
+                    })
+                    .catch(function(err) {
+                        console.log("Redirect çözülemedi, direkt URL deneniyor: " + err);
+                        self.doDownload(apkUrl, targetPath, remoteVersion);
+                    });
+            },
+
+            doDownload(downloadUrl, targetPath, remoteVersion) {
+                var self = this;
+                self.updateMessage = "İndirme başlatılıyor...";
+
                 var fileTransfer = new FileTransfer();
 
                 // Progress takibi
@@ -156,7 +173,7 @@ window.addEventListener('load', () => {
 
                 // FileTransfer ile indirme başlat
                 fileTransfer.download(
-                    apkUrl,
+                    downloadUrl,
                     targetPath,
                     function(entry) {
                         // İndirme başarılı
@@ -202,7 +219,7 @@ window.addEventListener('load', () => {
                     function(error) {
                         console.error("İndirme hatası:", JSON.stringify(error));
                         self.updateProgress = 0;
-                        self.updateMessage = "İndirme hatası (kod:" + error.code + "): " + (error.body || error.exception || "Bilinmeyen hata") + " - URL: " + apkUrl;
+                        self.updateMessage = "İndirme hatası (kod:" + error.code + "): " + (error.body || error.exception || "Bilinmeyen hata") + " - URL: " + downloadUrl;
                         self.updateError = true;
                     },
                     true, // trustAllHosts
