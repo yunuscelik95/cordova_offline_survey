@@ -1,6 +1,6 @@
 {
-    "version": "2.10.17",
+    "version": "2.10.18",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.17/app-debug.apk",
-    "description": "BlokOzet cikis butonu"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.18/app-debug.apk",
+    "description": "Internet baglanti durumu yeniden kontrol"
 }

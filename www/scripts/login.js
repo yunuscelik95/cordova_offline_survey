@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.10.17",
+            appVersion: "2.10.18",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
@@ -56,6 +56,9 @@ window.addEventListener('load', () => {
                 self.updateDone = false;
                 self.updateError = false;
                 self.updateMessage = "Güncelleme kontrol ediliyor...";
+
+                // Bağlantı durumunu tekrar kontrol et (WiFi açılıp dönülmüş olabilir)
+                updateConnectionProperties();
 
                 if (!state.isOnline) {
                     self.updateMessage = "İnternet bağlantısı yok! Güncelleme kontrol edilemiyor.";
