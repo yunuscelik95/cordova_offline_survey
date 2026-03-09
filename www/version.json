@@ -1,6 +1,6 @@
 {
-    "version": "2.10.19",
+    "version": "2.10.20",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.19/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.10.20/app-debug.apk",
     "description": "Indirme hatasi duzeltmesi - redirect URL cozme"
 }

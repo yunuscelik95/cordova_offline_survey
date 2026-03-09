@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.10.19",
+            appVersion: "2.10.20",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
@@ -118,10 +118,12 @@ window.addEventListener('load', () => {
                     });
             },
 
-            downloadUpdate(remoteVersion) {
+            downloadUpdate(remoteVersion, retryCount) {
                 var self = this;
+                retryCount = retryCount || 0;
+                var maxRetry = 3;
                 self.updateProgress = 0;
-                self.updateMessage = "İndirme başlatılıyor...";
+                self.updateMessage = retryCount > 0 ? ("Tekrar deneniyor (" + retryCount + "/" + maxRetry + ")...") : "İndirme başlatılıyor...";
 
                 var apkUrl = remoteVersion.apkUrl;
                 if (!apkUrl) {
@@ -135,23 +137,32 @@ window.addEventListener('load', () => {
                 var targetPath = targetDir + "update.apk";
 
                 // Önce GitHub redirect URL'sini çöz, sonra FileTransfer ile indir
-                self.updateMessage = "Bağlantı hazırlanıyor...";
+                self.updateMessage = retryCount > 0 ? ("Bağlantı hazırlanıyor... (deneme " + (retryCount+1) + ")") : "Bağlantı hazırlanıyor...";
 
                 // GitHub redirect'i çözmek için fetch ile gerçek URL'yi al
                 fetch(apkUrl, { method: 'HEAD', redirect: 'follow' })
                     .then(function(response) {
                         var resolvedUrl = response.url || apkUrl;
                         console.log("Çözülen URL: " + resolvedUrl);
-                        self.doDownload(resolvedUrl, targetPath, remoteVersion);
+                        self.doDownload(resolvedUrl, targetPath, remoteVersion, retryCount, maxRetry);
                     })
                     .catch(function(err) {
-                        console.log("Redirect çözülemedi, direkt URL deneniyor: " + err);
-                        self.doDownload(apkUrl, targetPath, remoteVersion);
+                        console.log("Redirect çözülemedi: " + err);
+                        if (retryCount < maxRetry) {
+                            self.updateMessage = "Bağlantı kurulamadı, " + (3 * (retryCount + 1)) + " saniye sonra tekrar denenecek...";
+                            setTimeout(function() {
+                                self.downloadUpdate(remoteVersion, retryCount + 1);
+                            }, 3000 * (retryCount + 1));
+                        } else {
+                            self.doDownload(apkUrl, targetPath, remoteVersion, retryCount, maxRetry);
+                        }
                     });
             },
 
-            doDownload(downloadUrl, targetPath, remoteVersion) {
+            doDownload(downloadUrl, targetPath, remoteVersion, retryCount, maxRetry) {
                 var self = this;
+                retryCount = retryCount || 0;
+                maxRetry = maxRetry || 3;
                 self.updateMessage = "İndirme başlatılıyor...";
 
                 var fileTransfer = new FileTransfer();
@@ -218,9 +229,17 @@ window.addEventListener('load', () => {
                     },
                     function(error) {
                         console.error("İndirme hatası:", JSON.stringify(error));
-                        self.updateProgress = 0;
-                        self.updateMessage = "İndirme hatası (kod:" + error.code + "): " + (error.body || error.exception || "Bilinmeyen hata") + " - URL: " + downloadUrl;
-                        self.updateError = true;
+                        if (retryCount < maxRetry) {
+                            self.updateProgress = 0;
+                            self.updateMessage = "İndirme başarısız, " + (3 * (retryCount + 1)) + " saniye sonra tekrar denenecek...";
+                            setTimeout(function() {
+                                self.downloadUpdate(remoteVersion, retryCount + 1);
+                            }, 3000 * (retryCount + 1));
+                        } else {
+                            self.updateProgress = 0;
+                            self.updateMessage = "İndirme hatası (kod:" + error.code + "): " + (error.body || error.exception || "Bilinmeyen hata");
+                            self.updateError = true;
+                        }
                     },
                     true, // trustAllHosts
                     { headers: { "Accept": "application/octet-stream" } }
