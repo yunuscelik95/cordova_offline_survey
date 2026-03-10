@@ -51,6 +51,7 @@
                 <td><div>Gönderilen : </div></td>
                 <td> <span id="spanGonderilen" style="font-weight:bold;color:yellowgreen">{{gonderilen}}</span></td>
                 <td style="text-align:right;">
+                    <button type="button" class="btn btn-warning btn-sm" id="brightnessBtn" style="margin-right:5px;" onclick="toggleBrightnessPanel()">☀ Parlaklık</button>
                     <input type="button" class="btn btn-danger btn-sm" value="Çıkış" onclick="window.location.href='Login.html';" />
                 </td>
             </tr>
@@ -99,11 +100,63 @@
         </table>
 
     </div>
+    <!-- Parlaklık Paneli -->
+    <div id="brightnessPanel" style="display:none;position:fixed;top:50px;right:10px;background:white;border-radius:10px;padding:15px;z-index:99998;box-shadow:0 4px 15px rgba(0,0,0,0.3);width:220px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:16px;">🔅</span>
+            <input type="range" id="brightnessRange" min="5" max="100" value="50" style="flex:1;">
+            <span style="font-size:16px;">🔆</span>
+        </div>
+        <div style="text-align:center;margin-top:5px;font-size:12px;color:#666;">Parlaklık: <span id="brightnessPercent">50</span>%</div>
+    </div>
+
     <script type="text/javascript">
         document.addEventListener("backbutton", function(e) {
             e.preventDefault();
             alert("Buradan Geriye Gidemezsiniz!");
         }, false);
+
+        // Parlaklık panel aç/kapa
+        var brightnessOpen = false;
+        function toggleBrightnessPanel() {
+            var panel = document.getElementById('brightnessPanel');
+            if (brightnessOpen) {
+                panel.style.display = 'none';
+                brightnessOpen = false;
+            } else {
+                var saved = window.localStorage.getItem('brightness') || '50';
+                document.getElementById('brightnessRange').value = saved;
+                document.getElementById('brightnessPercent').textContent = saved;
+                panel.style.display = 'block';
+                brightnessOpen = true;
+            }
+        }
+
+        document.addEventListener('deviceready', function() {
+            var slider = document.getElementById('brightnessRange');
+            if (slider) {
+                slider.addEventListener('input', function() {
+                    var val = parseInt(this.value);
+                    document.getElementById('brightnessPercent').textContent = val;
+                    var androidVal = val / 100.0;
+                    window.localStorage.setItem('brightness', val);
+                    if (window.cordova && cordova.exec) {
+                        cordova.exec(null, null, 'KioskMode', 'setBrightness', [androidVal]);
+                    }
+                });
+            }
+        });
+
+        // Panel dışına tıklayınca kapat
+        document.addEventListener('click', function(e) {
+            if (!brightnessOpen) return;
+            var panel = document.getElementById('brightnessPanel');
+            var btn = document.getElementById('brightnessBtn');
+            if (panel && !panel.contains(e.target) && btn && !btn.contains(e.target)) {
+                panel.style.display = 'none';
+                brightnessOpen = false;
+            }
+        }, true);
     </script>
 </body>
 <style>

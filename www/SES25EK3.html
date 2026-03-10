@@ -38,7 +38,7 @@
         function LoadData() {
             console.log("LoadData çağrıldı");
             db.transaction(function (tx) {
-                var sqlQuery = "SELECT SES25EK3 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
+                var sqlQuery = "SELECT SES25EK3, B1_O FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
                 console.log("SQL sorgusu:", sqlQuery);
                 
                 tx.executeSql(sqlQuery, [], 
@@ -47,6 +47,12 @@
                         if (val.rows.length > 0) {
                             var row = val.rows.item(0);
                             console.log("Row data:", row);
+                            
+                            // B1_O > 1 ise ek metin göster, soru metni gizle
+                            if (row.B1_O > 1) {
+                                $('#QuestionTextTD').hide();
+                                $('#QuestionTextTD2').show();
+                            }
                             
                             // Daha önce kaydedilmiş değeri seç
                             if (row.SES25EK3) {
@@ -110,6 +116,12 @@
                                 <b>Sağlık hizmetine ihtiyaç duyduğunuzda (muayene, tetkik vb.) özel hastaneleri kullanma ve ödeme şekliniz açısından aşağıdakilerden hangisi size en uygundur? </b>
                                 <font color="red"><b>EKRAN GÖSTER</b></font>
                             </font>
+                        </span>
+                        <span id="QuestionTextTD2" style="display:none";>
+                            <font face="calibri" color="#000000" size="2">
+                                    <b>Kendinizi ve ailenizdeki tüm kişileri düşündüğünüzde</b> hastaneye gitmeniz gereken durumlarda (muayene, tetkik, operasyon) sağlık hizmeti almak için devlet hastaneleri dışında özel hastaneleri kullanma durumunuzu şimdi size okuyacaklarımdan hangisi en iyi şekilde tanımlar?
+                                    <font color="red"><b>EKRAN GÖSTER</b></font>
+                                </font>
                         </span>
                     </td>
                 </tr>

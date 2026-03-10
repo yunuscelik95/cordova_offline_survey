@@ -1,4 +1,4 @@
-//var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
+﻿//var db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' });
 var db;
 
 var options = {
@@ -11,13 +11,18 @@ var options = {
     maxPreparedStatements: 10
 };
 
-// SQLite veritaban�na ba�lanma
+// SQLite veritabanï¿½na baï¿½lanma
 var openDatabaseSuccess = function () {
-    console.log("Veritaban�na ba�ar�yla ba�lan�ld�.");
+    console.log("Veritabanına başarıyla bağlanıldı.");
+    // Yeni kolonları ekle (zaten varsa sessizce geçer)
+    db.transaction(function(tx) {
+        tx.executeSql("ALTER TABLE INTERVIEWS ADD COLUMN [B102_O] TEXT", [], 
+            function(){ console.log("B102_O kolonu eklendi"); }, 
+            function(tx,e){ console.log("B102_O zaten var veya tablo yok"); return false; });
+    });
     userCreate(function (success) {
         if (success) {
             console.log("db open.");
-            // ��lemlerinizi burada devam ettirebilirsiniz
         } else {
             console.log("error db open error.");
         }
@@ -25,19 +30,19 @@ var openDatabaseSuccess = function () {
 };
 
 var openDatabaseError = function (error) {
-    console.error("Veritaban�na ba�lan�rken hata olu�tu: " + error.message);
+    console.error("Veritabanï¿½na baï¿½lanï¿½rken hata oluï¿½tu: " + error.message);
 };
 
 document.addEventListener('deviceready', function () {
 	
 	if (!window.localStorage.getItem('databaseInitialized')) {
-        // Veritaban�n�z� olu�turun
+        // Veritabanï¿½nï¿½zï¿½ oluï¿½turun
         db = window.sqlitePlugin.openDatabase(options, openDatabaseSuccess, openDatabaseError);
 
-        // �lk a��l��ta olu�turuldu i�aretini kaydedin
+        // ï¿½lk aï¿½ï¿½lï¿½ï¿½ta oluï¿½turuldu iï¿½aretini kaydedin
         window.localStorage.setItem('databaseInitialized', true);
     } else {
-        // Daha �nce olu�turulduysa sadece ba�lan�n
+        // Daha ï¿½nce oluï¿½turulduysa sadece baï¿½lanï¿½n
         db = window.sqlitePlugin.openDatabase(options, openDatabaseSuccess, openDatabaseError);
     }
 	db.executeSql('PRAGMA busy_timeout = 5000');
@@ -49,18 +54,18 @@ var userCreate = function (callback) {
 			  tx.executeSql("SELECT name FROM sqlite_master WHERE type='table' AND name='users'", [], function (tx, result) {
 				if (result.rows.length < 1) {
 						tx.executeSql("CREATE TABLE IF NOT EXISTS users([userID] text,[userName] text,[password] text,[guid] text)", [], function (tx, resp) {
-							console.log("Kullan�c�lar tablosu olu�turuldu");
+							console.log("Kullanï¿½cï¿½lar tablosu oluï¿½turuldu");
 							if (callback) {
-								callback(true); // Ba�ar�yla tamamland�
+								callback(true); // Baï¿½arï¿½yla tamamlandï¿½
 							}
 						})	
 					}
 				})	
         },
         function (error) {
-            console.log("Query hatas�: " + error.message);
+            console.log("Query hatasï¿½: " + error.message);
             if (callback) {
-                callback(false); // Hata olu�tu
+                callback(false); // Hata oluï¿½tu
             }
         });
 };
@@ -120,13 +125,13 @@ var DropCreate = function () {
     try {
         db.transaction(function (tx) {
             tx.executeSql("DROP TABLE IF EXISTS LISTE", [], function () {
-                console.log("LISTE tablosu ba�ar�yla silindi.");
+                console.log("LISTE tablosu baï¿½arï¿½yla silindi.");
             }, function (tx, error) {
-                console.error("LISTE tablosunu silme hatas�: " + error.message);
+                console.error("LISTE tablosunu silme hatasï¿½: " + error.message);
             });
         },
             function (error) {
-                console.error("LISTE tablosunu silme hatas�: " + error.message);
+                console.error("LISTE tablosunu silme hatasï¿½: " + error.message);
                 items1.push("<li id='BlokOzet'>LISTE ERROR 1</li>");
               },
             function () {
@@ -156,14 +161,14 @@ var DropCreate = function () {
                         "[isBack] INTEGER," +
                         "[ziyaretTarihi] TEXT," +
                         "[ziyaretAciklama] TEXT)", [], function () {
-                            console.log("LISTE tablosu ba�ar�yla olu�turuldu.");
+                            console.log("LISTE tablosu baï¿½arï¿½yla oluï¿½turuldu.");
                             items1.push("<li id='BlokOzet'>LISTE OK</li>");
                             $("<ul/>", {
                                 "class": "my-new-list",
                                 html: items1.join("")
                             }).appendTo("body");
                         }, function (tx, error) {
-                            console.error("LISTE tablosunu olu�turma hatas�: " + error.message);
+                            console.error("LISTE tablosunu oluï¿½turma hatasï¿½: " + error.message);
                             items1.push("<li id='BlokOzet'>LISTE CREATE TABLE ERROR</li>");
                             $("<ul/>", {
                                 "class": "my-new-list",
@@ -174,7 +179,7 @@ var DropCreate = function () {
             });
     
     } catch (e) {
-        console.error("Hata olu�tu: " + e.message);
+        console.error("Hata oluï¿½tu: " + e.message);
         items1.push("<li id='BlokOzet'>LISTE ERROR</li>");
   
     }
@@ -183,13 +188,13 @@ var DropCreate = function () {
     try {
         db.transaction(function (tx) {
             tx.executeSql("DROP TABLE IF EXISTS RESPONSES", [], function () {
-                console.log("RESPONSES tablosu ba�ar�yla silindi.");
+                console.log("RESPONSES tablosu baï¿½arï¿½yla silindi.");
             }, function (tx, error) {
-                console.error("RESPONSES tablosunu silme hatas�: " + error.message);
+                console.error("RESPONSES tablosunu silme hatasï¿½: " + error.message);
             });
         },
             function (error) {
-                console.error("RESPONSES tablosunu silme hatas�: " + error.message);
+                console.error("RESPONSES tablosunu silme hatasï¿½: " + error.message);
                 items1.push("<li id='BlokOzet'>RESPONSES ERROR 1</li>");
                 
             },
@@ -220,14 +225,14 @@ var DropCreate = function () {
         db.transaction(function (tx) {
             tx.executeSql("drop table IF EXISTS INTERVIEWS", [], function () {
                                     tx.executeSql(
-                                        "CREATE TABLE IF NOT EXISTS INTERVIEWS([InterviewID] INTEGER,[guid] TEXT,[InterviewStatu] INTEGER,[InterviewStatu2] INTEGER,[QuoteID] INTEGER,[userID] INTEGER,[userID2] INTEGER,[CallStat] INTEGER,[telefon] TEXT,[ceptelefonu] TEXT,[Rote] TEXT,[RandevzousDate] datetime,[Start] datetime,[Stop] datetime,[lastpage] TEXT,[startlanguage] TEXT,[startdate] TEXT,[datestamp] TEXT,[blokno] TEXT,[updatedate] datetime,[updatedate2] TEXT,[bolgeId] INTEGER,[id] INTEGER,[datadurum] INTEGER,[randevutarih] TEXT,[konum] TEXT,[Latitude] TEXT,[Longitude] TEXT,[tabletID] INTEGER,[ilId] INTEGER,[GK_Yas_O] TEXT,[GK_Cinsiyet] INTEGER,[GK_Egitim] INTEGER,[GK_Meslek] INTEGER,[GK_AdSoyad_O] TEXT,[GK_Yas] INTEGER,[GK_AdSoyad] INTEGER,[GK_YasGrup] INTEGER,[AggMeslekOpen] INTEGER,[AggMeslekOpen_O] TEXT,[haneKontrol] INTEGER,[haneKontrol2] INTEGER,[startlatitude] TEXT,[stoplatitude] TEXT,[startlongitude] TEXT,[stoplongitude] TEXT,[MapKontrol] INTEGER,[tkkontrol] INTEGER,[gonderim] INTEGER, [T1] INTEGER, [T1a] INTEGER, [A1] INTEGER, [A2a1] INTEGER, [E3b] INTEGER, [B1] INTEGER, [B1_O] TEXT, [C2] TEXT, [C2_O_1] TEXT, [C2_O_2] TEXT, [C2_O_3] TEXT, [C3] INTEGER, [D6_O_2_2] TEXT, [D6_O_3_2] TEXT, [D6_O_4_2] TEXT, [D6_O_5_2] TEXT, [GK] INTEGER, [GK_O] TEXT, [B3_1_1] INTEGER, [B3_2_1] INTEGER, [B4_1] INTEGER, [B4_2] INTEGER, [B5_1] INTEGER, [B5_2] INTEGER, [hata] TEXT, [B6_1] INTEGER, [B6_2] INTEGER, [B7_1] INTEGER, [B7_2] INTEGER, [B2a_1_1] TEXT, [B2a_2_1] TEXT, [tel_O] TEXT, [C4] TEXT, [C4_O_1] TEXT, [C4_O_2] TEXT, [C4_O_3] TEXT, [B2Text] TEXT, [ziyaretTarihi] TEXT, [ziyaretAciklama] TEXT, [ZiyaretSayi] INTEGER, [Nott] INTEGER, [Nott_O] TEXT, [Itk] INTEGER, [Ibackcheck] INTEGER, [Ieslik] INTEGER, [adres] TEXT, [anketorOnay] INTEGER, [PART2] INTEGER, [Not_O] TEXT, [A1a] INTEGER, [A1b] INTEGER, [A1b_O] TEXT, [A1c] TEXT, [A1c_O_4] TEXT, [B9] INTEGER, [B101] INTEGER, [B101_O] TEXT, [B12] INTEGER, [B13] INTEGER, [B2a_16_1] TEXT, [B2a_11_1] TEXT, [B2a_10_1] TEXT, [B2a_15_1] TEXT, [B2a_14_1] TEXT, [B2a_13_1] TEXT, [B2a_12_1] TEXT, [B2a_9_1] TEXT, [B2a_8_1] TEXT, [B2a_7_1] TEXT, [B2a_6_1] TEXT, [B2a_5_1] TEXT, [B2a_4_1] TEXT, [B2a_3_1] TEXT, [B2a_17_1] TEXT, [B2a_18_1] TEXT, [B2a_19_1] TEXT, [B2a_20_1] TEXT, [B22] INTEGER, [B3_3_1] TEXT, [B3_4_1] TEXT, [B3_5_1] TEXT, [B3_6_1] TEXT, [B3_7_1] TEXT, [B3_8_1] TEXT, [B3_9_1] TEXT, [B3_10_1] TEXT, [B3_11_1] TEXT, [B3_12_1] TEXT, [B3_13_1] TEXT, [B3_14_1] TEXT, [B3_15_1] TEXT, [B3_16_1] TEXT, [B3_17_1] TEXT, [B3_18_1] TEXT, [B3_19_1] TEXT, [B3_20_1] TEXT, [B4_3] INTEGER, [B4_4] INTEGER, [B4_5] INTEGER, [B4_6] INTEGER, [B4_7] INTEGER, [B4_8] INTEGER, [B4_9] INTEGER, [B4_10] INTEGER, [B4_11] INTEGER, [B4_12] INTEGER, [B4_13] INTEGER, [B4_14] INTEGER, [B4_15] INTEGER, [B4_16] INTEGER, [B4_17] INTEGER, [B4_18] INTEGER, [B4_19] INTEGER, [B4_20] INTEGER, [B5_3] INTEGER, [B5_4] INTEGER, [B5_5] INTEGER, [B5_6] INTEGER, [B5_7] INTEGER, [B5_8] INTEGER, [B5_9] INTEGER, [B5_10] INTEGER, [B5_11] INTEGER, [B5_12] INTEGER, [B5_13] INTEGER, [B5_14] INTEGER, [B5_15] INTEGER, [B5_16] INTEGER, [B5_17] INTEGER, [B5_18] INTEGER, [B5_19] INTEGER, [B5_20] INTEGER, [B6_4] INTEGER, [B6_3] INTEGER, [B6_5] INTEGER, [B6_6] INTEGER, [B6_7] INTEGER, [B6_8] INTEGER, [B6_9] INTEGER, [B6_10] INTEGER, [B6_11] INTEGER, [B6_12] INTEGER, [B6_13] INTEGER, [B6_14] INTEGER, [B6_15] INTEGER, [B6_16] INTEGER, [B6_17] INTEGER, [B6_18] INTEGER, [B6_19] INTEGER, [B6_20] INTEGER, [B7_3] INTEGER, [B7_4] INTEGER, [B7_5] INTEGER, [B7_6] INTEGER, [B7_7] INTEGER, [B7_8] INTEGER, [B7_9] INTEGER, [B7_10] INTEGER, [B7_11] INTEGER, [B7_12] INTEGER, [B7_13] INTEGER, [B7_14] INTEGER, [B7_15] INTEGER, [B7_16] INTEGER, [B7_17] INTEGER, [B7_18] INTEGER, [B7_19] INTEGER, [B7_20] INTEGER, [B8e] INTEGER, [A2] TEXT, [B6A_1] TEXT, [B6A_2] TEXT, [F1] INTEGER, [hataB6] TEXT, [tel] TEXT, [tel_O_1] TEXT, [tel_O_2] TEXT, [tel_O_3] TEXT, [tela] INTEGER, [tela_O] TEXT, [B2b_1] INTEGER, [B2b_O_1_97] TEXT, [B2b_2] INTEGER, [B2b_O_2_97] TEXT, [B2b_3] INTEGER, [B2b_O_3_97] TEXT, [B2b_4] INTEGER, [B2b_O_4_97] TEXT, [B2b_5] INTEGER, [B2b_O_5_97] TEXT, [B2b_6] INTEGER, [B2b_O_6_97] TEXT, [B2b_7] INTEGER, [B2b_O_7_97] TEXT, [B2b_8] INTEGER, [B2b_O_8_97] TEXT, [B2b_9] INTEGER, [B2b_O_9_97] TEXT, [B2b_10] INTEGER, [B2b_O_10_97] TEXT, [B2b_11] INTEGER, [B2b_O_11_97] TEXT, [B2b_12] INTEGER, [B2b_O_12_97] TEXT, [B2b_13] INTEGER, [B2b_O_13_97] TEXT, [B2b_14] INTEGER, [B2b_O_14_97] TEXT, [B2b_15] INTEGER, [B2b_O_15_97] TEXT, [B2b_16] INTEGER, [B2b_O_16_97] TEXT, [B2b_17] INTEGER, [B2b_O_17_97] TEXT, [B2b_18] INTEGER, [B2b_O_18_97] TEXT, [B2b_19] INTEGER, [B2b_O_19_97] TEXT, [B2b_20] INTEGER, [B2b_O_20_97] TEXT, [B8H] INTEGER, [C4_O_4] TEXT, [C4_O_5] TEXT, [C4_O_6] TEXT, [C4_O_7] TEXT, [C4_O_8] TEXT, [C4_O_9] TEXT, [C4_O_10] TEXT, [C4_O_11] TEXT, [C4_O_12] TEXT, [C4_O_13] TEXT, [C4_O_14] TEXT, [C4_O_15] TEXT, [C4_O_16] TEXT, [C4_O_17] TEXT, [C4_O_18] TEXT, [C4_O_19] TEXT, [C4_O_20] TEXT, [C4_O_95] TEXT, [C1] INTEGER, [Last_B8_20] INTEGER, [Last_B8_19] INTEGER, [Last_B8_18] INTEGER, [Last_B8_17] INTEGER, [Last_B8_16] INTEGER, [Last_B8_15] INTEGER, [Last_B8_14] INTEGER, [Last_B8_13] INTEGER, [Last_B8_12] INTEGER, [Last_B8_11] INTEGER, [Last_B8_10] INTEGER, [Last_B8_9] INTEGER, [Last_B8_8] INTEGER, [Last_B8_7] INTEGER, [Last_B8_6] INTEGER, [Last_B8_5] INTEGER, [Last_B8_4] INTEGER, [Last_B8_3] INTEGER, [Last_B8_2] INTEGER, [Last_B8_1] INTEGER, [B8] INTEGER, [panelK] INTEGER, [A2a2a1] TEXT, [A2a2a1_O_97] TEXT, [A2a2a2] TEXT, [A2a2a2_O_97] TEXT, [A2a2a3] TEXT, [A2a2a4] TEXT, [A2a2a3_O_97] TEXT, [A2a2a4_O_97] TEXT, [A2a2a5] TEXT, [A2a2a5_O_97] TEXT, [B2b_O_97] TEXT, [P1_10] INTEGER, [P1_9] INTEGER, [P1_8] INTEGER, [P1_7] INTEGER, [P1_6] INTEGER, [P1_5] INTEGER, [P1_4] INTEGER, [P1_3] INTEGER, [P1_2] INTEGER, [P1_1] INTEGER, [A241_1] INTEGER, [A241_2] INTEGER, [A241_3] INTEGER, [A241_4] INTEGER, [A241_5] INTEGER, [A242_1_1] TEXT, [A242_2_1] TEXT, [A242_3_1] TEXT, [A242_4_1] TEXT, [A242_5_1] TEXT, [A23_1_1] TEXT, [A23_2_1] TEXT, [A243_1] TEXT, [A243_2] TEXT, [A243_3] TEXT, [A243_4] TEXT, [A243_5] TEXT, [B8a] INTEGER, [B8a_O] TEXT, [B8b] TEXT, [SES25S1] INTEGER, [SES25S2] INTEGER, [SES25S3] INTEGER, [SES25S4] INTEGER, [SES25S5] INTEGER, [SES25EK1] INTEGER, [SES25EK2] TEXT, [SES25EK2A] INTEGER, [SES25EK2B] INTEGER, [SES25EK3] INTEGER, [Ek1] INTEGER, [Ek2] INTEGER, [Ek3] INTEGER, [Ek3_O] TEXT, [ResponseNot] INTEGER, [ResponseNot_O] TEXT)"
+                                        "CREATE TABLE IF NOT EXISTS INTERVIEWS([InterviewID] INTEGER,[guid] TEXT,[InterviewStatu] INTEGER,[InterviewStatu2] INTEGER,[QuoteID] INTEGER,[userID] INTEGER,[userID2] INTEGER,[CallStat] INTEGER,[telefon] TEXT,[ceptelefonu] TEXT,[Rote] TEXT,[RandevzousDate] datetime,[Start] datetime,[Stop] datetime,[lastpage] TEXT,[startlanguage] TEXT,[startdate] TEXT,[datestamp] TEXT,[blokno] TEXT,[updatedate] datetime,[updatedate2] TEXT,[bolgeId] INTEGER,[id] INTEGER,[datadurum] INTEGER,[randevutarih] TEXT,[konum] TEXT,[Latitude] TEXT,[Longitude] TEXT,[tabletID] INTEGER,[ilId] INTEGER,[GK_Yas_O] TEXT,[GK_Cinsiyet] INTEGER,[GK_Egitim] INTEGER,[GK_Meslek] INTEGER,[GK_AdSoyad_O] TEXT,[GK_Yas] INTEGER,[GK_AdSoyad] INTEGER,[GK_YasGrup] INTEGER,[AggMeslekOpen] INTEGER,[AggMeslekOpen_O] TEXT,[haneKontrol] INTEGER,[haneKontrol2] INTEGER,[startlatitude] TEXT,[stoplatitude] TEXT,[startlongitude] TEXT,[stoplongitude] TEXT,[MapKontrol] INTEGER,[tkkontrol] INTEGER,[gonderim] INTEGER, [T1] INTEGER, [T1a] INTEGER, [A1] INTEGER, [A2a1] INTEGER, [E3b] INTEGER, [B1] INTEGER, [B1_O] TEXT, [C2] TEXT, [C2_O_1] TEXT, [C2_O_2] TEXT, [C2_O_3] TEXT, [C3] INTEGER, [D6_O_2_2] TEXT, [D6_O_3_2] TEXT, [D6_O_4_2] TEXT, [D6_O_5_2] TEXT, [GK] INTEGER, [GK_O] TEXT, [B3_1_1] INTEGER, [B3_2_1] INTEGER, [B4_1] INTEGER, [B4_2] INTEGER, [B5_1] INTEGER, [B5_2] INTEGER, [hata] TEXT, [B6_1] INTEGER, [B6_2] INTEGER, [B7_1] INTEGER, [B7_2] INTEGER, [B2a_1_1] TEXT, [B2a_2_1] TEXT, [tel_O] TEXT, [C4] TEXT, [C4_O_1] TEXT, [C4_O_2] TEXT, [C4_O_3] TEXT, [B2Text] TEXT, [ziyaretTarihi] TEXT, [ziyaretAciklama] TEXT, [ZiyaretSayi] INTEGER, [Nott] INTEGER, [Nott_O] TEXT, [Itk] INTEGER, [Ibackcheck] INTEGER, [Ieslik] INTEGER, [adres] TEXT, [anketorOnay] INTEGER, [PART2] INTEGER, [Not_O] TEXT, [A1a] INTEGER, [A1b] INTEGER, [A1b_O] TEXT, [A1c] TEXT, [A1c_O_4] TEXT, [B9] INTEGER, [B101] INTEGER, [B101_O] TEXT, [B12] INTEGER, [B13] INTEGER, [B2a_16_1] TEXT, [B2a_11_1] TEXT, [B2a_10_1] TEXT, [B2a_15_1] TEXT, [B2a_14_1] TEXT, [B2a_13_1] TEXT, [B2a_12_1] TEXT, [B2a_9_1] TEXT, [B2a_8_1] TEXT, [B2a_7_1] TEXT, [B2a_6_1] TEXT, [B2a_5_1] TEXT, [B2a_4_1] TEXT, [B2a_3_1] TEXT, [B2a_17_1] TEXT, [B2a_18_1] TEXT, [B2a_19_1] TEXT, [B2a_20_1] TEXT, [B22] INTEGER, [B3_3_1] TEXT, [B3_4_1] TEXT, [B3_5_1] TEXT, [B3_6_1] TEXT, [B3_7_1] TEXT, [B3_8_1] TEXT, [B3_9_1] TEXT, [B3_10_1] TEXT, [B3_11_1] TEXT, [B3_12_1] TEXT, [B3_13_1] TEXT, [B3_14_1] TEXT, [B3_15_1] TEXT, [B3_16_1] TEXT, [B3_17_1] TEXT, [B3_18_1] TEXT, [B3_19_1] TEXT, [B3_20_1] TEXT, [B4_3] INTEGER, [B4_4] INTEGER, [B4_5] INTEGER, [B4_6] INTEGER, [B4_7] INTEGER, [B4_8] INTEGER, [B4_9] INTEGER, [B4_10] INTEGER, [B4_11] INTEGER, [B4_12] INTEGER, [B4_13] INTEGER, [B4_14] INTEGER, [B4_15] INTEGER, [B4_16] INTEGER, [B4_17] INTEGER, [B4_18] INTEGER, [B4_19] INTEGER, [B4_20] INTEGER, [B5_3] INTEGER, [B5_4] INTEGER, [B5_5] INTEGER, [B5_6] INTEGER, [B5_7] INTEGER, [B5_8] INTEGER, [B5_9] INTEGER, [B5_10] INTEGER, [B5_11] INTEGER, [B5_12] INTEGER, [B5_13] INTEGER, [B5_14] INTEGER, [B5_15] INTEGER, [B5_16] INTEGER, [B5_17] INTEGER, [B5_18] INTEGER, [B5_19] INTEGER, [B5_20] INTEGER, [B6_4] INTEGER, [B6_3] INTEGER, [B6_5] INTEGER, [B6_6] INTEGER, [B6_7] INTEGER, [B6_8] INTEGER, [B6_9] INTEGER, [B6_10] INTEGER, [B6_11] INTEGER, [B6_12] INTEGER, [B6_13] INTEGER, [B6_14] INTEGER, [B6_15] INTEGER, [B6_16] INTEGER, [B6_17] INTEGER, [B6_18] INTEGER, [B6_19] INTEGER, [B6_20] INTEGER, [B7_3] INTEGER, [B7_4] INTEGER, [B7_5] INTEGER, [B7_6] INTEGER, [B7_7] INTEGER, [B7_8] INTEGER, [B7_9] INTEGER, [B7_10] INTEGER, [B7_11] INTEGER, [B7_12] INTEGER, [B7_13] INTEGER, [B7_14] INTEGER, [B7_15] INTEGER, [B7_16] INTEGER, [B7_17] INTEGER, [B7_18] INTEGER, [B7_19] INTEGER, [B7_20] INTEGER, [B8e] INTEGER, [A2] TEXT, [B6A_1] TEXT, [B6A_2] TEXT, [F1] INTEGER, [hataB6] TEXT, [tel] TEXT, [tel_O_1] TEXT, [tel_O_2] TEXT, [tel_O_3] TEXT, [tela] INTEGER, [tela_O] TEXT, [B2b_1] INTEGER, [B2b_O_1_97] TEXT, [B2b_2] INTEGER, [B2b_O_2_97] TEXT, [B2b_3] INTEGER, [B2b_O_3_97] TEXT, [B2b_4] INTEGER, [B2b_O_4_97] TEXT, [B2b_5] INTEGER, [B2b_O_5_97] TEXT, [B2b_6] INTEGER, [B2b_O_6_97] TEXT, [B2b_7] INTEGER, [B2b_O_7_97] TEXT, [B2b_8] INTEGER, [B2b_O_8_97] TEXT, [B2b_9] INTEGER, [B2b_O_9_97] TEXT, [B2b_10] INTEGER, [B2b_O_10_97] TEXT, [B2b_11] INTEGER, [B2b_O_11_97] TEXT, [B2b_12] INTEGER, [B2b_O_12_97] TEXT, [B2b_13] INTEGER, [B2b_O_13_97] TEXT, [B2b_14] INTEGER, [B2b_O_14_97] TEXT, [B2b_15] INTEGER, [B2b_O_15_97] TEXT, [B2b_16] INTEGER, [B2b_O_16_97] TEXT, [B2b_17] INTEGER, [B2b_O_17_97] TEXT, [B2b_18] INTEGER, [B2b_O_18_97] TEXT, [B2b_19] INTEGER, [B2b_O_19_97] TEXT, [B2b_20] INTEGER, [B2b_O_20_97] TEXT, [B8H] INTEGER, [C4_O_4] TEXT, [C4_O_5] TEXT, [C4_O_6] TEXT, [C4_O_7] TEXT, [C4_O_8] TEXT, [C4_O_9] TEXT, [C4_O_10] TEXT, [C4_O_11] TEXT, [C4_O_12] TEXT, [C4_O_13] TEXT, [C4_O_14] TEXT, [C4_O_15] TEXT, [C4_O_16] TEXT, [C4_O_17] TEXT, [C4_O_18] TEXT, [C4_O_19] TEXT, [C4_O_20] TEXT, [C4_O_95] TEXT, [C1] INTEGER, [Last_B8_20] INTEGER, [Last_B8_19] INTEGER, [Last_B8_18] INTEGER, [Last_B8_17] INTEGER, [Last_B8_16] INTEGER, [Last_B8_15] INTEGER, [Last_B8_14] INTEGER, [Last_B8_13] INTEGER, [Last_B8_12] INTEGER, [Last_B8_11] INTEGER, [Last_B8_10] INTEGER, [Last_B8_9] INTEGER, [Last_B8_8] INTEGER, [Last_B8_7] INTEGER, [Last_B8_6] INTEGER, [Last_B8_5] INTEGER, [Last_B8_4] INTEGER, [Last_B8_3] INTEGER, [Last_B8_2] INTEGER, [Last_B8_1] INTEGER, [B8] INTEGER, [panelK] INTEGER, [A2a2a1] TEXT, [A2a2a1_O_97] TEXT, [A2a2a2] TEXT, [A2a2a2_O_97] TEXT, [A2a2a3] TEXT, [A2a2a4] TEXT, [A2a2a3_O_97] TEXT, [A2a2a4_O_97] TEXT, [A2a2a5] TEXT, [A2a2a5_O_97] TEXT, [B2b_O_97] TEXT, [P1_10] INTEGER, [P1_9] INTEGER, [P1_8] INTEGER, [P1_7] INTEGER, [P1_6] INTEGER, [P1_5] INTEGER, [P1_4] INTEGER, [P1_3] INTEGER, [P1_2] INTEGER, [P1_1] INTEGER, [A241_1] INTEGER, [A241_2] INTEGER, [A241_3] INTEGER, [A241_4] INTEGER, [A241_5] INTEGER, [A242_1_1] TEXT, [A242_2_1] TEXT, [A242_3_1] TEXT, [A242_4_1] TEXT, [A242_5_1] TEXT, [A23_1_1] TEXT, [A23_2_1] TEXT, [A243_1] TEXT, [A243_2] TEXT, [A243_3] TEXT, [A243_4] TEXT, [A243_5] TEXT, [B8a] INTEGER, [B8a_O] TEXT, [B8b] TEXT, [SES25S1] INTEGER, [SES25S2] INTEGER, [SES25S3] INTEGER, [SES25S4] INTEGER, [SES25S5] INTEGER, [SES25EK1] INTEGER, [SES25EK2] TEXT, [SES25EK2A] INTEGER, [SES25EK2B] INTEGER, [SES25EK3] INTEGER, [Ek1] INTEGER, [Ek2] INTEGER, [Ek3] INTEGER, [Ek3_O] TEXT, [ResponseNot] INTEGER, [ResponseNot_O] TEXT, [B102_O] TEXT)"
                                     , [], function () {
                                     items1.push("<li id='BlokOzet'>INTERVIEWS OK</li>");
                                 }, function (tx, error) {
-                                            console.error("INTERVIEWS tablosu olu�turulamad� " + error.message);
+                                            console.error("INTERVIEWS tablosu oluï¿½turulamadï¿½ " + error.message);
                                             });
             }, function (tx, error) {
-                           console.error("INTERVIEWS tablosunu silme hatas�: " + error.message);
+                           console.error("INTERVIEWS tablosunu silme hatasï¿½: " + error.message);
         });
         },
         function (error) {
@@ -361,14 +366,14 @@ var create = function () {
         db.transaction(function (tx) { 
             tx.executeSql("drop table IF EXISTS INTERVIEWS", [], function () {
                                     tx.executeSql(
-                                        "CREATE TABLE IF NOT EXISTS INTERVIEWS([InterviewID] INTEGER,[guid] TEXT,[InterviewStatu] INTEGER,[InterviewStatu2] INTEGER,[QuoteID] INTEGER,[userID] INTEGER,[userID2] INTEGER,[CallStat] INTEGER,[telefon] TEXT,[ceptelefonu] TEXT,[Rote] TEXT,[RandevzousDate] datetime,[Start] datetime,[Stop] datetime,[lastpage] TEXT,[startlanguage] TEXT,[startdate] TEXT,[datestamp] TEXT,[blokno] TEXT,[updatedate] datetime,[updatedate2] TEXT,[bolgeId] INTEGER,[id] INTEGER,[datadurum] INTEGER,[randevutarih] TEXT,[konum] TEXT,[Latitude] TEXT,[Longitude] TEXT,[tabletID] INTEGER,[ilId] INTEGER,[GK_Yas_O] TEXT,[GK_Cinsiyet] INTEGER,[GK_Egitim] INTEGER,[GK_Meslek] INTEGER,[GK_AdSoyad_O] TEXT,[GK_Yas] INTEGER,[GK_AdSoyad] INTEGER,[GK_YasGrup] INTEGER,[AggMeslekOpen] INTEGER,[AggMeslekOpen_O] TEXT,[haneKontrol] INTEGER,[haneKontrol2] INTEGER,[startlatitude] TEXT,[stoplatitude] TEXT,[startlongitude] TEXT,[stoplongitude] TEXT,[MapKontrol] INTEGER,[tkkontrol] INTEGER,[gonderim] INTEGER, [T1] INTEGER, [T1a] INTEGER, [A1] INTEGER, [A2a1] INTEGER, [E3b] INTEGER, [B1] INTEGER, [B1_O] TEXT, [C2] TEXT, [C2_O_1] TEXT, [C2_O_2] TEXT, [C2_O_3] TEXT, [C3] INTEGER, [D6_O_2_2] TEXT, [D6_O_3_2] TEXT, [D6_O_4_2] TEXT, [D6_O_5_2] TEXT, [GK] INTEGER, [GK_O] TEXT, [B3_1_1] INTEGER, [B3_2_1] INTEGER, [B4_1] INTEGER, [B4_2] INTEGER, [B5_1] INTEGER, [B5_2] INTEGER, [hata] TEXT, [B6_1] INTEGER, [B6_2] INTEGER, [B7_1] INTEGER, [B7_2] INTEGER, [B2a_1_1] TEXT, [B2a_2_1] TEXT, [tel_O] TEXT, [C4] TEXT, [C4_O_1] TEXT, [C4_O_2] TEXT, [C4_O_3] TEXT, [B2Text] TEXT, [ziyaretTarihi] TEXT, [ziyaretAciklama] TEXT, [ZiyaretSayi] INTEGER, [Nott] INTEGER, [Nott_O] TEXT, [Itk] INTEGER, [Ibackcheck] INTEGER, [Ieslik] INTEGER, [adres] TEXT, [anketorOnay] INTEGER, [PART2] INTEGER, [Not_O] TEXT, [A1a] INTEGER, [A1b] INTEGER, [A1b_O] TEXT, [A1c] TEXT, [A1c_O_4] TEXT, [B9] INTEGER, [B101] INTEGER, [B101_O] TEXT, [B12] INTEGER, [B13] INTEGER, [B2a_16_1] TEXT, [B2a_11_1] TEXT, [B2a_10_1] TEXT, [B2a_15_1] TEXT, [B2a_14_1] TEXT, [B2a_13_1] TEXT, [B2a_12_1] TEXT, [B2a_9_1] TEXT, [B2a_8_1] TEXT, [B2a_7_1] TEXT, [B2a_6_1] TEXT, [B2a_5_1] TEXT, [B2a_4_1] TEXT, [B2a_3_1] TEXT, [B2a_17_1] TEXT, [B2a_18_1] TEXT, [B2a_19_1] TEXT, [B2a_20_1] TEXT, [B22] INTEGER, [B3_3_1] TEXT, [B3_4_1] TEXT, [B3_5_1] TEXT, [B3_6_1] TEXT, [B3_7_1] TEXT, [B3_8_1] TEXT, [B3_9_1] TEXT, [B3_10_1] TEXT, [B3_11_1] TEXT, [B3_12_1] TEXT, [B3_13_1] TEXT, [B3_14_1] TEXT, [B3_15_1] TEXT, [B3_16_1] TEXT, [B3_17_1] TEXT, [B3_18_1] TEXT, [B3_19_1] TEXT, [B3_20_1] TEXT, [B4_3] INTEGER, [B4_4] INTEGER, [B4_5] INTEGER, [B4_6] INTEGER, [B4_7] INTEGER, [B4_8] INTEGER, [B4_9] INTEGER, [B4_10] INTEGER, [B4_11] INTEGER, [B4_12] INTEGER, [B4_13] INTEGER, [B4_14] INTEGER, [B4_15] INTEGER, [B4_16] INTEGER, [B4_17] INTEGER, [B4_18] INTEGER, [B4_19] INTEGER, [B4_20] INTEGER, [B5_3] INTEGER, [B5_4] INTEGER, [B5_5] INTEGER, [B5_6] INTEGER, [B5_7] INTEGER, [B5_8] INTEGER, [B5_9] INTEGER, [B5_10] INTEGER, [B5_11] INTEGER, [B5_12] INTEGER, [B5_13] INTEGER, [B5_14] INTEGER, [B5_15] INTEGER, [B5_16] INTEGER, [B5_17] INTEGER, [B5_18] INTEGER, [B5_19] INTEGER, [B5_20] INTEGER, [B6_4] INTEGER, [B6_3] INTEGER, [B6_5] INTEGER, [B6_6] INTEGER, [B6_7] INTEGER, [B6_8] INTEGER, [B6_9] INTEGER, [B6_10] INTEGER, [B6_11] INTEGER, [B6_12] INTEGER, [B6_13] INTEGER, [B6_14] INTEGER, [B6_15] INTEGER, [B6_16] INTEGER, [B6_17] INTEGER, [B6_18] INTEGER, [B6_19] INTEGER, [B6_20] INTEGER, [B7_3] INTEGER, [B7_4] INTEGER, [B7_5] INTEGER, [B7_6] INTEGER, [B7_7] INTEGER, [B7_8] INTEGER, [B7_9] INTEGER, [B7_10] INTEGER, [B7_11] INTEGER, [B7_12] INTEGER, [B7_13] INTEGER, [B7_14] INTEGER, [B7_15] INTEGER, [B7_16] INTEGER, [B7_17] INTEGER, [B7_18] INTEGER, [B7_19] INTEGER, [B7_20] INTEGER, [B8e] INTEGER, [A2] TEXT, [B6A_1] TEXT, [B6A_2] TEXT, [F1] INTEGER, [hataB6] TEXT, [tel] TEXT, [tel_O_1] TEXT, [tel_O_2] TEXT, [tel_O_3] TEXT, [tela] INTEGER, [tela_O] TEXT, [B2b_1] INTEGER, [B2b_O_1_97] TEXT, [B2b_2] INTEGER, [B2b_O_2_97] TEXT, [B2b_3] INTEGER, [B2b_O_3_97] TEXT, [B2b_4] INTEGER, [B2b_O_4_97] TEXT, [B2b_5] INTEGER, [B2b_O_5_97] TEXT, [B2b_6] INTEGER, [B2b_O_6_97] TEXT, [B2b_7] INTEGER, [B2b_O_7_97] TEXT, [B2b_8] INTEGER, [B2b_O_8_97] TEXT, [B2b_9] INTEGER, [B2b_O_9_97] TEXT, [B2b_10] INTEGER, [B2b_O_10_97] TEXT, [B2b_11] INTEGER, [B2b_O_11_97] TEXT, [B2b_12] INTEGER, [B2b_O_12_97] TEXT, [B2b_13] INTEGER, [B2b_O_13_97] TEXT, [B2b_14] INTEGER, [B2b_O_14_97] TEXT, [B2b_15] INTEGER, [B2b_O_15_97] TEXT, [B2b_16] INTEGER, [B2b_O_16_97] TEXT, [B2b_17] INTEGER, [B2b_O_17_97] TEXT, [B2b_18] INTEGER, [B2b_O_18_97] TEXT, [B2b_19] INTEGER, [B2b_O_19_97] TEXT, [B2b_20] INTEGER, [B2b_O_20_97] TEXT, [B8H] INTEGER, [C4_O_4] TEXT, [C4_O_5] TEXT, [C4_O_6] TEXT, [C4_O_7] TEXT, [C4_O_8] TEXT, [C4_O_9] TEXT, [C4_O_10] TEXT, [C4_O_11] TEXT, [C4_O_12] TEXT, [C4_O_13] TEXT, [C4_O_14] TEXT, [C4_O_15] TEXT, [C4_O_16] TEXT, [C4_O_17] TEXT, [C4_O_18] TEXT, [C4_O_19] TEXT, [C4_O_20] TEXT, [C4_O_95] TEXT, [C1] INTEGER, [Last_B8_20] INTEGER, [Last_B8_19] INTEGER, [Last_B8_18] INTEGER, [Last_B8_17] INTEGER, [Last_B8_16] INTEGER, [Last_B8_15] INTEGER, [Last_B8_14] INTEGER, [Last_B8_13] INTEGER, [Last_B8_12] INTEGER, [Last_B8_11] INTEGER, [Last_B8_10] INTEGER, [Last_B8_9] INTEGER, [Last_B8_8] INTEGER, [Last_B8_7] INTEGER, [Last_B8_6] INTEGER, [Last_B8_5] INTEGER, [Last_B8_4] INTEGER, [Last_B8_3] INTEGER, [Last_B8_2] INTEGER, [Last_B8_1] INTEGER, [B8] INTEGER, [panelK] INTEGER, [A2a2a1] TEXT, [A2a2a1_O_97] TEXT, [A2a2a2] TEXT, [A2a2a2_O_97] TEXT, [A2a2a3] TEXT, [A2a2a4] TEXT, [A2a2a3_O_97] TEXT, [A2a2a4_O_97] TEXT, [A2a2a5] TEXT, [A2a2a5_O_97] TEXT, [B2b_O_97] TEXT, [P1_10] INTEGER, [P1_9] INTEGER, [P1_8] INTEGER, [P1_7] INTEGER, [P1_6] INTEGER, [P1_5] INTEGER, [P1_4] INTEGER, [P1_3] INTEGER, [P1_2] INTEGER, [P1_1] INTEGER, [A241_1] INTEGER, [A241_2] INTEGER, [A241_3] INTEGER, [A241_4] INTEGER, [A241_5] INTEGER, [A242_1_1] TEXT, [A242_2_1] TEXT, [A242_3_1] TEXT, [A242_4_1] TEXT, [A242_5_1] TEXT, [A23_1_1] TEXT, [A23_2_1] TEXT, [A243_1] TEXT, [A243_2] TEXT, [A243_3] TEXT, [A243_4] TEXT, [A243_5] TEXT, [B8a] INTEGER, [B8a_O] TEXT, [B8b] TEXT, [SES25S1] INTEGER, [SES25S2] INTEGER, [SES25S3] INTEGER, [SES25S4] INTEGER, [SES25S5] INTEGER, [SES25EK1] INTEGER, [SES25EK2] TEXT, [SES25EK2A] INTEGER, [SES25EK2B] INTEGER, [SES25EK3] INTEGER, [Ek1] INTEGER, [Ek2] INTEGER, [Ek3] INTEGER, [Ek3_O] TEXT, [ResponseNot] INTEGER, [ResponseNot_O] TEXT)"
+                                        "CREATE TABLE IF NOT EXISTS INTERVIEWS([InterviewID] INTEGER,[guid] TEXT,[InterviewStatu] INTEGER,[InterviewStatu2] INTEGER,[QuoteID] INTEGER,[userID] INTEGER,[userID2] INTEGER,[CallStat] INTEGER,[telefon] TEXT,[ceptelefonu] TEXT,[Rote] TEXT,[RandevzousDate] datetime,[Start] datetime,[Stop] datetime,[lastpage] TEXT,[startlanguage] TEXT,[startdate] TEXT,[datestamp] TEXT,[blokno] TEXT,[updatedate] datetime,[updatedate2] TEXT,[bolgeId] INTEGER,[id] INTEGER,[datadurum] INTEGER,[randevutarih] TEXT,[konum] TEXT,[Latitude] TEXT,[Longitude] TEXT,[tabletID] INTEGER,[ilId] INTEGER,[GK_Yas_O] TEXT,[GK_Cinsiyet] INTEGER,[GK_Egitim] INTEGER,[GK_Meslek] INTEGER,[GK_AdSoyad_O] TEXT,[GK_Yas] INTEGER,[GK_AdSoyad] INTEGER,[GK_YasGrup] INTEGER,[AggMeslekOpen] INTEGER,[AggMeslekOpen_O] TEXT,[haneKontrol] INTEGER,[haneKontrol2] INTEGER,[startlatitude] TEXT,[stoplatitude] TEXT,[startlongitude] TEXT,[stoplongitude] TEXT,[MapKontrol] INTEGER,[tkkontrol] INTEGER,[gonderim] INTEGER, [T1] INTEGER, [T1a] INTEGER, [A1] INTEGER, [A2a1] INTEGER, [E3b] INTEGER, [B1] INTEGER, [B1_O] TEXT, [C2] TEXT, [C2_O_1] TEXT, [C2_O_2] TEXT, [C2_O_3] TEXT, [C3] INTEGER, [D6_O_2_2] TEXT, [D6_O_3_2] TEXT, [D6_O_4_2] TEXT, [D6_O_5_2] TEXT, [GK] INTEGER, [GK_O] TEXT, [B3_1_1] INTEGER, [B3_2_1] INTEGER, [B4_1] INTEGER, [B4_2] INTEGER, [B5_1] INTEGER, [B5_2] INTEGER, [hata] TEXT, [B6_1] INTEGER, [B6_2] INTEGER, [B7_1] INTEGER, [B7_2] INTEGER, [B2a_1_1] TEXT, [B2a_2_1] TEXT, [tel_O] TEXT, [C4] TEXT, [C4_O_1] TEXT, [C4_O_2] TEXT, [C4_O_3] TEXT, [B2Text] TEXT, [ziyaretTarihi] TEXT, [ziyaretAciklama] TEXT, [ZiyaretSayi] INTEGER, [Nott] INTEGER, [Nott_O] TEXT, [Itk] INTEGER, [Ibackcheck] INTEGER, [Ieslik] INTEGER, [adres] TEXT, [anketorOnay] INTEGER, [PART2] INTEGER, [Not_O] TEXT, [A1a] INTEGER, [A1b] INTEGER, [A1b_O] TEXT, [A1c] TEXT, [A1c_O_4] TEXT, [B9] INTEGER, [B101] INTEGER, [B101_O] TEXT, [B12] INTEGER, [B13] INTEGER, [B2a_16_1] TEXT, [B2a_11_1] TEXT, [B2a_10_1] TEXT, [B2a_15_1] TEXT, [B2a_14_1] TEXT, [B2a_13_1] TEXT, [B2a_12_1] TEXT, [B2a_9_1] TEXT, [B2a_8_1] TEXT, [B2a_7_1] TEXT, [B2a_6_1] TEXT, [B2a_5_1] TEXT, [B2a_4_1] TEXT, [B2a_3_1] TEXT, [B2a_17_1] TEXT, [B2a_18_1] TEXT, [B2a_19_1] TEXT, [B2a_20_1] TEXT, [B22] INTEGER, [B3_3_1] TEXT, [B3_4_1] TEXT, [B3_5_1] TEXT, [B3_6_1] TEXT, [B3_7_1] TEXT, [B3_8_1] TEXT, [B3_9_1] TEXT, [B3_10_1] TEXT, [B3_11_1] TEXT, [B3_12_1] TEXT, [B3_13_1] TEXT, [B3_14_1] TEXT, [B3_15_1] TEXT, [B3_16_1] TEXT, [B3_17_1] TEXT, [B3_18_1] TEXT, [B3_19_1] TEXT, [B3_20_1] TEXT, [B4_3] INTEGER, [B4_4] INTEGER, [B4_5] INTEGER, [B4_6] INTEGER, [B4_7] INTEGER, [B4_8] INTEGER, [B4_9] INTEGER, [B4_10] INTEGER, [B4_11] INTEGER, [B4_12] INTEGER, [B4_13] INTEGER, [B4_14] INTEGER, [B4_15] INTEGER, [B4_16] INTEGER, [B4_17] INTEGER, [B4_18] INTEGER, [B4_19] INTEGER, [B4_20] INTEGER, [B5_3] INTEGER, [B5_4] INTEGER, [B5_5] INTEGER, [B5_6] INTEGER, [B5_7] INTEGER, [B5_8] INTEGER, [B5_9] INTEGER, [B5_10] INTEGER, [B5_11] INTEGER, [B5_12] INTEGER, [B5_13] INTEGER, [B5_14] INTEGER, [B5_15] INTEGER, [B5_16] INTEGER, [B5_17] INTEGER, [B5_18] INTEGER, [B5_19] INTEGER, [B5_20] INTEGER, [B6_4] INTEGER, [B6_3] INTEGER, [B6_5] INTEGER, [B6_6] INTEGER, [B6_7] INTEGER, [B6_8] INTEGER, [B6_9] INTEGER, [B6_10] INTEGER, [B6_11] INTEGER, [B6_12] INTEGER, [B6_13] INTEGER, [B6_14] INTEGER, [B6_15] INTEGER, [B6_16] INTEGER, [B6_17] INTEGER, [B6_18] INTEGER, [B6_19] INTEGER, [B6_20] INTEGER, [B7_3] INTEGER, [B7_4] INTEGER, [B7_5] INTEGER, [B7_6] INTEGER, [B7_7] INTEGER, [B7_8] INTEGER, [B7_9] INTEGER, [B7_10] INTEGER, [B7_11] INTEGER, [B7_12] INTEGER, [B7_13] INTEGER, [B7_14] INTEGER, [B7_15] INTEGER, [B7_16] INTEGER, [B7_17] INTEGER, [B7_18] INTEGER, [B7_19] INTEGER, [B7_20] INTEGER, [B8e] INTEGER, [A2] TEXT, [B6A_1] TEXT, [B6A_2] TEXT, [F1] INTEGER, [hataB6] TEXT, [tel] TEXT, [tel_O_1] TEXT, [tel_O_2] TEXT, [tel_O_3] TEXT, [tela] INTEGER, [tela_O] TEXT, [B2b_1] INTEGER, [B2b_O_1_97] TEXT, [B2b_2] INTEGER, [B2b_O_2_97] TEXT, [B2b_3] INTEGER, [B2b_O_3_97] TEXT, [B2b_4] INTEGER, [B2b_O_4_97] TEXT, [B2b_5] INTEGER, [B2b_O_5_97] TEXT, [B2b_6] INTEGER, [B2b_O_6_97] TEXT, [B2b_7] INTEGER, [B2b_O_7_97] TEXT, [B2b_8] INTEGER, [B2b_O_8_97] TEXT, [B2b_9] INTEGER, [B2b_O_9_97] TEXT, [B2b_10] INTEGER, [B2b_O_10_97] TEXT, [B2b_11] INTEGER, [B2b_O_11_97] TEXT, [B2b_12] INTEGER, [B2b_O_12_97] TEXT, [B2b_13] INTEGER, [B2b_O_13_97] TEXT, [B2b_14] INTEGER, [B2b_O_14_97] TEXT, [B2b_15] INTEGER, [B2b_O_15_97] TEXT, [B2b_16] INTEGER, [B2b_O_16_97] TEXT, [B2b_17] INTEGER, [B2b_O_17_97] TEXT, [B2b_18] INTEGER, [B2b_O_18_97] TEXT, [B2b_19] INTEGER, [B2b_O_19_97] TEXT, [B2b_20] INTEGER, [B2b_O_20_97] TEXT, [B8H] INTEGER, [C4_O_4] TEXT, [C4_O_5] TEXT, [C4_O_6] TEXT, [C4_O_7] TEXT, [C4_O_8] TEXT, [C4_O_9] TEXT, [C4_O_10] TEXT, [C4_O_11] TEXT, [C4_O_12] TEXT, [C4_O_13] TEXT, [C4_O_14] TEXT, [C4_O_15] TEXT, [C4_O_16] TEXT, [C4_O_17] TEXT, [C4_O_18] TEXT, [C4_O_19] TEXT, [C4_O_20] TEXT, [C4_O_95] TEXT, [C1] INTEGER, [Last_B8_20] INTEGER, [Last_B8_19] INTEGER, [Last_B8_18] INTEGER, [Last_B8_17] INTEGER, [Last_B8_16] INTEGER, [Last_B8_15] INTEGER, [Last_B8_14] INTEGER, [Last_B8_13] INTEGER, [Last_B8_12] INTEGER, [Last_B8_11] INTEGER, [Last_B8_10] INTEGER, [Last_B8_9] INTEGER, [Last_B8_8] INTEGER, [Last_B8_7] INTEGER, [Last_B8_6] INTEGER, [Last_B8_5] INTEGER, [Last_B8_4] INTEGER, [Last_B8_3] INTEGER, [Last_B8_2] INTEGER, [Last_B8_1] INTEGER, [B8] INTEGER, [panelK] INTEGER, [A2a2a1] TEXT, [A2a2a1_O_97] TEXT, [A2a2a2] TEXT, [A2a2a2_O_97] TEXT, [A2a2a3] TEXT, [A2a2a4] TEXT, [A2a2a3_O_97] TEXT, [A2a2a4_O_97] TEXT, [A2a2a5] TEXT, [A2a2a5_O_97] TEXT, [B2b_O_97] TEXT, [P1_10] INTEGER, [P1_9] INTEGER, [P1_8] INTEGER, [P1_7] INTEGER, [P1_6] INTEGER, [P1_5] INTEGER, [P1_4] INTEGER, [P1_3] INTEGER, [P1_2] INTEGER, [P1_1] INTEGER, [A241_1] INTEGER, [A241_2] INTEGER, [A241_3] INTEGER, [A241_4] INTEGER, [A241_5] INTEGER, [A242_1_1] TEXT, [A242_2_1] TEXT, [A242_3_1] TEXT, [A242_4_1] TEXT, [A242_5_1] TEXT, [A23_1_1] TEXT, [A23_2_1] TEXT, [A243_1] TEXT, [A243_2] TEXT, [A243_3] TEXT, [A243_4] TEXT, [A243_5] TEXT, [B8a] INTEGER, [B8a_O] TEXT, [B8b] TEXT, [SES25S1] INTEGER, [SES25S2] INTEGER, [SES25S3] INTEGER, [SES25S4] INTEGER, [SES25S5] INTEGER, [SES25EK1] INTEGER, [SES25EK2] TEXT, [SES25EK2A] INTEGER, [SES25EK2B] INTEGER, [SES25EK3] INTEGER, [Ek1] INTEGER, [Ek2] INTEGER, [Ek3] INTEGER, [Ek3_O] TEXT, [ResponseNot] INTEGER, [ResponseNot_O] TEXT, [B102_O] TEXT)"
                                     , [], function () {
                                     items1.push("<li id='BlokOzet'>INTERVIEWS OK</li>");
                                 }, function (tx, error) {
-                                            console.error("INTERVIEWS tablosu olu�turulamad� " + error.message);
+                                            console.error("INTERVIEWS tablosu oluï¿½turulamadï¿½ " + error.message);
                                             });
             }, function (tx, error) {
-                           console.error("INTERVIEWS tablosunu silme hatas�: " + error.message);
+                           console.error("INTERVIEWS tablosunu silme hatasï¿½: " + error.message);
         });
         },
         function (error) {
@@ -475,7 +480,7 @@ var myInsert2 = function (table, keys, values, isDelete) {
     };
 };
 
-//bunu �a��r bakal�m 
+//bunu ï¿½aï¿½ï¿½r bakalï¿½m 
 var myInsert = function (iladi) {
 
     db.transaction(function (tx) {
@@ -575,44 +580,55 @@ var select = function () {
 };
 
 // =============================================
-// VERİTABANI MİGRATİON SİSTEMİ
-// Her güncelleme yaptığınızda yeni kolon eklemeniz gerekirse,
-// aşağıya yeni bir if bloğu ekleyin.
-// ALTER TABLE ADD COLUMN mevcut veriyi SİLMEZ, sadece yeni kolon ekler.
-// Kolon zaten varsa hata yakalayıp sessizce geçer.
+// VERÄ°TABANI MÄ°GRATÄ°ON SÄ°STEMÄ°
+// Her gÃ¼ncelleme yaptÄ±ÄŸÄ±nÄ±zda yeni kolon eklemeniz gerekirse,
+// aÅŸaÄŸÄ±ya yeni bir if bloÄŸu ekleyin.
+// ALTER TABLE ADD COLUMN mevcut veriyi SÄ°LMEZ, sadece yeni kolon ekler.
+// Kolon zaten varsa hata yakalayÄ±p sessizce geÃ§er.
 // =============================================
 var migrateDatabase = function(currentDbVersion, newDbVersion) {
-    console.log("DB Migration başlatılıyor: v" + currentDbVersion + " -> v" + newDbVersion);
+    console.log("DB Migration baÅŸlatÄ±lÄ±yor: v" + currentDbVersion + " -> v" + newDbVersion);
     
     db.transaction(function(tx) {
 
-        // ---- SÜRÜM 1: İlk sürüm, migration gerekmez ----
+        // ---- SÃœRÃœM 1: Ä°lk sÃ¼rÃ¼m, migration gerekmez ----
         // if (currentDbVersion < 1) {
-        //     // Örnek: Yeni kolon ekleme
+        //     // Ã–rnek: Yeni kolon ekleme
         //     tx.executeSql("ALTER TABLE INTERVIEWS ADD COLUMN [YeniKolon1] INTEGER", [], function(){console.log("YeniKolon1 eklendi");}, function(tx,e){ console.log("YeniKolon1 zaten var"); return false; });
         //     tx.executeSql("ALTER TABLE INTERVIEWS ADD COLUMN [YeniKolon2] TEXT", [], function(){console.log("YeniKolon2 eklendi");}, function(tx,e){ console.log("YeniKolon2 zaten var"); return false; });
         // }
 
-        // ---- SÜRÜM 2: Buraya gelecek güncellemede eklenecek kolonları yazın ----
+        // ---- SÃœRÃœM 2: Buraya gelecek gÃ¼ncellemede eklenecek kolonlarÄ± yazÄ±n ----
         // if (currentDbVersion < 2) {
         //     tx.executeSql("ALTER TABLE INTERVIEWS ADD COLUMN [OrnekSoru] INTEGER", [], function(){}, function(){ return false; });
         // }
 
-        // ---- SÜRÜM 3: Bir sonraki güncelleme ----
+        // ---- SÃœRÃœM 3: Bir sonraki gÃ¼ncelleme ----
         // if (currentDbVersion < 3) {
         //     tx.executeSql("ALTER TABLE INTERVIEWS ADD COLUMN [BaskaBirSoru] TEXT", [], function(){}, function(){ return false; });
         // }
 
     }, function(error) {
-        console.error("Migration hatası: " + error.message);
+        console.error("Migration hatasÄ±: " + error.message);
     }, function() {
-        console.log("Migration tamamlandı. dbVersion: " + newDbVersion);
+        console.log("Migration tamamlandÄ±. dbVersion: " + newDbVersion);
         window.localStorage.setItem("dbVersion", newDbVersion);
     });
 };
 
+// ParlaklÄ±k butonu sadece blokOzet sayfasÄ±nda gÃ¶sterilir (blokOzet.html iÃ§inde)
+
+// Sayfa yÃ¼klendiÄŸinde kayÄ±tlÄ± parlaklÄ±ÄŸÄ± uygula
+document.addEventListener('deviceready', function() {
+    var saved = parseInt(window.localStorage.getItem('brightness') || '50');
+    var androidVal = saved / 100.0;
+    if (window.cordova && cordova.exec) {
+        cordova.exec(null, null, 'KioskMode', 'setBrightness', [androidVal]);
+    }
+});
+
 // =============================================
-// GLOBAL ADMİN PANELİ - HER SAYFADA 7 KERE HIZLI BASINCA AÇILIR
+// GLOBAL ADMÄ°N PANELÄ° - HER SAYFADA 7 KERE HIZLI BASINCA AÃ‡ILIR
 // =============================================
 (function() {
     var globalTapCount = 0;
@@ -623,14 +639,14 @@ var migrateDatabase = function(currentDbVersion, newDbVersion) {
     document.addEventListener('click', function(e) {
         if (adminPanelOpen) return;
         
-        // Buton, input, label, select, a gibi interaktif elemanlar için sayma
+        // Buton, input, label, select, a gibi interaktif elemanlar iÃ§in sayma
         var tag = e.target.tagName.toLowerCase();
         var isInteractive = (tag === 'button' || tag === 'input' || tag === 'label' || 
                             tag === 'select' || tag === 'a' || tag === 'textarea' ||
                             e.target.closest('button') || e.target.closest('a'));
         
         var now = Date.now();
-        // Ardışık tıklamalar arası max 200ms (hızlı seri tıklama)
+        // ArdÄ±ÅŸÄ±k tÄ±klamalar arasÄ± max 200ms (hÄ±zlÄ± seri tÄ±klama)
         if (now - lastTapTime > 200) {
             globalTapCount = 1;
         } else {
@@ -655,12 +671,12 @@ var migrateDatabase = function(currentDbVersion, newDbVersion) {
 
         overlay.innerHTML = 
             '<div style="background:white;border-radius:12px;padding:25px;width:85%;max-width:400px;box-shadow:0 4px 20px rgba(0,0,0,0.3);">' +
-                '<h3 style="margin:0 0 15px 0;color:#333;text-align:center;">Yönetici Paneli</h3>' +
+                '<h3 style="margin:0 0 15px 0;color:#333;text-align:center;">YÃ¶netici Paneli</h3>' +
                 '<div id="adminLoginDiv" style="text-align:center;">' +
-                    '<input type="password" id="globalAdminPass" placeholder="Yönetici Şifresi" style="width:90%;padding:10px;margin:10px 0;border:2px solid #ddd;border-radius:6px;font-size:16px;">' +
+                    '<input type="password" id="globalAdminPass" placeholder="YÃ¶netici Åifresi" style="width:90%;padding:10px;margin:10px 0;border:2px solid #ddd;border-radius:6px;font-size:16px;">' +
                     '<br>' +
-                    '<button id="btnAdminLogin" type="button" style="background:#2196F3;color:white;border:none;padding:12px 30px;border-radius:6px;font-size:14px;margin:5px;">Giriş</button>' +
-                    '<button id="btnAdminCancel" type="button" style="background:#999;color:white;border:none;padding:12px 30px;border-radius:6px;font-size:14px;margin:5px;">İptal</button>' +
+                    '<button id="btnAdminLogin" type="button" style="background:#2196F3;color:white;border:none;padding:12px 30px;border-radius:6px;font-size:14px;margin:5px;">GiriÅŸ</button>' +
+                    '<button id="btnAdminCancel" type="button" style="background:#999;color:white;border:none;padding:12px 30px;border-radius:6px;font-size:14px;margin:5px;">Ä°ptal</button>' +
                 '</div>' +
                 '<div id="adminControlDiv" style="display:none;">' +
                     '<div id="kioskStatusDiv" style="margin:10px 0;padding:10px;background:#f5f5f5;border-radius:6px;font-size:13px;"></div>' +
@@ -687,7 +703,7 @@ var migrateDatabase = function(currentDbVersion, newDbVersion) {
                 document.getElementById('adminControlDiv').style.display = 'block';
                 updateKioskUI();
             } else {
-                alert('Şifre hatalı!');
+                alert('Åifre hatalÄ±!');
                 document.getElementById('globalAdminPass').value = '';
             }
         });
@@ -711,25 +727,25 @@ var migrateDatabase = function(currentDbVersion, newDbVersion) {
             var statusDiv = document.getElementById('kioskStatusDiv');
             var toggleBtn = document.getElementById('btnToggleKiosk');
             if (kioskActive) {
-                statusDiv.innerHTML = '<b>Kiosk Durumu:</b> <span style="color:#4CAF50;">AKTİF</span>';
+                statusDiv.innerHTML = '<b>Kiosk Durumu:</b> <span style="color:#4CAF50;">AKTÄ°F</span>';
                 toggleBtn.style.background = '#f44336';
                 toggleBtn.textContent = 'Kiosk Modunu KAPAT';
             } else {
                 statusDiv.innerHTML = '<b>Kiosk Durumu:</b> <span style="color:#f44336;">KAPALI</span>';
                 toggleBtn.style.background = '#4CAF50';
-                toggleBtn.textContent = 'Kiosk Modunu AÇ';
+                toggleBtn.textContent = 'Kiosk Modunu AÃ‡';
             }
         }
 
         function toggleGlobalKiosk() {
-            if (!window.KioskMode) { alert('KioskMode plugin yüklü değil!'); return; }
+            if (!window.KioskMode) { alert('KioskMode plugin yÃ¼klÃ¼ deÄŸil!'); return; }
             kioskActive = (window.localStorage.getItem('kioskActive') === 'true');
             if (kioskActive) {
                 window.KioskMode.disableKiosk(
                     function(msg) {
                         window.localStorage.setItem('kioskActive', 'false');
                         updateKioskUI();
-                        alert('Kiosk modu kapatıldı');
+                        alert('Kiosk modu kapatÄ±ldÄ±');
                     },
                     function(err) { alert('Hata: ' + err); }
                 );
@@ -738,7 +754,7 @@ var migrateDatabase = function(currentDbVersion, newDbVersion) {
                     function(msg) {
                         window.localStorage.setItem('kioskActive', 'true');
                         updateKioskUI();
-                        alert('Kiosk modu açıldı');
+                        alert('Kiosk modu aÃ§Ä±ldÄ±');
                     },
                     function(err) { alert('Hata: ' + err); }
                 );

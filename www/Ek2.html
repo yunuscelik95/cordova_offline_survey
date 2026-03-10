@@ -38,7 +38,7 @@
         function LoadData() {
             console.log("LoadData çağrıldı");
             db.transaction(function (tx) {
-                var sqlQuery = "SELECT Ek2 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
+                var sqlQuery = "SELECT Ek2, B1_O FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
                 console.log("SQL sorgusu:", sqlQuery);
                 
                 tx.executeSql(sqlQuery, [], 
@@ -49,7 +49,12 @@
                             console.log("Row data:", row);
                             
                             if (row.Ek2) {
-                                $('input[name="Ek2"][value="' + row.Ek2 + '"]').prop('checked', true);
+                                $('input[name="Ek2"][value="' + row.Ek2 + '"]).prop('checked', true);
+                            }
+                            
+                            // B1_O = 1 ise ek metni göster
+                            if (row.B1_O && row.B1_O.toString().trim() === '1') {
+                                $('#ek2ExtraText').show();
                             }
                         } else {
                             console.log("Hiç satır bulunamadı");
@@ -108,6 +113,11 @@
                                 <b>Son 6 ayı düşündüğünüzde haneniz gelirleriyle kira, mutfak, eğitim gibi giderlerinizi karşılama şeklinizi ekrandaki ifadelerden hangisi en iyi şekilde tarif eder? </b>
                             </font>
                         </span>
+                        <div id="ek2ExtraText" style="display:none; margin-top:10px;">
+                            <font face="calibri" color="#000000" size="2">
+                                <b>Kendinizi ve ailenizdeki tüm kişileri düşündüğünüzde</b> hastaneye gitmeniz gereken durumlarda (muayene, tetkik, operasyon) sağlık hizmeti almak için devlet hastaneleri dışında özel hastaneleri kullanma durumunuzu şimdi size okuyacaklarımdan hangisi en iyi şekilde tanımlar?
+                            </font>
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -169,6 +179,16 @@
                             <span></span>
                         </td>
                         <td><label for="Ek2_5">Aylık gelirimiz yeterli hiç zorlanmıyoruz </label></td>
+                    </tr>
+                    <!-- Seçenek 99 -->
+                    <tr class="AlternateTableRow">
+                        <td class="columnDivider"></td>
+                        <td align="right">99</td>
+                        <td align="right">
+                            <input type="radio" class="radioStyle" name="Ek2" id="Ek2_99" value="99">
+                            <span></span>
+                        </td>
+                        <td><label for="Ek2_99">Bilmiyorum </label></td>
                     </tr>
                     
                     <tr>

@@ -286,11 +286,32 @@
                         var items1 = [];
                         var j = jQuery.parseJSON(response.data);
                         console.log("Parsed blok sayısı:", j.length);
+                        // Sunucudan gelen Yapilan değerlerini hafızaya al
+                        self.serverYapilan = {};
+                        $.each(j, function(k, v) {
+                            if (v.guid) self.serverYapilan[v.guid] = v.Yapilan || 0;
+                        });
                         var say = 0;
                         if (j.length  < 1)
                         {
-                            console.log("Kullanıcıya atanmış blok yok");
-                            self.querySuccess();
+                            console.log("Yeni blok yok, mevcut blokların listesini indir");
+                            // Mevcut blokların guid'lerini al ve LISTE'yi indir
+                            db.transaction(function(tx) {
+                                tx.executeSql("SELECT guid FROM BLOKOZET WHERE userID=?", [window.localStorage["userID"]], function(tx, val) {
+                                    if (val.rows.length > 0) {
+                                        var mevcutBloknos = "";
+                                        for (var i = 0; i < val.rows.length; i++) {
+                                            if (mevcutBloknos != "") mevcutBloknos += ",";
+                                            mevcutBloknos += "'" + val.rows.item(i).guid + "'";
+                                        }
+                                        self.blokListeDownload(mevcutBloknos);
+                                    } else {
+                                        self.querySuccess();
+                                    }
+                                });
+                            }, function(error) {
+                                self.querySuccess();
+                            });
                             return;
                         }
                         $.each(j, function (key, val) {
@@ -316,6 +337,10 @@
                                     if (val1.rows.item(0).sayi1 < 1) {
                                         tx.executeSql("insert into [BLOKOZET] (" + keysStr + ") values(" + Parameters + ")", values);
                                         self.querySuccess();
+                                    } else {
+                                        // Blok zaten var, sunucudan gelen Yapilan ve statu değerlerini güncelle
+                                        tx.executeSql("UPDATE BLOKOZET SET Yapilan=?, statu=?, blokAciklama=? WHERE userId=? AND blokno=?", 
+                                            [val.Yapilan || 0, val.blokstatu, val.blokAciklama || '', window.localStorage["userID"], val.blokno]);
                                     }
                                 })
                                 say++;
@@ -388,17 +413,29 @@
                 var say = 0;
                 db.transaction(function (tx) {
                     tx.executeSql("SELECT guid, blokno, iladi, ilceadi, koyadi, mahalleadi, statu, blokAciklama, IFNULL(Yapilan, 0) as tamamlanan FROM BLOKOZET WHERE userID=? ORDER BY blokno", [window.localStorage["userID"]], function (tx, val) {
-                    //self.liste = val.rows;
-					    var listeArray = [];
-
-						for (var i = 0; i < val.rows.length; i++) {
-							var row = val.rows.item(i);
-							listeArray.push(row);
-						}
-						 self.liste = listeArray;
-                         self.storageData(" (gonderim is null or gonderim=0) and InterviewStatu is not null and InterviewStatu<>0");
-                    })
-
+                        var listeArray = [];
+                        for (var i = 0; i < val.rows.length; i++) {
+                            var row = val.rows.item(i);
+                            // Sunucudan gelen Yapilan varsa onu kullan, yoksa DB'deki değeri kullan
+                            var yapilan = row.tamamlanan;
+                            if (self.serverYapilan && self.serverYapilan[row.guid] !== undefined) {
+                                yapilan = self.serverYapilan[row.guid];
+                            }
+                            listeArray.push({
+                                guid: row.guid,
+                                blokno: row.blokno,
+                                iladi: row.iladi,
+                                ilceadi: row.ilceadi,
+                                koyadi: row.koyadi,
+                                mahalleadi: row.mahalleadi,
+                                statu: row.statu,
+                                blokAciklama: row.blokAciklama,
+                                tamamlanan: yapilan
+                            });
+                        }
+                        self.liste = listeArray;
+                        self.storageData(" (gonderim is null or gonderim=0) and InterviewStatu is not null and InterviewStatu<>0");
+                    });
                 });
                 return items1.join("");
             },

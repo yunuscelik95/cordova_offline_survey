@@ -46,7 +46,7 @@
         function LoadData() {
             console.log("LoadData çağrıldı");
             db.transaction(function (tx) {
-                var sqlQuery = "SELECT B3_1_1, B3_2_1, B3_3_1, B3_4_1, B3_5_1, B3_6_1, B3_7_1, B3_8_1, B3_9_1, B3_10_1, B3_11_1, B3_12_1, B3_13_1, B3_14_1, B3_15_1, B3_16_1, B3_17_1, B3_18_1, B3_19_1, B3_20_1, B4_1, B4_2, B4_3, B4_4, B4_5, B4_6, B4_7, B4_8, B4_9, B4_10, B4_11, B4_12, B4_13, B4_14, B4_15, B4_16, B4_17, B4_18, B4_19, B4_20, B5_1, B5_2, B5_3, B5_4, B5_5, B5_6, B5_7, B5_8, B5_9, B5_10, B5_11, B5_12, B5_13, B5_14, B5_15, B5_16, B5_17, B5_18, B5_19, B5_20, B7_1, B7_2, B7_3, B7_4, B7_5, B7_6, B7_7, B7_8, B7_9, B7_10, B7_11, B7_12, B7_13, B7_14, B7_15, B7_16, B7_17, B7_18, B7_19, B7_20, B2a_1_1, B2a_2_1, B2a_3_1, B2a_4_1, B2a_5_1, B2a_6_1, B2a_7_1, B2a_8_1, B2a_9_1, B2a_10_1, B2a_11_1, B2a_12_1, B2a_13_1, B2a_14_1, B2a_15_1, B2a_16_1, B2a_17_1, B2a_18_1, B2a_19_1, B2a_20_1, B8, B8e, B101_O, B9 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
+                var sqlQuery = "SELECT B3_1_1, B3_2_1, B3_3_1, B3_4_1, B3_5_1, B3_6_1, B3_7_1, B3_8_1, B3_9_1, B3_10_1, B3_11_1, B3_12_1, B3_13_1, B3_14_1, B3_15_1, B3_16_1, B3_17_1, B3_18_1, B3_19_1, B3_20_1, B4_1, B4_2, B4_3, B4_4, B4_5, B4_6, B4_7, B4_8, B4_9, B4_10, B4_11, B4_12, B4_13, B4_14, B4_15, B4_16, B4_17, B4_18, B4_19, B4_20, B5_1, B5_2, B5_3, B5_4, B5_5, B5_6, B5_7, B5_8, B5_9, B5_10, B5_11, B5_12, B5_13, B5_14, B5_15, B5_16, B5_17, B5_18, B5_19, B5_20, B7_1, B7_2, B7_3, B7_4, B7_5, B7_6, B7_7, B7_8, B7_9, B7_10, B7_11, B7_12, B7_13, B7_14, B7_15, B7_16, B7_17, B7_18, B7_19, B7_20, B2a_1_1, B2a_2_1, B2a_3_1, B2a_4_1, B2a_5_1, B2a_6_1, B2a_7_1, B2a_8_1, B2a_9_1, B2a_10_1, B2a_11_1, B2a_12_1, B2a_13_1, B2a_14_1, B2a_15_1, B2a_16_1, B2a_17_1, B2a_18_1, B2a_19_1, B2a_20_1, B8, B8e, B101_O, B102_O, B9 FROM INTERVIEWS WHERE InterviewID=" + window.localStorage["InterviewID"];
                 console.log("SQL sorgusu:", sqlQuery);
 
                 tx.executeSql(sqlQuery, [],
@@ -84,10 +84,17 @@
                                 $('#QuestionTextTD').html('<font face="Calibri" color="#000000" size="2">Eve düzenli ve en yüksek geliri getiren kişinin <b><span id="secilenKisiIsim">' + secilenIsim + '</span></b> \'ın <b>emekli olmadan önce</b> yaptığı işi yani mesleğinin ne olduğunu detaylı olarak belirtir misiniz?<br><b></b>ANKETÖR DİKKAT: Yapılan İşin / Mesleğin Çok Ayrıntılı Olarak Yazılması Gerekiyor<br>ANKETÖR! KİŞİ EMEKLİ İSEDE , EMEKLİ OLMADAN ÖNCEKİ MESLEĞİNİ AÇIK OLARAK AŞAĞIDAKİ ÖRNEKLERDEKİ ŞEKİLDE DETAYLI YAZINIZ.<br>EMEKLİ ÖĞRETMEN İDİ YÖNETİCİ KONUMU YOKTU ŞU ANDA ÇALIŞMIYOR<br>EMEKLİ BANKA MÜDÜRÜYDÜ ALTINDA 14 KİŞİ ÇALIŞIYORDU<br>ÖZEL BİR ŞİRKETTE MAAŞLI ŞOFÖRDÜ<br>5 ÇALIŞANI OLAN MARKET SAHİBİYDİ</font>');
                                 $('#B8Row').hide();
                                 $('#B8eRow').show();
+                                $('#B101_O_label').text('Emekli olmadan önceki meslek açıklaması:');
+                                // B7=1: Emekli/Çalışıyor → şu anki meslek açıklaması da sor
+                                // B7=2: Emekli/Çalışmıyor → şu anki meslek sorulmasın
+                                if (b7Degeri == 1) {
+                                    $('#B102Row').show();
+                                }
                                 applyB8eKosullar();
                                 if (row.B8e) {
                                     $('#B8e').val(row.B8e);
                                 }
+                                if (row.B102_O) $('#B102_O').val(row.B102_O);
                             } else if (b7Degeri == 3 || b7Degeri == 4 || b7Degeri == 5) {
                                 if (b7Degeri == 3) {
                                     console.log("Çalışmıyor - B8 gösteriliyor (3-7 seçenekler)");
@@ -136,8 +143,8 @@
                     console.log("B4 koşulu - Seçenek", item, "gizlendi");
                 }
 
-                // 40 yaşından küçükse, 1 ve 2 numaralı seçenekler gizlenir
-                if (parseInt(b3Degeri) < 40 && (item == 1 || item == 2)) {
+                // 38 yaşından küçükse, 1 ve 2 numaralı seçenekler gizlenir
+                if (parseInt(b3Degeri) < 38 && (item == 1 || item == 2)) {
                     hide = true;
                     console.log("B3 koşulu - Seçenek", item, "gizlendi");
                 }
@@ -258,6 +265,17 @@
             }
             if (updateStr != "") updateStr += ",";
             updateStr += "B101_O='" + b101.replace(/'/g, "''") + "'";
+
+            if ($('#B102Row').is(':visible')) {
+                var b102 = $('#B102_O').val();
+                if (!b102 || b102.trim() == "") {
+                    alert("Lütfen şu an çalıştığı mesleğin açıklamasını giriniz!");
+                    $('#B102_O').focus();
+                    return;
+                }
+                if (updateStr != "") updateStr += ",";
+                updateStr += "B102_O='" + b102.replace(/'/g, "''") + "'";
+            }
 
             myUpdateRedirect("INTERVIEWS", updateStr, " InterviewID=" + window.localStorage["InterviewID"], "SES25S1.html?id=" + window.localStorage["InterviewID"]);
         }
@@ -416,9 +434,19 @@
                     <tr id="B101Row">
                         <td class="columnDivider"></td>
                         <td colspan="2">
-                            <label for="B101_O">Meslek açıklaması:</label>
+                            <label id="B101_O_label" for="B101_O">Meslek açıklaması:</label>
                             <input type="text" id="B101_O" name="B101_O" class="form-control"
                                 placeholder="Meslek açıklamasını giriniz" />
+                        </td>
+                    </tr>
+
+                    <!-- B102_O - Şuan çalıştığı meslek açıklaması (emekli ise) -->
+                    <tr id="B102Row" style="display:none;">
+                        <td class="columnDivider"></td>
+                        <td colspan="2">
+                            <label for="B102_O">Şu an çalıştığı mesleğin açıklaması:</label>
+                            <input type="text" id="B102_O" name="B102_O" class="form-control"
+                                placeholder="Şu an çalıştığı mesleğin açıklamasını giriniz" />
                         </td>
                     </tr>
 
