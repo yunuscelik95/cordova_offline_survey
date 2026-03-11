@@ -1,6 +1,6 @@
 {
-    "version": "2.11.3",
+    "version": "2.11.4",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.3/app-debug.apk",
-    "description": "WiFi butonu, RESPONSES tablosu koruma"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.4/app-debug.apk",
+    "description": "RESPONSES tablosu transaction korumasi"
 }

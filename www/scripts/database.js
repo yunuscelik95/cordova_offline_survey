@@ -75,16 +75,28 @@ var userCreate = function (callback) {
                 axios.get(serviceUrl)
                     .then(response => {
                         var j = jQuery.parseJSON(response.data);
-                        deleteTable("RESPONSES", "");
-                        $.each(j, function (key, val) {
-                            var keys = [];
-                            var values = [];
-                            $.each(val, function (key1, val1) {
-                                keys.push(key1);
-                                values.push(val1);
+                        if (!j || j.length === 0) {
+                            console.log("RESPONSES: API bos veri dondurdu, mevcut veri korunuyor.");
+                            return;
+                        }
+                        // Tum veri geldi, simdi tek transaction'da sil ve yaz
+                        db.transaction(function(tx) {
+                            tx.executeSql("DELETE FROM RESPONSES");
+                            $.each(j, function (key, val) {
+                                var keys = [];
+                                var values = [];
+                                $.each(val, function (key1, val1) {
+                                    keys.push(key1);
+                                    values.push(val1);
+                                });
+                                var placeholders = keys.map(function() { return '?'; }).join(',');
+                                tx.executeSql("INSERT INTO RESPONSES (" + keys.join(',') + ") VALUES (" + placeholders + ")", values);
                             });
-                            myInsert2("RESPONSES", keys, values, false);
-                        })
+                        }, function(error) {
+                            console.log("RESPONSES transaction hatasi, mevcut veri korunuyor: " + error.message);
+                        }, function() {
+                            console.log("RESPONSES basariyla guncellendi: " + j.length + " kayit");
+                        });
                     })
                     .catch(function(error) {
                         console.log("RESPONSES yuklenemedi, mevcut veri korunuyor: " + error.message);
