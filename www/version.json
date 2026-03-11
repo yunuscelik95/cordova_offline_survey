@@ -1,6 +1,6 @@
 {
-    "version": "2.11.2",
+    "version": "2.11.3",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.2/app-debug.apk",
-    "description": "Login WiFi butonu eklendi"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.3/app-debug.apk",
+    "description": "WiFi butonu, RESPONSES tablosu koruma"
 }

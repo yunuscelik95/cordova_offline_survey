@@ -71,13 +71,11 @@ var userCreate = function (callback) {
 };
 
  var responsesFunc =   function() {
-                var request = new XMLHttpRequest();
                 var serviceUrl = 'https://vta.diyalog.com.tr/api/responses';
-                deleteTable("RESPONSES", "")
                 axios.get(serviceUrl)
                     .then(response => {
-                        var items1 = [];
                         var j = jQuery.parseJSON(response.data);
+                        deleteTable("RESPONSES", "");
                         $.each(j, function (key, val) {
                             var keys = [];
                             var values = [];
@@ -87,6 +85,9 @@ var userCreate = function (callback) {
                             });
                             myInsert2("RESPONSES", keys, values, false);
                         })
+                    })
+                    .catch(function(error) {
+                        console.log("RESPONSES yuklenemedi, mevcut veri korunuyor: " + error.message);
                     })
             };
 			
