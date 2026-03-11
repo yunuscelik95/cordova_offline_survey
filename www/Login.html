@@ -147,9 +147,14 @@
         <div id="divLabel"></div>
         <form>
 
-            <button type="button" id="btnUpdate" name="btnUpdate" @click="checkForUpdate()">
-                Güncelleme Kontrol Et
-            </button>
+            <div style="display:flex; gap:5px;">
+                <button type="button" id="btnUpdate" name="btnUpdate" @click="checkForUpdate()" style="flex:3;">
+                    Güncelleme Kontrol Et
+                </button>
+                <button type="button" id="btnWifi" onclick="cordova.plugins.diagnostic.switchToWifiSettings();" style="flex:1; background-color:#9C27B0; color:white; border:none; cursor:pointer; margin:8px 0;">
+                    📶 WiFi
+                </button>
+            </div>
 
             <!-- Güncelleme Progress Bölümü -->
             <div class="update-section" :class="{ active: updateVisible }">

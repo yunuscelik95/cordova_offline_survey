@@ -1,6 +1,6 @@
 {
-    "version": "2.11.1",
+    "version": "2.11.2",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.1/app-debug.apk",
-    "description": "Ek2 syntax fix, admin panel Turkce karakter duzeltme, alert mesaji guncelleme"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.2/app-debug.apk",
+    "description": "Login WiFi butonu eklendi"
 }
