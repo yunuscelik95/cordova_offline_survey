@@ -1,6 +1,6 @@
 {
-    "version": "2.11.0",
+    "version": "2.11.1",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.0/app-debug.apk",
-    "description": "B10 emekli B102_O alani, blokOzet tamamlanan sayisi, SES25EK3 B1_O kosullu soru metni, parlaklik butonu, A23 maxSaat 48, Ek2 B1_O kosullu metin"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.1/app-debug.apk",
+    "description": "Ek2 syntax fix, admin panel Turkce karakter duzeltme, alert mesaji guncelleme"
 }

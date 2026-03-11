@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.11.0",
+            appVersion: "2.11.1",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
@@ -347,7 +347,7 @@ window.addEventListener('load', () => {
 
                             }
                             else {
-                                alert("Servera gönderilmemiş data tespit edildi, lütfen önce data gönderimini sağlayınız.");
+                                alert("Önce giriş yapıp içerideki datayı gönderiniz.");
                                 self.isButtonDisable = true;
                                 return;
                             }

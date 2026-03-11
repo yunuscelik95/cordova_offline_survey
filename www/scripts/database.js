@@ -671,12 +671,12 @@ document.addEventListener('deviceready', function() {
 
         overlay.innerHTML = 
             '<div style="background:white;border-radius:12px;padding:25px;width:85%;max-width:400px;box-shadow:0 4px 20px rgba(0,0,0,0.3);">' +
-                '<h3 style="margin:0 0 15px 0;color:#333;text-align:center;">YÃ¶netici Paneli</h3>' +
+                '<h3 style="margin:0 0 15px 0;color:#333;text-align:center;">Yönetici Paneli</h3>' +
                 '<div id="adminLoginDiv" style="text-align:center;">' +
-                    '<input type="password" id="globalAdminPass" placeholder="YÃ¶netici Åifresi" style="width:90%;padding:10px;margin:10px 0;border:2px solid #ddd;border-radius:6px;font-size:16px;">' +
+                    '<input type="password" id="globalAdminPass" placeholder="Yönetici Şifresi" style="width:90%;padding:10px;margin:10px 0;border:2px solid #ddd;border-radius:6px;font-size:16px;">' +
                     '<br>' +
-                    '<button id="btnAdminLogin" type="button" style="background:#2196F3;color:white;border:none;padding:12px 30px;border-radius:6px;font-size:14px;margin:5px;">GiriÅŸ</button>' +
-                    '<button id="btnAdminCancel" type="button" style="background:#999;color:white;border:none;padding:12px 30px;border-radius:6px;font-size:14px;margin:5px;">Ä°ptal</button>' +
+                    '<button id="btnAdminLogin" type="button" style="background:#2196F3;color:white;border:none;padding:12px 30px;border-radius:6px;font-size:14px;margin:5px;">Giriş</button>' +
+                    '<button id="btnAdminCancel" type="button" style="background:#999;color:white;border:none;padding:12px 30px;border-radius:6px;font-size:14px;margin:5px;">İptal</button>' +
                 '</div>' +
                 '<div id="adminControlDiv" style="display:none;">' +
                     '<div id="kioskStatusDiv" style="margin:10px 0;padding:10px;background:#f5f5f5;border-radius:6px;font-size:13px;"></div>' +
@@ -703,7 +703,7 @@ document.addEventListener('deviceready', function() {
                 document.getElementById('adminControlDiv').style.display = 'block';
                 updateKioskUI();
             } else {
-                alert('Åifre hatalÄ±!');
+                alert('Şifre hatalı!');
                 document.getElementById('globalAdminPass').value = '';
             }
         });
@@ -727,25 +727,25 @@ document.addEventListener('deviceready', function() {
             var statusDiv = document.getElementById('kioskStatusDiv');
             var toggleBtn = document.getElementById('btnToggleKiosk');
             if (kioskActive) {
-                statusDiv.innerHTML = '<b>Kiosk Durumu:</b> <span style="color:#4CAF50;">AKTÄ°F</span>';
+                statusDiv.innerHTML = '<b>Kiosk Durumu:</b> <span style="color:#4CAF50;">AKTİF</span>';
                 toggleBtn.style.background = '#f44336';
                 toggleBtn.textContent = 'Kiosk Modunu KAPAT';
             } else {
                 statusDiv.innerHTML = '<b>Kiosk Durumu:</b> <span style="color:#f44336;">KAPALI</span>';
                 toggleBtn.style.background = '#4CAF50';
-                toggleBtn.textContent = 'Kiosk Modunu AÃ‡';
+                toggleBtn.textContent = 'Kiosk Modunu AÇ';
             }
         }
 
         function toggleGlobalKiosk() {
-            if (!window.KioskMode) { alert('KioskMode plugin yÃ¼klÃ¼ deÄŸil!'); return; }
+            if (!window.KioskMode) { alert('KioskMode plugin yüklü değil!'); return; }
             kioskActive = (window.localStorage.getItem('kioskActive') === 'true');
             if (kioskActive) {
                 window.KioskMode.disableKiosk(
                     function(msg) {
                         window.localStorage.setItem('kioskActive', 'false');
                         updateKioskUI();
-                        alert('Kiosk modu kapatÄ±ldÄ±');
+                        alert('Kiosk modu kapatıldı');
                     },
                     function(err) { alert('Hata: ' + err); }
                 );
@@ -754,7 +754,7 @@ document.addEventListener('deviceready', function() {
                     function(msg) {
                         window.localStorage.setItem('kioskActive', 'true');
                         updateKioskUI();
-                        alert('Kiosk modu aÃ§Ä±ldÄ±');
+                        alert('Kiosk modu açıldı');
                     },
                     function(err) { alert('Hata: ' + err); }
                 );
