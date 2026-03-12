@@ -1,6 +1,6 @@
 {
-    "version": "2.11.6",
+    "version": "2.11.7",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.6/app-debug.apk",
-    "description": "Durum kodlari API yerine sabit olarak gomuld"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.7/app-debug.apk",
+    "description": "Durum kodlari sabit gomuldu + appVersion duzeltildi"
 }
