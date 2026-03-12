@@ -1,6 +1,6 @@
 {
-    "version": "2.11.8",
+    "version": "2.11.9",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.8/app-debug.apk",
-    "description": "Durum kodlari sabit gomuldu + appVersion duzeltildi"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.9/app-debug.apk",
+    "description": "Google Drive alternatif guncelleme butonu eklendi"
 }

@@ -8,6 +8,10 @@ window.addEventListener('load', () => {
     var GITHUB_BRANCH = "main";
     var VERSION_URL = "https://raw.githubusercontent.com/" + GITHUB_USER + "/" + GITHUB_REPO + "/" + GITHUB_BRANCH + "/www/version.json";
 
+    // Google Drive dosya ID'leri (sabit, değişmez)
+    var GDRIVE_VERSION_ID = "1Szy882ShZNsIqPyxsYme1o-2PJphcxxL";
+    var GDRIVE_APK_ID = "1qveJIZJnc7e_uY84PXFuKR040eEYuFTL";
+
     window.vueLogin = new Vue({
         el: "#login",
         data: {
@@ -15,7 +19,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.11.8",
+            appVersion: "2.11.9",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
@@ -225,6 +229,162 @@ window.addEventListener('load', () => {
                     true, // trustAllHosts
                     { headers: { "Accept": "application/octet-stream" } }
                 );
+            },
+
+            // =============================================
+            // GOOGLE DRIVE GÜNCELLEME FONKSİYONLARI
+            // =============================================
+            checkForUpdateDrive() {
+                var self = this;
+                self.updateVisible = true;
+                self.updateProgress = 0;
+                self.updateDone = false;
+                self.updateError = false;
+                self.updateMessage = "Google Drive'dan kontrol ediliyor...";
+
+                updateConnectionProperties();
+                if (!state.isOnline) {
+                    self.updateMessage = "İnternet bağlantısı yok!";
+                    self.updateError = true;
+                    return;
+                }
+
+                var localVersion = window.localStorage["version"] || "0.0.0";
+                var versionUrl = "https://drive.usercontent.google.com/download?id=" + GDRIVE_VERSION_ID + "&export=download&confirm=t&t=" + new Date().getTime();
+                var targetDir = cordova.file.externalCacheDirectory || cordova.file.cacheDirectory;
+                var versionPath = targetDir + "version_check.json";
+
+                // FileTransfer ile version.json indir (CORS sorunu yok)
+                var ft = new FileTransfer();
+                ft.download(
+                    versionUrl,
+                    versionPath,
+                    function(entry) {
+                        // Dosyayı oku
+                        entry.file(function(file) {
+                            var reader = new FileReader();
+                            reader.onloadend = function() {
+                                try {
+                                    var remoteVersion = JSON.parse(this.result);
+                                    console.log("Drive - Yerel: " + localVersion + ", Uzak: " + remoteVersion.version);
+
+                                    if (remoteVersion.version !== localVersion) {
+                                        self.updateMessage = "Güncelleme mevcut! v" + localVersion + " → v" + remoteVersion.version;
+                                        if (confirm("Yeni güncelleme mevcut (v" + remoteVersion.version + ").\n" +
+                                                   (remoteVersion.description || "") + "\n\nGüncellemek ister misiniz?")) {
+                                            self.driveDownload(remoteVersion);
+                                        } else {
+                                            self.updateMessage = "Güncelleme iptal edildi.";
+                                            setTimeout(function() { self.updateVisible = false; }, 3000);
+                                        }
+                                    } else {
+                                        self.updateMessage = "✓ Uygulamanız güncel! (v" + localVersion + ")";
+                                        self.updateDone = true;
+                                        setTimeout(function() { self.updateVisible = false; }, 3000);
+                                    }
+                                } catch(e) {
+                                    console.error("Drive version.json parse hatası:", e, this.result);
+                                    self.updateMessage = "Sürüm bilgisi okunamadı";
+                                    self.updateError = true;
+                                }
+                            };
+                            reader.readAsText(file);
+                        });
+                    },
+                    function(error) {
+                        console.error("Drive version.json indirme hatası:", JSON.stringify(error));
+                        self.updateMessage = "Google Drive'a erişilemedi! (kod:" + error.code + ")";
+                        self.updateError = true;
+                    },
+                    true,
+                    {}
+                );
+            },
+
+            driveDownload(remoteVersion, retryCount) {
+                var self = this;
+                retryCount = retryCount || 0;
+                var maxRetry = 3;
+                self.updateProgress = 0;
+                self.updateMessage = retryCount > 0 ? ("Tekrar deneniyor (" + retryCount + "/" + maxRetry + ")...") : "Drive'dan indiriliyor...";
+
+                var downloadUrl = "https://drive.usercontent.google.com/download?id=" + GDRIVE_APK_ID + "&export=download&confirm=t";
+                var targetDir = cordova.file.externalCacheDirectory || cordova.file.cacheDirectory;
+                var targetPath = targetDir + "update.apk";
+
+                var fileTransfer = new FileTransfer();
+
+                fileTransfer.onprogress = function(e) {
+                    if (e.lengthComputable) {
+                        var percent = Math.round((e.loaded / e.total) * 100);
+                        self.updateProgress = percent;
+                        self.updateMessage = "İndiriliyor... " + (e.loaded / 1048576).toFixed(1) + " MB / " + (e.total / 1048576).toFixed(1) + " MB";
+                    } else {
+                        self.updateMessage = "İndiriliyor... " + (e.loaded / 1048576).toFixed(1) + " MB";
+                    }
+                };
+
+                fileTransfer.download(
+                    downloadUrl,
+                    targetPath,
+                    function(entry) {
+                        // Dosya boyutu kontrol
+                        entry.file(function(file) {
+                            console.log("Drive APK boyutu: " + file.size);
+                            if (file.size < 1000000) {
+                                console.error("İndirilen dosya çok küçük: " + file.size + " byte");
+                                handleDriveError("Dosya doğrulanamadı (" + file.size + " byte)");
+                                return;
+                            }
+                            // Kurulum başlat
+                            self.updateProgress = 100;
+                            self.updateMessage = "✓ İndirildi! Kurulum başlatılıyor...";
+                            self.updateDone = true;
+                            setTimeout(function() {
+                                var filePath = entry.nativeURL || entry.toURL();
+                                console.log("APK yolu: " + filePath);
+                                cordova.plugins.fileOpener2.open(filePath, "application/vnd.android.package-archive", {
+                                    error: function(e) {
+                                        self.updateMessage = "Kurulum başlatılamadı: " + (e.message || JSON.stringify(e));
+                                        self.updateError = true;
+                                        self.updateDone = false;
+                                    },
+                                    success: function() { console.log("APK kurulum ekranı açıldı"); }
+                                });
+                            }, 1000);
+                        }, function() {
+                            // file() hata - yine de dene
+                            self.updateProgress = 100;
+                            self.updateMessage = "✓ İndirildi! Kurulum başlatılıyor...";
+                            self.updateDone = true;
+                            setTimeout(function() {
+                                cordova.plugins.fileOpener2.open(entry.nativeURL || entry.toURL(), "application/vnd.android.package-archive", {
+                                    error: function(e) { self.updateMessage = "Kurulum başlatılamadı"; self.updateError = true; },
+                                    success: function() {}
+                                });
+                            }, 1000);
+                        });
+                    },
+                    function(error) {
+                        handleDriveError("İndirme hatası (kod:" + error.code + ")");
+                    },
+                    true,
+                    { headers: { "Accept": "application/octet-stream" } }
+                );
+
+                function handleDriveError(msg) {
+                    console.error("Drive hatası: " + msg);
+                    if (retryCount < maxRetry) {
+                        var waitSec = 5 * (retryCount + 1);
+                        self.updateProgress = 0;
+                        self.updateMessage = msg + " - " + waitSec + "sn sonra tekrar...";
+                        setTimeout(function() { self.driveDownload(remoteVersion, retryCount + 1); }, waitSec * 1000);
+                    } else {
+                        self.updateProgress = 0;
+                        self.updateMessage = "İndirme hatası: " + msg;
+                        self.updateError = true;
+                    }
+                }
             },
 
             // =============================================
