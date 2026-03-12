@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
             uname: "",
             psw: "",
             oran: 0,
-            appVersion: "2.11.7",
+            appVersion: "2.11.8",
             // Güncelleme değişkenleri
             updateVisible: false,
             updateProgress: 0,
@@ -136,27 +136,8 @@ window.addEventListener('load', () => {
                 var targetDir = cordova.file.externalCacheDirectory || cordova.file.cacheDirectory;
                 var targetPath = targetDir + "update.apk";
 
-                // Önce GitHub redirect URL'sini çöz, sonra FileTransfer ile indir
-                self.updateMessage = retryCount > 0 ? ("Bağlantı hazırlanıyor... (deneme " + (retryCount+1) + ")") : "Bağlantı hazırlanıyor...";
-
-                // GitHub redirect'i çözmek için fetch ile gerçek URL'yi al
-                fetch(apkUrl, { method: 'HEAD', redirect: 'follow' })
-                    .then(function(response) {
-                        var resolvedUrl = response.url || apkUrl;
-                        console.log("Çözülen URL: " + resolvedUrl);
-                        self.doDownload(resolvedUrl, targetPath, remoteVersion, retryCount, maxRetry);
-                    })
-                    .catch(function(err) {
-                        console.log("Redirect çözülemedi: " + err);
-                        if (retryCount < maxRetry) {
-                            self.updateMessage = "Bağlantı kurulamadı, " + (3 * (retryCount + 1)) + " saniye sonra tekrar denenecek...";
-                            setTimeout(function() {
-                                self.downloadUpdate(remoteVersion, retryCount + 1);
-                            }, 3000 * (retryCount + 1));
-                        } else {
-                            self.doDownload(apkUrl, targetPath, remoteVersion, retryCount, maxRetry);
-                        }
-                    });
+                // FileTransfer redirect'leri kendisi çözer, direkt indirmeye başla
+                self.doDownload(apkUrl, targetPath, remoteVersion, retryCount, maxRetry);
             },
 
             doDownload(downloadUrl, targetPath, remoteVersion, retryCount, maxRetry) {
