@@ -1,6 +1,7 @@
 {
-    "version": "2.11.9",
+    "version": "2.11.10",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.9/app-debug.apk",
-    "description": "Google Drive alternatif guncelleme butonu eklendi"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.10/app-debug.apk",
+    "driveApkUrl": "https://drive.usercontent.google.com/download?id=1qveJIZJnc7e_uY84PXFuKR040eEYuFTL&export=download&confirm=t",
+    "description": "v2.11.10 test guncelleme"
 }
