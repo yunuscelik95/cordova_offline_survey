@@ -62,24 +62,35 @@
                     {
                         self.selectValue = dummyRes;
                     }
-             
-                    db.transaction(function (tx) {
-                        tx.executeSql("SELECT ResponseID, ResponseText, IsCallBack, ResponseType from RESPONSES where ResponseType = 0 order by SortIndex", [], function (tx, val) {
-                            var listeArray = [];
-            
-                                for (var i = 0; i < val.rows.length; i++) {
-                                    var row = val.rows.item(i);
-                                    listeArray.push(row);
-                                }
-                                self.liste = listeArray;
-                                SetStartUp();
-                            
-                        })
-                            , function (tx, error) {
-                                console.log('Error : ' + error.message);
-                                return true;
-                            }
-                    });
+
+                    // Durum kodları sabit olarak gömülü (API/DB bağımsız)
+                    var durumKodlari = [
+                        { ResponseID: 1,  ResponseText: "VERİLEN ADRES İŞYERİ / OFİS", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 2,  ResponseText: "ADRES KENTSEL DÖNÜŞÜM KAPSAMINDA YIKILMIŞ YA DA İNŞAAT HALİNDE", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 3,  ResponseText: "VERİLEN ADRES BOŞ ARSA / OKUL / CAMİİ VB", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 4,  ResponseText: "VERİLEN ADRES DÜZENLİ YAŞANMAYAN YAZLIK / SAYFİYE / İKİNCİ EV / BOŞ EV", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 5,  ResponseText: "İLÇEDE BU İSİMLİ BİR MAHALLE BULUNAMADI", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 6,  ResponseText: "Tamamlandı", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 7,  ResponseText: "MAHALLEDE LİSTEDE YER ALAN CADDE / SOKAK BULUNAMADI", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 8,  ResponseText: "SOKAKTA BİNA / DIŞ KAPI NUMARASI BULUNAMADI", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 9,  ResponseText: "BİNADA BELİRTİLEN DAİRE NUMARASI YA DA KAT YOK", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 10, ResponseText: "HANEDEKİ KİŞİLER YABANCI UYRUKLU / MÜLTECİ – YETERLİ TÜRKÇE KONUŞAMIYOR", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 11, ResponseText: "SİTEYE GİRİŞ YAPILAMADI / GÜVENLİKLİ SİTE-ASKER-HAKİM-POLİS LOJMANI", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 12, ResponseText: "MUHTAR / MAHALLE / KÖY HALKI ANKET ÇALIŞMASINA İZİN VERMEDİ", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 13, ResponseText: "BLOKTA ANKET YAPILAMADI – LÜKS SEMTLER / İZİN VERİLMEDİ", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 14, ResponseText: "DEPREM BÖLGESİ - YIKIK – YAŞAM OLMAYAN / HASARLI BİNA", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 15, ResponseText: "BİRDEN ÇOK ÖĞRENCİNİN BİRARADA YAŞADIĞI ÖĞRENCİ EVİ / ÖĞRENCİ YURDU", IsCallBack: 0, ResponseType: 0 },
+                        { ResponseID: 16, ResponseText: "HANEDE HİÇ KİMSE BULUNAMADI (2. / 3. Ziyaret)", IsCallBack: 1, ResponseType: 0 },
+                        { ResponseID: 17, ResponseText: "HANEDE 18 YAŞ ÜZERİ YA DA ANKET YAPACAK UYGUN KİŞİ BULUNAMADI (2. / 3. Ziyaret)", IsCallBack: 1, ResponseType: 0 },
+                        { ResponseID: 18, ResponseText: "EVDEKİ KİŞİ ANKET YAPMAYI KABUL ETMEDİ (2. / 3. Ziyaret)", IsCallBack: 1, ResponseType: 0 },
+                        { ResponseID: 19, ResponseText: "KAPIYI AÇAN KİŞİ İLE İLETİŞİM KURULAMADI (2. / 3. Ziyaret)", IsCallBack: 1, ResponseType: 0 },
+                        { ResponseID: 20, ResponseText: "KAPIYI AÇAN KİŞİ DAHA SONRA GÖRÜŞMEK İÇİN RANDEVU VERDİ", IsCallBack: 1, ResponseType: 0 },
+                        { ResponseID: 21, ResponseText: "GÖRÜŞME BAŞLADI AMA YARIM KALDI (Tamamlamak İçin Randevu Alın)", IsCallBack: 1, ResponseType: 0 },
+                        { ResponseID: 22, ResponseText: "BÖLGENİN GÜVENLİK SORUNU NEDENİYLE ANKET ÇALIŞMASI YAPILAMADI", IsCallBack: 0, ResponseType: 0 }
+                    ];
+
+                    self.liste = durumKodlari;
+                    SetStartUp();
                 }
             },
        

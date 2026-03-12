@@ -18,6 +18,11 @@
         td {
             padding: 3px
         }
+        .btn-block {
+            text-align: left;
+            white-space: normal;
+            word-wrap: break-word;
+        }
     </style>
     <script>
         function goBack() {
@@ -68,10 +73,10 @@
                     <td>{{item.ziyaretTarihi}}</td>
                     <td>{{item.ZiyaretSayi}}</td>
                     <td>
-                        <input v-if="(item.ResponseText == '') && item.ZiyaretSayi < ziyaretSayisi" type='button' class='btn btn-block btn-primary btn-xs' :value='item.statu + "- Başla"' @click="InterviewSelect(item.id)" />
-                        <input v-if="(item.statu == 0 || item.statu == 999 || (item.statu >= 16 && item.statu <= 21)) && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi)" type='button' class='btn btn-block btn-primary btn-xs' :value='item.ResponseText' @click="InterviewSelect(item.id)" />
+                        <button v-if="(item.ResponseText == '') && item.ZiyaretSayi < ziyaretSayisi" type='button' class='btn btn-block btn-primary btn-xs' @click="InterviewSelect(item.id)">{{item.statu}}- Başla</button>
+                        <button v-if="(item.statu == 0 || item.statu == 999 || (item.statu >= 16 && item.statu <= 21)) && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi)" type='button' class='btn btn-block btn-primary btn-xs' @click="InterviewSelect(item.id)">{{item.ResponseText}}</button>
                         <span v-if="item.statu == 6" class='btn btn-block btn-success btn-xs'> {{item.ResponseText}} </span>
-                        <input v-if="((item.statu >= 1 && item.statu <= 5) || (item.statu >= 7 && item.statu <= 15) || item.statu == 22) && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi)" type='button' class='btn btn-block btn-danger btn-xs' :value='item.ResponseText' @click="InterviewSelect(item.id)" />
+                        <button v-if="((item.statu >= 1 && item.statu <= 5) || (item.statu >= 7 && item.statu <= 15) || item.statu == 22) && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi)" type='button' class='btn btn-block btn-danger btn-xs' @click="InterviewSelect(item.id)">{{item.ResponseText}}</button>
                     </td>
 
                 </tr>

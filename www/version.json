@@ -1,6 +1,6 @@
 {
-    "version": "2.11.5",
+    "version": "2.11.6",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.5/app-debug.apk",
-    "description": "T1 soru secenekleri duzenlendi"
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.6/app-debug.apk",
+    "description": "Durum kodlari API yerine sabit olarak gomuld"
 }
