@@ -1,7 +1,7 @@
 {
-    "version": "2.11.11",
+    "version": "2.11.12",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.11/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.12/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1qveJIZJnc7e_uY84PXFuKR040eEYuFTL&export=download&confirm=t",
-    "description": "v2.11.11 veri tasarrufu ve sistem guncelleme engelleme"
+    "description": "v2.11.12 version tek kaynaktan okunuyor"
 }
