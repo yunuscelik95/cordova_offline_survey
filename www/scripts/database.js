@@ -711,7 +711,7 @@ document.addEventListener('deviceready', function() {
         document.getElementById('btnAdminLogin').addEventListener('click', function(e) {
             e.stopPropagation();
             var pass = document.getElementById('globalAdminPass').value;
-            if (pass === '9821') {
+            if (pass === '1995') {
                 document.getElementById('adminLoginDiv').style.display = 'none';
                 document.getElementById('adminControlDiv').style.display = 'block';
                 updateKioskUI();

@@ -10,7 +10,7 @@ window.addEventListener('load', () => {
 
     // Google Drive dosya ID'leri (sabit, değişmez)
     var GDRIVE_VERSION_ID = "1Szy882ShZNsIqPyxsYme1o-2PJphcxxL";
-    var GDRIVE_APK_ID = "1qveJIZJnc7e_uY84PXFuKR040eEYuFTL";
+    var GDRIVE_APK_ID = "1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9";
 
     window.vueLogin = new Vue({
         el: "#login",
@@ -63,6 +63,67 @@ window.addEventListener('load', () => {
             // =============================================
             // GÜNCELLEME FONKSİYONLARI
             // =============================================
+            installApk(filePath, self) {
+                // Device Owner ise PackageInstaller Session ile sessiz kurulum
+                // Değilse FileOpener2 ile dene
+                var doSilentInstall = function() {
+                    console.log("Sessiz kurulum başlatılıyor: " + filePath);
+                    window.KioskMode.silentInstall(
+                        filePath,
+                        function(msg) {
+                            console.log("Sessiz kurulum başarılı: " + msg);
+                            self.updateMessage = "Güncelleme kurulumu başlatıldı. Uygulama yeniden başlayacak...";
+                            self.updateDone = true;
+                            self.updateError = false;
+                        },
+                        function(err) {
+                            console.error("Sessiz kurulum hatası: " + err);
+                            // Sessiz kurulum başarısız, FileOpener2 ile dene
+                            doFileOpenerInstall();
+                        }
+                    );
+                };
+                var doFileOpenerInstall = function() {
+                    console.log("FileOpener2 ile kurulum deneniyor");
+                    cordova.plugins.fileOpener2.open(
+                        filePath,
+                        'application/vnd.android.package-archive',
+                        {
+                            error: function(e) {
+                                console.error("APK açma hatası:", e);
+                                self.updateMessage = "Kurulum başlatılamadı: " + (e.message || JSON.stringify(e));
+                                self.updateError = true;
+                                self.updateDone = false;
+                                if (window.KioskMode) { window.KioskMode.enableKiosk(function(){}, function(){}); }
+                            },
+                            success: function() {
+                                console.log("APK kurulum ekranı açıldı");
+                            }
+                        }
+                    );
+                };
+                if (window.KioskMode) {
+                    window.KioskMode.disableKiosk(
+                        function() {
+                            console.log("Kiosk geçici kapatıldı");
+                            // Önce silentInstall dene
+                            window.KioskMode.isDeviceOwner(
+                                function(result) {
+                                    if (result == 1) {
+                                        doSilentInstall();
+                                    } else {
+                                        doFileOpenerInstall();
+                                    }
+                                },
+                                function() { doFileOpenerInstall(); }
+                            );
+                        },
+                        function() { console.log("Kiosk kapatılamadı, yine de dene"); doFileOpenerInstall(); }
+                    );
+                } else {
+                    doFileOpenerInstall();
+                }
+            },
             checkForUpdate() {
                 var self = this;
                 self.updateVisible = true;
@@ -205,21 +266,7 @@ window.addEventListener('load', () => {
                             }
                             console.log("APK dosya yolu: " + filePath);
                             
-                            cordova.plugins.fileOpener2.open(
-                                filePath,
-                                'application/vnd.android.package-archive',
-                                {
-                                    error: function(e) {
-                                        console.error("APK açma hatası:", e);
-                                        self.updateMessage = "Kurulum başlatılamadı: " + (e.message || JSON.stringify(e)) + " Yol: " + filePath;
-                                        self.updateError = true;
-                                        self.updateDone = false;
-                                    },
-                                    success: function() {
-                                        console.log("APK kurulum ekranı açıldı");
-                                    }
-                                }
-                            );
+                            self.installApk(filePath, self);
                         }, 1000);
                     },
                     function(error) {
@@ -353,14 +400,7 @@ window.addEventListener('load', () => {
                             setTimeout(function() {
                                 var filePath = entry.nativeURL || entry.toURL();
                                 console.log("APK yolu: " + filePath);
-                                cordova.plugins.fileOpener2.open(filePath, "application/vnd.android.package-archive", {
-                                    error: function(e) {
-                                        self.updateMessage = "Kurulum başlatılamadı: " + (e.message || JSON.stringify(e));
-                                        self.updateError = true;
-                                        self.updateDone = false;
-                                    },
-                                    success: function() { console.log("APK kurulum ekranı açıldı"); }
-                                });
+                                self.installApk(filePath, self);
                             }, 1000);
                         }, function() {
                             // file() hata - yine de dene
@@ -368,10 +408,8 @@ window.addEventListener('load', () => {
                             self.updateMessage = "✓ İndirildi! Kurulum başlatılıyor...";
                             self.updateDone = true;
                             setTimeout(function() {
-                                cordova.plugins.fileOpener2.open(entry.nativeURL || entry.toURL(), "application/vnd.android.package-archive", {
-                                    error: function(e) { self.updateMessage = "Kurulum başlatılamadı"; self.updateError = true; },
-                                    success: function() {}
-                                });
+                                var filePath2 = entry.nativeURL || entry.toURL();
+                                self.installApk(filePath2, self);
                             }, 1000);
                         });
                     },
@@ -571,7 +609,7 @@ window.addEventListener('load', () => {
             },
 
             adminLogin() {
-                if (this.adminPass === "9821") {
+                if (this.adminPass === "1995") {
                     this.adminAuth = true;
                     this.kioskActive = true;
                 } else {
