@@ -719,7 +719,7 @@ document.addEventListener('deviceready', function() {
                 alert('Şifre hatalı!');
                 document.getElementById('globalAdminPass').value = '';
             }
-        });
+        }); 
 
         document.getElementById('btnToggleKiosk').addEventListener('click', function(e) {
             e.stopPropagation();
