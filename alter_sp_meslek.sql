@@ -1,0 +1,100 @@
+ALTER PROCEDURE [dbo].[sp_MESLEKDUZELTME]
+    @start    INT            = 0,
+    @pageSize INT            = 25,
+    @sortCol  NVARCHAR(200)  = 'InterviewID',
+    @sortDir  NVARCHAR(4)    = 'ASC',
+    @search   NVARCHAR(2000) = ''
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @sql NVARCHAR(MAX), @orderCol NVARCHAR(300);
+    SET @orderCol = CASE
+        WHEN @sortCol IN ('InterviewID','blokno','B8','B8E','B101_O','B102_O','SES_GRUBU25',
+            'SES25S1','SES25S2','SES25S3','SES25S4','SES25S5','DSES',
+            'Durum','B9','HANE_HALKI_REISI_ISIM','CINSIYET','YAS','EGITIM','CALISMA_DURUMU')
+        THEN QUOTENAME(@sortCol) + ' ' + CASE WHEN @sortDir='DESC' THEN 'DESC' ELSE 'ASC' END
+        ELSE '[InterviewID] ASC'
+    END;
+    SET @sql = N'
+    WITH DataCTE AS (
+        SELECT
+            ISNULL(mdd.Durum,''Beklemede'') AS Durum,
+            i.InterviewID,
+            i.blokno,
+            CAST(i.B9 AS NVARCHAR(10)) AS B9,
+            CASE i.B9
+                WHEN  1 THEN i.B2a_1_1   WHEN  2 THEN i.B2a_2_1   WHEN  3 THEN i.B2a_3_1
+                WHEN  4 THEN i.B2a_4_1   WHEN  5 THEN i.B2a_5_1   WHEN  6 THEN i.B2a_6_1
+                WHEN  7 THEN i.B2a_7_1   WHEN  8 THEN i.B2a_8_1   WHEN  9 THEN i.B2a_9_1
+                WHEN 10 THEN i.B2a_10_1  WHEN 11 THEN i.B2a_11_1  WHEN 12 THEN i.B2a_12_1
+                WHEN 13 THEN i.B2a_13_1  WHEN 14 THEN i.B2a_14_1  WHEN 15 THEN i.B2a_15_1
+                WHEN 16 THEN i.B2a_16_1  WHEN 17 THEN i.B2a_17_1  WHEN 18 THEN i.B2a_18_1
+                WHEN 19 THEN i.B2a_19_1  WHEN 20 THEN i.B2a_20_1  ELSE NULL
+            END AS HANE_HALKI_REISI_ISIM,
+            CASE i.B9
+                WHEN  1 THEN CAST(i.B4_1  AS NVARCHAR(20))  WHEN  2 THEN CAST(i.B4_2  AS NVARCHAR(20))
+                WHEN  3 THEN CAST(i.B4_3  AS NVARCHAR(20))  WHEN  4 THEN CAST(i.B4_4  AS NVARCHAR(20))
+                WHEN  5 THEN CAST(i.B4_5  AS NVARCHAR(20))  WHEN  6 THEN CAST(i.B4_6  AS NVARCHAR(20))
+                WHEN  7 THEN CAST(i.B4_7  AS NVARCHAR(20))  WHEN  8 THEN CAST(i.B4_8  AS NVARCHAR(20))
+                WHEN  9 THEN CAST(i.B4_9  AS NVARCHAR(20))  WHEN 10 THEN CAST(i.B4_10 AS NVARCHAR(20))
+                WHEN 11 THEN CAST(i.B4_11 AS NVARCHAR(20))  WHEN 12 THEN CAST(i.B4_12 AS NVARCHAR(20))
+                WHEN 13 THEN CAST(i.B4_13 AS NVARCHAR(20))  WHEN 14 THEN CAST(i.B4_14 AS NVARCHAR(20))
+                WHEN 15 THEN CAST(i.B4_15 AS NVARCHAR(20))  WHEN 16 THEN CAST(i.B4_16 AS NVARCHAR(20))
+                WHEN 17 THEN CAST(i.B4_17 AS NVARCHAR(20))  WHEN 18 THEN CAST(i.B4_18 AS NVARCHAR(20))
+                WHEN 19 THEN CAST(i.B4_19 AS NVARCHAR(20))  WHEN 20 THEN CAST(i.B4_20 AS NVARCHAR(20))
+                ELSE NULL
+            END AS CINSIYET,
+            CASE i.B9
+                WHEN  1 THEN CAST(i.B3_1_1  AS NVARCHAR(20))  WHEN  2 THEN CAST(i.B3_2_1  AS NVARCHAR(20))
+                WHEN  3 THEN CAST(i.B3_3_1  AS NVARCHAR(20))  WHEN  4 THEN CAST(i.B3_4_1  AS NVARCHAR(20))
+                WHEN  5 THEN CAST(i.B3_5_1  AS NVARCHAR(20))  WHEN  6 THEN CAST(i.B3_6_1  AS NVARCHAR(20))
+                WHEN  7 THEN CAST(i.B3_7_1  AS NVARCHAR(20))  WHEN  8 THEN CAST(i.B3_8_1  AS NVARCHAR(20))
+                WHEN  9 THEN CAST(i.B3_9_1  AS NVARCHAR(20))  WHEN 10 THEN CAST(i.B3_10_1 AS NVARCHAR(20))
+                WHEN 11 THEN CAST(i.B3_11_1 AS NVARCHAR(20))  WHEN 12 THEN CAST(i.B3_12_1 AS NVARCHAR(20))
+                WHEN 13 THEN CAST(i.B3_13_1 AS NVARCHAR(20))  WHEN 14 THEN CAST(i.B3_14_1 AS NVARCHAR(20))
+                WHEN 15 THEN CAST(i.B3_15_1 AS NVARCHAR(20))  WHEN 16 THEN CAST(i.B3_16_1 AS NVARCHAR(20))
+                WHEN 17 THEN CAST(i.B3_17_1 AS NVARCHAR(20))  WHEN 18 THEN CAST(i.B3_18_1 AS NVARCHAR(20))
+                WHEN 19 THEN CAST(i.B3_19_1 AS NVARCHAR(20))  WHEN 20 THEN CAST(i.B3_20_1 AS NVARCHAR(20))
+                ELSE NULL
+            END AS YAS,
+            CASE i.B9
+                WHEN  1 THEN CAST(i.B5_1  AS NVARCHAR(20))  WHEN  2 THEN CAST(i.B5_2  AS NVARCHAR(20))
+                WHEN  3 THEN CAST(i.B5_3  AS NVARCHAR(20))  WHEN  4 THEN CAST(i.B5_4  AS NVARCHAR(20))
+                WHEN  5 THEN CAST(i.B5_5  AS NVARCHAR(20))  WHEN  6 THEN CAST(i.B5_6  AS NVARCHAR(20))
+                WHEN  7 THEN CAST(i.B5_7  AS NVARCHAR(20))  WHEN  8 THEN CAST(i.B5_8  AS NVARCHAR(20))
+                WHEN  9 THEN CAST(i.B5_9  AS NVARCHAR(20))  WHEN 10 THEN CAST(i.B5_10 AS NVARCHAR(20))
+                WHEN 11 THEN CAST(i.B5_11 AS NVARCHAR(20))  WHEN 12 THEN CAST(i.B5_12 AS NVARCHAR(20))
+                WHEN 13 THEN CAST(i.B5_13 AS NVARCHAR(20))  WHEN 14 THEN CAST(i.B5_14 AS NVARCHAR(20))
+                WHEN 15 THEN CAST(i.B5_15 AS NVARCHAR(20))  WHEN 16 THEN CAST(i.B5_16 AS NVARCHAR(20))
+                WHEN 17 THEN CAST(i.B5_17 AS NVARCHAR(20))  WHEN 18 THEN CAST(i.B5_18 AS NVARCHAR(20))
+                WHEN 19 THEN CAST(i.B5_19 AS NVARCHAR(20))  WHEN 20 THEN CAST(i.B5_20 AS NVARCHAR(20))
+                ELSE NULL
+            END AS EGITIM,
+            CASE i.B9
+                WHEN  1 THEN CAST(i.B7_1  AS NVARCHAR(20))  WHEN  2 THEN CAST(i.B7_2  AS NVARCHAR(20))
+                WHEN  3 THEN CAST(i.B7_3  AS NVARCHAR(20))  WHEN  4 THEN CAST(i.B7_4  AS NVARCHAR(20))
+                WHEN  5 THEN CAST(i.B7_5  AS NVARCHAR(20))  WHEN  6 THEN CAST(i.B7_6  AS NVARCHAR(20))
+                WHEN  7 THEN CAST(i.B7_7  AS NVARCHAR(20))  WHEN  8 THEN CAST(i.B7_8  AS NVARCHAR(20))
+                WHEN  9 THEN CAST(i.B7_9  AS NVARCHAR(20))  WHEN 10 THEN CAST(i.B7_10 AS NVARCHAR(20))
+                WHEN 11 THEN CAST(i.B7_11 AS NVARCHAR(20))  WHEN 12 THEN CAST(i.B7_12 AS NVARCHAR(20))
+                WHEN 13 THEN CAST(i.B7_13 AS NVARCHAR(20))  WHEN 14 THEN CAST(i.B7_14 AS NVARCHAR(20))
+                WHEN 15 THEN CAST(i.B7_15 AS NVARCHAR(20))  WHEN 16 THEN CAST(i.B7_16 AS NVARCHAR(20))
+                WHEN 17 THEN CAST(i.B7_17 AS NVARCHAR(20))  WHEN 18 THEN CAST(i.B7_18 AS NVARCHAR(20))
+                WHEN 19 THEN CAST(i.B7_19 AS NVARCHAR(20))  WHEN 20 THEN CAST(i.B7_20 AS NVARCHAR(20))
+                ELSE NULL
+            END AS CALISMA_DURUMU,
+            i.B8, i.B101_O, i.B8E, i.B102_O,
+            i.SES_GRUBU25,
+            i.SES25S1, i.SES25S2, i.SES25S3, i.SES25S4, i.SES25S5,
+            i.DSES
+        FROM [9512_TELEVIZYON_IZLEYICI_OLCUMU_2025].dbo.INTERVIEWS i
+        LEFT JOIN MeslekDuzeltmeDurum mdd ON mdd.InterviewID = i.InterviewID
+        WHERE i.InterviewStatu = 6 AND i.blokno > 2
+    ),
+    Filtered AS (SELECT * FROM DataCTE WHERE 1=1 ' + @search + N')
+    SELECT * FROM Filtered
+    ORDER BY ' + @orderCol + N'
+    OFFSET ' + CAST(@start AS NVARCHAR(20)) + N' ROWS
+    FETCH NEXT ' + CAST(@pageSize AS NVARCHAR(20)) + N' ROWS ONLY';
+    EXEC sp_executesql @sql;
+END

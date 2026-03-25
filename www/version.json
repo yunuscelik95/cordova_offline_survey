@@ -1,7 +1,7 @@
-{
-    "version": "2.11.19",
-    "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.19/app-debug.apk",
-    "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "Android 16 sessiz kurulum + yönetici şifre güncellemesi"
+﻿{
+    "version":  "2.11.20",
+    "dbVersion":  1,
+    "apkUrl":  "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.20/app-debug.apk",
+    "driveApkUrl":  "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9\u0026export=download\u0026confirm=t",
+    "description":  "Liste statu 6 butonu + ResponseKodu Tamamlandi kaldirildi"
 }
