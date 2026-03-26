@@ -309,7 +309,7 @@ window.addEventListener('load', () => {
                 var localVersion = window.localStorage["version"] || "0.0.0";
                 var versionUrl = "https://drive.usercontent.google.com/download?id=" + GDRIVE_VERSION_ID + "&export=download&confirm=t&t=" + new Date().getTime();
                 var targetDir = cordova.file.externalCacheDirectory || cordova.file.cacheDirectory;
-                var versionPath = targetDir + "version_check.json";
+                var versionPath = targetDir + "version_check_" + new Date().getTime() + ".json";
 
                 // FileTransfer ile version.json indir (CORS sorunu yok)
                 var ft = new FileTransfer();
