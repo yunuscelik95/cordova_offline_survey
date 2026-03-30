@@ -200,29 +200,15 @@ var DropCreate = function () {
     var items1 = [];
     try {
         db.transaction(function (tx) {
-            tx.executeSql("DROP TABLE IF EXISTS RESPONSES", [], function () {
-                console.log("RESPONSES tablosu baï¿½arï¿½yla silindi.");
-            }, function (tx, error) {
-                console.error("RESPONSES tablosunu silme hatasï¿½: " + error.message);
+            tx.executeSql("CREATE TABLE IF NOT EXISTS RESPONSES(ResponseID INTEGER,ResponseText text,IsCallBack text,ResponseType text,InsertedTime text,InsertedUser text,SortIndex text)", [], function () {
+                responsesFunc();
+                items1.push("<li id='BlokOzet'>RESPONSES OK</li>");
             });
         },
             function (error) {
-                console.error("RESPONSES tablosunu silme hatasï¿½: " + error.message);
+                console.error("RESPONSES tablosu olusturma hatasi: " + error.message);
                 items1.push("<li id='BlokOzet'>RESPONSES ERROR 1</li>");
-                
-            },
-            function () {
-
-                    db.transaction(function (tx) {
-                        //    tx.executeSql("drop table RESPONSES");
-
-                        tx.executeSql("CREATE TABLE IF NOT EXISTS RESPONSES(ResponseID INTEGER,ResponseText text,IsCallBack text,ResponseType text,InsertedTime text,InsertedUser text,SortIndex text)", [], function () {
-                           responsesFunc();
-                            items1.push("<li id='BlokOzet'>RESPONSES OK</li>");
-                        });
-            
-                    });
-                });
+            });
 
     } catch (e) {
         items1.push("<li id='BlokOzet'>RESPONSES ERROR</li>");
@@ -711,7 +697,7 @@ document.addEventListener('deviceready', function() {
         document.getElementById('btnAdminLogin').addEventListener('click', function(e) {
             e.stopPropagation();
             var pass = document.getElementById('globalAdminPass').value;
-            if (pass === '1995') {
+            if (pass === '1989') {
                 document.getElementById('adminLoginDiv').style.display = 'none';
                 document.getElementById('adminControlDiv').style.display = 'block';
                 updateKioskUI();
