@@ -75,6 +75,7 @@
                     <td>
                         <button v-if="(item.ResponseText == '') && item.ZiyaretSayi < ziyaretSayisi" type='button' class='btn btn-block btn-primary btn-xs' @click="InterviewSelect(item.id)">{{item.statu}}- Başla</button>
                         <button v-if="(item.statu == 0 || item.statu == 999 || (item.statu >= 16 && item.statu <= 21)) && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi)" type='button' class='btn btn-block btn-primary btn-xs' @click="InterviewSelect(item.id)">{{item.ResponseText}}</button>
+                        <button v-if="item.statu == 9999" type='button' class='btn btn-block btn-primary btn-xs' @click="InterviewSelect(item.id)">İPTAL</button>
                         <span v-if="item.statu == 6" class='btn btn-block btn-success btn-xs'>Tamamlandı</span>
                         <button v-if="((item.statu >= 1 && item.statu <= 5) || (item.statu >= 7 && item.statu <= 15) || item.statu == 22) && item.ResponseText != '' && item.ZiyaretSayi < parseInt(ziyaretSayisi)" type='button' class='btn btn-block btn-danger btn-xs' @click="InterviewSelect(item.id)">{{item.ResponseText}}</button>
                     </td>
