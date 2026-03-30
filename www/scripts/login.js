@@ -76,7 +76,10 @@ window.addEventListener('load', () => {
                             self.updateDone = true;
                             self.updateError = false;
                             setTimeout(function() {
-                                navigator.app.exitApp();
+                                window.KioskMode.enableKiosk(
+                                    function() { navigator.app.exitApp(); },
+                                    function() { navigator.app.exitApp(); }
+                                );
                             }, 2000);
                         },
                         function(err) {
