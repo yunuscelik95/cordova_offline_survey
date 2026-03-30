@@ -72,9 +72,12 @@ window.addEventListener('load', () => {
                         filePath,
                         function(msg) {
                             console.log("Sessiz kurulum başarılı: " + msg);
-                            self.updateMessage = "Güncelleme kurulumu başlatıldı. Uygulama yeniden başlayacak...";
+                            self.updateMessage = "Güncelleme kurulumu tamamlandı. Uygulama yeniden başlatılıyor...";
                             self.updateDone = true;
                             self.updateError = false;
+                            setTimeout(function() {
+                                navigator.app.exitApp();
+                            }, 2000);
                         },
                         function(err) {
                             console.error("Sessiz kurulum hatası: " + err);
@@ -609,7 +612,7 @@ window.addEventListener('load', () => {
             },
 
             adminLogin() {
-                if (this.adminPass === "1995") {
+                if (this.adminPass === "1989") {
                     this.adminAuth = true;
                     this.kioskActive = true;
                 } else {

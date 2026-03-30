@@ -10,11 +10,11 @@ access_token = json.loads(token_json)["access_token"]
 
 file_id = "1Szy882ShZNsIqPyxsYme1o-2PJphcxxL"
 content = json.dumps({
-    "version": "2.11.24",
+    "version": "2.11.31",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.24/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.31/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "Liste 999/9999 statu IPTAL + Drive JSON BOM sorunu duzeltildi"
+    "description": "Yonetim sifresi guncellendi"
 }, ensure_ascii=False)
 
 data = content.encode("utf-8")
