@@ -10,11 +10,11 @@ access_token = json.loads(token_json)["access_token"]
 
 file_id = "1Szy882ShZNsIqPyxsYme1o-2PJphcxxL"
 content = json.dumps({
-    "version": "2.11.31",
+    "version": "2.11.36",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.31/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.36/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "Yonetim sifresi guncellendi"
+    "description": "RESPONSES tablosu drop kaldirildi - buton aciklamalari korunur"
 }, ensure_ascii=False)
 
 data = content.encode("utf-8")

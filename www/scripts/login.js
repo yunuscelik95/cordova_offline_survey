@@ -615,7 +615,7 @@ window.addEventListener('load', () => {
             },
 
             adminLogin() {
-                if (this.adminPass === "1989") {
+                if (this.adminPass === "2219") {
                     this.adminAuth = true;
                     this.kioskActive = true;
                 } else {
