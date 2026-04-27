@@ -3,5 +3,5 @@
     "dbVersion": 1,
     "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.55/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "v2.11.55 - Yönetim panelinde uçak modu butonu"
+    "description": "v2.11.55 - Uçak modu butonu (tek tık WiFi aç/kapa)"
 }
