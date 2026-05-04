@@ -1,7 +1,7 @@
 {
-    "version": "2.11.58",
+    "version": "2.11.59",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.58/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.59/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "v2.11.58 - Yonetici panelinde ucak modu butonu"
+    "description": "v2.11.59 - SES25S1/S2/S3 B5-B7 çapraz doğrulama uyarıları"
 }
