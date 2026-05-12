@@ -1,7 +1,7 @@
 {
-    "version": "2.11.63",
+    "version": "2.11.64",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.63/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.64/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "v2.11.63 - Otomatik blok kapanma duzeltmesi (SP + tablet)"
+    "description": "v2.11.64 - SES sorulari bos gecme duzeltmesi"
 }
