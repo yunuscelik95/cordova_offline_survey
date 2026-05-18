@@ -1,7 +1,7 @@
 {
-    "version": "2.11.67",
+    "version": "2.11.68",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.67/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.68/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "v2.11.67 - gizli blok listesi guncellendi"
+    "description": "v2.11.68 - blok kapama LISTE bazli sayim"
 }
