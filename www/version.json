@@ -1,7 +1,7 @@
 {
-    "version": "2.11.66",
+    "version": "2.11.67",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.66/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.67/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "v2.11.66 - iptal edilen anket blok limitini etkilemesin"
+    "description": "v2.11.67 - gizli blok listesi guncellendi"
 }
