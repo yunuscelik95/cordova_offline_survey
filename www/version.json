@@ -1,7 +1,7 @@
 {
-    "version": "2.11.71",
+    "version": "2.11.78",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.71/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.78/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "v2.11.71 - test bloklari icin limit yok"
+    "description": "v2.11.78 - blokozet sunucudan Yapilan kullan"
 }
