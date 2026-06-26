@@ -1,7 +1,7 @@
 {
-    "version": "2.11.82",
+    "version": "2.11.85",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.82/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.85/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "v2.11.82 - yonetici panel sifresi guncellendi"
+    "description": "v2.11.85 - blok kapama API kontrolu"
 }
