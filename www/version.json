@@ -1,7 +1,7 @@
 {
-    "version": "2.11.88",
+    "version": "2.11.89",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.88/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.89/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "v2.11.88 - blok Yapilan cift sayma duzeltmesi (offline x2 hatasi), GK.html taze isim"
+    "description": "v2.11.89 - atlanan soru alanlarinin eski cevaplari temizlenmiyordu (A1c, SES25 serisi), duzeltildi"
 }
