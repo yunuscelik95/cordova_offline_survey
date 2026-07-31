@@ -1,7 +1,7 @@
 {
-    "version": "2.11.90",
+    "version": "2.11.91",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.90/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.91/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "v2.11.90 - blok limiti Sanliurfa'da da 10'a cikartildi (Istanbul/Mersin/Hatay/Izmir ile ayni)"
+    "description": "v2.11.91 - blok limiti Malatya'da da 10'a cikartildi (Istanbul/Mersin/Hatay/Izmir/Sanliurfa ile ayni)"
 }
