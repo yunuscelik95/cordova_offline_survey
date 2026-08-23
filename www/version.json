@@ -1,7 +1,7 @@
 {
-    "version": "2.11.93",
+    "version": "2.11.94",
     "dbVersion": 1,
-    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.93/app-debug.apk",
+    "apkUrl": "https://github.com/yunuscelik95/cordova_offline_survey/releases/download/v2.11.94/app-debug.apk",
     "driveApkUrl": "https://drive.usercontent.google.com/download?id=1B0weGC3e6YqSDEjRV8IexyU-12ZgdyU9&export=download&confirm=t",
-    "description": "v2.11.93 - blok limiti Eskisehir'de de 10'a cikartildi (Istanbul/Mersin/Hatay/Izmir/Sanliurfa/Malatya/Van ile ayni)"
+    "description": "v2.11.94 - blok limiti Kahramanmaras'ta da 10'a cikartildi (Istanbul/Mersin/Hatay/Izmir/Sanliurfa/Malatya/Van/Eskisehir ile ayni)"
 }
